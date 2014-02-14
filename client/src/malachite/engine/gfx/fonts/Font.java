@@ -5,22 +5,29 @@ import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.AbstractMatrix;
 import malachite.engine.gfx.textures.Texture;
 
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 public class Font {
   private AbstractMatrix _matrix = AbstractContext.getMatrix();
   private Texture _texture;
+
+  private Events _events = new Events(this);
+  private boolean _loaded;
 
   private int _h;
 
   private Glyph[] _glyph;
 
-  protected Font() { }
+  Font() { }
 
-  protected void load(int h, Glyph[] glyph) {
+  public Events events() { return _events; }
+  public boolean loaded() { return _loaded; }
+
+  void load(int h, Glyph[] glyphs, Texture texture) {
     _h = h;
-    _glyph = glyph;
-  }
-
-  protected void setTexture(Texture texture) {
+    _glyph = glyphs;
     _texture = texture;
 
     for(Glyph glyph : _glyph) {
@@ -28,6 +35,9 @@ public class Font {
         glyph.create(_texture);
       }
     }
+
+    _loaded = true;
+    _events.raiseLoad();
   }
 
   public int getW(String text) {
@@ -96,6 +106,35 @@ public class Font {
 
     public void draw() {
       sprite.draw();
+    }
+  }
+
+  public static class Events {
+    private Deque<Event> _load = new ConcurrentLinkedDeque<>();
+
+    private Font _this;
+
+    public Events(Font font) {
+      _this = font;
+    }
+
+    public void addLoadHandler(Event e) {
+      _load.add(e);
+
+      if(_this._loaded) {
+        raiseLoad();
+      }
+    }
+
+    public void raiseLoad() {
+      Event e = null;
+      while((e = _load.poll()) != null) {
+        e.run();
+      }
+    }
+
+    public interface Event {
+      void run();
     }
   }
 }

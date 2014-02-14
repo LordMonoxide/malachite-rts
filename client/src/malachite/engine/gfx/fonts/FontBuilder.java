@@ -101,8 +101,7 @@ public class FontBuilder {
     AbstractContext.getContext().addLoadCallback(Loader.LoaderThread.GRAPHICS, () -> {
       Texture texture = _textures.getTexture("Font." + font.getFontName() + "." + font.getSize(), w, h, buffer);
 
-      f.load(metrics.get(0).h, glyph);
-      f.setTexture(texture);
+      f.load(metrics.get(0).h, glyph, texture);
       _fonts.put(fullName, f);
 
       System.out.println("Font \"" + fullName + "\" created (" + w + "x" + h + ").");
