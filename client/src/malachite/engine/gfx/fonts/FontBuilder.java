@@ -54,7 +54,8 @@ public class FontBuilder {
     }
 
     for(int i : extraGlyphs) {
-      highIndex = addGlyph(i, font, rendCont, metrics, highIndex);
+      int n = addGlyph(i, font, rendCont, metrics, highIndex);
+      if(n > highIndex) { highIndex = n; }
     }
 
     int x = 0;
