@@ -34,6 +34,7 @@ public class Texture {
   public boolean loaded() { return _loaded; }
 
   public void use() {
+    if(_id == 0) { return; }
     GL11.glBindTexture(GL11.GL_TEXTURE_2D, _id);
   }
 
