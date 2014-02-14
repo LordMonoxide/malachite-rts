@@ -265,11 +265,17 @@ public abstract class AbstractControl<T extends ControlEvents> {
 
   protected final void drawEnd() {
     if(_visible) {
+      _controlList.draw();
+
       if(_border != null) {
         _border.draw();
       }
 
       _matrix.pop();
+    }
+
+    if(_controlNext != null) {
+      _controlNext.draw();
     }
   }
 
