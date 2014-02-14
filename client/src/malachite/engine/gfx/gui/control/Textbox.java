@@ -4,8 +4,12 @@ import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
 import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
+import malachite.engine.gfx.gui.ControlEvents;
 
-public class Textbox extends AbstractControl {
+import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
+public class Textbox extends AbstractControl<Textbox.Events> {
   private Font _font = FontBuilder.getInstance().getDefault();
   private String _text;
   private float[] _textColour = {1, 1, 1, 1};
@@ -22,10 +26,12 @@ public class Textbox extends AbstractControl {
   }
 
   public void setText(String text) {
-    _needsUpdate = true;
-    _text = text;
-    _textW = _font.getW(_text);
-    _textH = _font.getH();
+    _font.events().addLoadHandler(() -> {
+      _needsUpdate = true;
+      _text = text;
+      _textW = _font.getW(_text);
+      _textH = _font.getH();
+    });
   }
 
   public String getText() {
@@ -82,5 +88,27 @@ public class Textbox extends AbstractControl {
     ALIGN_MIDDLE,
     ALIGN_TOP,
     ALIGN_BOTTOM
+  }
+
+  public static class Events extends ControlEvents {
+    private Deque<Change> _change = new ConcurrentLinkedDeque<>();
+
+    public void addChangeHandler(Change e) { _change.add(e); }
+
+    protected Events(AbstractControl<? extends ControlEvents> c) {
+      super(c);
+    }
+
+    public void raiseChange() {
+      for(Change e : _change) {
+        e.setControl(_control);
+        e.change();
+      }
+    }
+
+    public static abstract class Change extends Event {
+      protected void setControl(AbstractControl<? extends ControlEvents> control) { _control = control; }
+      public abstract void change();
+    }
   }
 }

@@ -23,10 +23,12 @@ public class Label extends AbstractControl<ControlEvents> {
   }
 
   public void setText(String text) {
-    _needsUpdate = true;
-    _text = text;
-    _textW = _font.getW(_text);
-    _textH = _font.getH();
+    _font.events().addLoadHandler(() -> {
+      _needsUpdate = true;
+      _text = text;
+      _textW = _font.getW(_text);
+      _textH = _font.getH();
+    });
   }
 
   public String getText() {
