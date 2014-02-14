@@ -1,16 +1,16 @@
 package malachite.engine.gfx.gui;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class ControlEvents {
-  private List<Draw> _draw     = new LinkedList<>();
-  private List<Mouse>  _mouse  = new LinkedList<>();
-  private List<Key>    _key    = new LinkedList<>();
-  private List<Click>  _click  = new LinkedList<>();
-  private List<Scroll> _scroll = new LinkedList<>();
-  private List<Hover>  _hover  = new LinkedList<>();
-  private List<Focus>  _focus  = new LinkedList<>();
+  private Deque<Draw>   _draw   = new ConcurrentLinkedDeque<>();
+  private Deque<Mouse>  _mouse  = new ConcurrentLinkedDeque<>();
+  private Deque<Key>    _key    = new ConcurrentLinkedDeque<>();
+  private Deque<Click>  _click  = new ConcurrentLinkedDeque<>();
+  private Deque<Scroll> _scroll = new ConcurrentLinkedDeque<>();
+  private Deque<Hover>  _hover  = new ConcurrentLinkedDeque<>();
+  private Deque<Focus>  _focus  = new ConcurrentLinkedDeque<>();
 
   public void addDrawHandler  (Draw   e) { _draw  .add(e); }
   public void addMouseHandler (Mouse  e) { _mouse .add(e); }
@@ -22,7 +22,7 @@ public class ControlEvents {
 
   protected AbstractControl<? extends ControlEvents> _control;
 
-  public ControlEvents(AbstractControl<? extends ControlEvents> c) {
+  protected ControlEvents(AbstractControl<? extends ControlEvents> c) {
     _control = c;
   }
 
@@ -125,7 +125,7 @@ public class ControlEvents {
   }
 
   public static class Event {
-    AbstractControl<? extends ControlEvents> _control;
+    protected AbstractControl<? extends ControlEvents> _control;
     public AbstractControl<? extends ControlEvents> control() { return _control; }
   }
 
