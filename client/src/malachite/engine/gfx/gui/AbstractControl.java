@@ -31,7 +31,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
   protected AbstractDrawable _selBox;
   protected int[] _selColour;
 
-  private ControlEvents _events;
+  protected ControlEvents _events;
 
   protected AbstractControl(AbstractGUI gui, InitFlags... flags) {
     _gui = gui;
@@ -70,6 +70,10 @@ public abstract class AbstractControl<T extends ControlEvents> {
           break;
       }
     }
+  }
+
+  public T events() {
+    return (T)_events;
   }
 
   public int getX() { return _x; }
