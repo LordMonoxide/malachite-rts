@@ -55,6 +55,19 @@ public abstract class AbstractControl<T extends ControlEvents> {
         case ACCEPTS_FOCUS:
           _acceptsFocus = true;
           break;
+
+        case REGISTER:
+          _selBox = AbstractContext.newDrawable();
+          _selColour = AbstractContext.getContext().getNextSelectColour();
+
+          float[] floatColour = new float[4];
+
+          for(int i = 0; i < floatColour.length; i++) {
+            floatColour[i] = _selColour[i] / 255f;
+          }
+
+          _selBox.setColour(floatColour);
+          break;
       }
     }
   }
@@ -176,22 +189,27 @@ public abstract class AbstractControl<T extends ControlEvents> {
       }
     }
 
+    if(_events == null) { return; }
     _events.raiseKeyDown(key);
   }
 
   public void handleKeyUp(int key) {
+    if(_events == null) { return; }
     _events.raiseKeyUp(key);
   }
 
   public void handleCharDown(char key) {
+    if(_events == null) { return; }
     _events.raiseKeyText(key);
   }
 
   public void handleMouseDown(int x, int y, int button) {
+    if(_events == null) { return; }
     _events.raiseMouseDown(x, y, button);
   }
 
   public void handleMouseUp(int x, int y, int button) {
+    if(_events == null) { return; }
     _events.raiseMouseUp(x, y, button);
 
     if(Time.get() - _lastClick <= 250) {
@@ -203,30 +221,41 @@ public abstract class AbstractControl<T extends ControlEvents> {
   }
 
   public void handleMouseMove(int x, int y, int button) {
+    if(_events == null) { return; }
     _events.raiseMouseMove(x, y, button);
   }
 
   public void handleMouseWheel(int delta) {
+    if(_events == null) { return; }
     _events.raiseMouseScroll(delta);
   }
 
   public void handleMouseEnter() {
+    if(_events == null) { return; }
     _events.raiseHoverEnter();
   }
 
   public void handleMouseLeave() {
+    if(_events == null) { return; }
     _events.raiseHoverLeave();
   }
 
   public void handleGotFocus() {
+    if(_events == null) { return; }
     _events.raiseFocusGot();
   }
 
   public void handleLostFocus() {
+    if(_events == null) { return; }
     _events.raiseFocusLost();
   }
 
   private void updateSize() {
+    if(_selBox != null) {
+      _selBox.setWH(_w, _h);
+      _selBox.createQuad();
+    }
+
     if(_background != null) {
       _background.setWH(_w - _background.getX() * 2,
                         _h - _background.getY() * 2);
@@ -240,6 +269,8 @@ public abstract class AbstractControl<T extends ControlEvents> {
     }
 
     resize();
+
+    _needsUpdate = false;
   }
 
   protected abstract void resize();
@@ -296,6 +327,10 @@ public abstract class AbstractControl<T extends ControlEvents> {
 
   public void drawSelect() {
     if(_visible && _enabled) {
+      if(_needsUpdate) {
+        updateSize();
+      }
+
       _matrix.push();
       _matrix.translate(_x, _y);
 
@@ -334,6 +369,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
     WITH_BACKGROUND,
     WITH_BORDER,
     WITH_DEFAULT_EVENTS,
-    ACCEPTS_FOCUS
+    ACCEPTS_FOCUS,
+    REGISTER
   }
 }
