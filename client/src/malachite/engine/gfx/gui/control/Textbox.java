@@ -30,20 +30,32 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       InitFlags.REGISTER
     );
 
+    _events = new Events(this);
+    _events.addKeyHandler(new KeyHandler());
+
     _caret = AbstractContext.newDrawable();
     _caret.setColour(new float[] {1, 1, 1, 1});
+
+    _font.events().addLoadHandler(() -> {
+      _caret.setWH(1, _font.getH());
+      _caret.createQuad();
+      resize();
+    });
   }
 
   public void setText(String text) {
-    _font.events().addLoadHandler(() -> {
-      _needsUpdate = true;
-      _text = text;
-      _textW = _font.getW(_text);
-      _textH = _font.getH();
+    if(_font.loaded()) {
+      updateText(text);
+    } else {
+      _font.events().addLoadHandler(() -> {
+        updateText(text);
+      });
+    }
+  }
 
-      _caret.setWH(1, _font.getH());
-      _caret.createQuad();
-    });
+  private void updateText(String text) {
+    _text = text;
+    resize();
   }
 
   public String getText() {
@@ -68,6 +80,10 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   @Override
   protected void resize() {
+    _textW = _font.getW(_text);
+    _textH = _font.getH();
+    _caret.setX(_textW);
+    
     switch(_textHAlign) {
       case ALIGN_LEFT:   _textX = 0; break;
       case ALIGN_CENTER: _textX = (_w - _textW) / 2; break;
@@ -84,11 +100,16 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   @Override
   public void draw() {
     if(drawBegin()) {
-      _font.draw(_textX, _textY, _text, _textColour);
+      _matrix.push();
+      _matrix.translate(_textX, _textY);
+
+      _font.draw(0, 0, _text, _textColour);
 
       if(_focus) {
         _caret.draw();
       }
+
+      _matrix.pop();
     }
 
     drawEnd();
@@ -119,7 +140,13 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
     @Override
     public void text(char key) {
+      if(_text != null) {
+        setText(_text + key);
+      } else {
+        setText(Character.toString(key));
+      }
 
+      events().raiseChange();
     }
   }
 
