@@ -1,5 +1,7 @@
 package malachite.engine.gfx.gui.control;
 
+import malachite.engine.gfx.AbstractContext;
+import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
 import malachite.engine.gfx.gui.AbstractControl;
@@ -18,11 +20,18 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   private TextHAlign _textHAlign = TextHAlign.ALIGN_LEFT;
   private TextVAlign _textVAlign = TextVAlign.ALIGN_MIDDLE;
 
+  private AbstractDrawable _caret;
+
   public Textbox(AbstractGUI gui) {
     super(gui,
       InitFlags.WITH_BACKGROUND,
-      InitFlags.WITH_BORDER
+      InitFlags.WITH_BORDER,
+      InitFlags.ACCEPTS_FOCUS,
+      InitFlags.REGISTER
     );
+
+    _caret = AbstractContext.newDrawable();
+    _caret.setColour(new float[] {1, 1, 1, 1});
   }
 
   public void setText(String text) {
@@ -31,6 +40,9 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       _text = text;
       _textW = _font.getW(_text);
       _textH = _font.getH();
+
+      _caret.setWH(1, _font.getH());
+      _caret.createQuad();
     });
   }
 
@@ -73,6 +85,10 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   public void draw() {
     if(drawBegin()) {
       _font.draw(_textX, _textY, _text, _textColour);
+
+      if(_focus) {
+        _caret.draw();
+      }
     }
 
     drawEnd();
@@ -88,6 +104,23 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     ALIGN_MIDDLE,
     ALIGN_TOP,
     ALIGN_BOTTOM
+  }
+
+  private class KeyHandler extends ControlEvents.Key {
+    @Override
+    public void down(int key) {
+
+    }
+
+    @Override
+    public void up(int key) {
+
+    }
+
+    @Override
+    public void text(char key) {
+
+    }
   }
 
   public static class Events extends ControlEvents {
