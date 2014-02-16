@@ -7,16 +7,19 @@ import malachite.engine.gfx.fonts.FontBuilder;
 import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
+import org.lwjgl.input.Keyboard;
 
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Textbox extends AbstractControl<Textbox.Events> {
   private Font _font = FontBuilder.getInstance().getDefault();
-  private String _text;
+  private String[] _text = new String[3];
+  private String _textFull;
   private float[] _textColour = {1, 1, 1, 1};
   private int _textX, _textY;
-  private int _textW, _textH;
+  private int[] _textW = new int[3];
+  private int _textH;
   private TextHAlign _textHAlign = TextHAlign.ALIGN_LEFT;
   private TextVAlign _textVAlign = TextVAlign.ALIGN_MIDDLE;
 
@@ -45,21 +48,23 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   public void setText(String text) {
     if(_font.loaded()) {
-      updateText(text);
+      updateText(text, null, null);
     } else {
       _font.events().addLoadHandler(() -> {
-        updateText(text);
+        updateText(text, null, null);
       });
     }
   }
 
-  private void updateText(String text) {
-    _text = text;
+  private void updateText(String... text) {
+    _text[0] = text[0];
+    _text[1] = text[1];
+    _text[2] = text[2];
     resize();
   }
 
   public String getText() {
-    return _text;
+    return _textFull;
   }
 
   public void setTextHAlign(TextHAlign align) {
@@ -80,14 +85,26 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   @Override
   protected void resize() {
-    _textW = _font.getW(_text);
+    _textFull = "";
+    for(int i = 0; i < _text.length; i++) {
+      if(_text[i] != null) {
+        _textFull += _text[i];
+      }
+    }
+
+    _textW[0] = _font.getW(_text[0]);
+    _textW[1] = _font.getW(_text[1]);
+    _textW[2] = _font.getW(_text[2]);
+
     _textH = _font.getH();
-    _caret.setX(_textW);
-    
+    _caret.setX(_textW[0]);
+
+    int totalW = _textW[0] + _textW[1] + _textW[2];
+
     switch(_textHAlign) {
       case ALIGN_LEFT:   _textX = 0; break;
-      case ALIGN_CENTER: _textX = (_w - _textW) / 2; break;
-      case ALIGN_RIGHT:  _textX =  _w - _textW; break;
+      case ALIGN_CENTER: _textX = (_w - totalW) / 2; break;
+      case ALIGN_RIGHT:  _textX =  _w - totalW; break;
     }
 
     switch(_textVAlign) {
@@ -103,7 +120,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       _matrix.push();
       _matrix.translate(_textX, _textY);
 
-      _font.draw(0, 0, _text, _textColour);
+      _font.draw(0, 0, _textFull, _textColour);
 
       if(_focus) {
         _caret.draw();
@@ -130,7 +147,18 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   private class KeyHandler extends ControlEvents.Key {
     @Override
     public void down(int key) {
+      switch(key) {
+        case Keyboard.KEY_BACK:
+          if(_text[1] != null) {
+            updateText(_text[0], null, _text[2]);
+          } else {
+            if(_text[0] != null && !_text[0].isEmpty()) {
+              updateText(_text[0].substring(0, _text[0].length() - 1), _text[1], _text[2]);
+            }
+          }
 
+          break;
+      }
     }
 
     @Override
@@ -140,10 +168,10 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
     @Override
     public void text(char key) {
-      if(_text != null) {
-        setText(_text + key);
+      if(_text[0] != null) {
+        updateText(_text[0] + key, null, _text[2]);
       } else {
-        setText(Character.toString(key));
+        updateText(Character.toString(key), null, _text[2]);
       }
 
       events().raiseChange();
