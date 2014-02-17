@@ -13,6 +13,12 @@ public abstract class AbstractControl<T extends ControlEvents> {
   protected AbstractDrawable _border;
   protected int _x, _y;
   protected int _w, _h;
+  protected HAlign _hAlign = HAlign.ALIGN_LEFT;
+  protected VAlign _vAlign = VAlign.ALIGN_MIDDLE;
+
+  protected int _padW = 2;
+  protected int _padH = 2;
+
   protected boolean _needsUpdate;
   protected boolean _enabled = true;
   protected boolean _visible = true;
@@ -112,6 +118,22 @@ public abstract class AbstractControl<T extends ControlEvents> {
     _y = y;
     _w = w;
     _h = h;
+  }
+
+  public void setHAlign(HAlign align) {
+    _hAlign = align;
+  }
+
+  public HAlign getHAlign() {
+    return _hAlign;
+  }
+
+  public void setVAlign(VAlign align) {
+    _vAlign = align;
+  }
+
+  public VAlign getVAlign() {
+    return _vAlign;
   }
 
   public void enable() {

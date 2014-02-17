@@ -5,10 +5,9 @@ import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.AbstractScalable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
-import malachite.engine.gfx.gui.AbstractControl;
-import malachite.engine.gfx.gui.AbstractGUI;
-import malachite.engine.gfx.gui.ControlEvents;
+import malachite.engine.gfx.gui.*;
 import malachite.engine.gfx.textures.TextureBuilder;
+import malachite.engine.util.Time;
 import org.lwjgl.input.Keyboard;
 
 import java.util.Deque;
@@ -22,11 +21,6 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   private int _textX, _textY;
   private int[] _textW = new int[3];
   private int _textH;
-  private TextHAlign _textHAlign = TextHAlign.ALIGN_LEFT;
-  private TextVAlign _textVAlign = TextVAlign.ALIGN_MIDDLE;
-
-  private int _padW = 2;
-  private int _padH = 2;
 
   private AbstractDrawable _caret;
   private double _caretPulse;
@@ -76,26 +70,27 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     _text[1] = text[1];
     _text[2] = text[2];
     resize();
+    resetCaretAlpha();
   }
 
   public String getText() {
     return _textFull;
   }
 
-  public void setTextHAlign(TextHAlign align) {
-    _textHAlign = align;
+  public void setHAlign(HAlign align) {
+    _hAlign = align;
   }
 
-  public TextHAlign getTextHAlign() {
-    return _textHAlign;
+  public HAlign getHAlign() {
+    return _hAlign;
   }
 
-  public void setTextVAlign(TextVAlign align) {
-    _textVAlign = align;
+  public void setVAlign(VAlign align) {
+    _vAlign = align;
   }
 
-  public TextVAlign getTextVAlign() {
-    return _textVAlign;
+  public VAlign getVAlign() {
+    return _vAlign;
   }
 
   @Override
@@ -116,13 +111,13 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
     int totalW = _textW[0] + _textW[1] + _textW[2];
 
-    switch(_textHAlign) {
+    switch(_hAlign) {
       case ALIGN_LEFT:   _textX = _padW; break;
       case ALIGN_CENTER: _textX = (_w - totalW) / 2; break;
       case ALIGN_RIGHT:  _textX =  _w - totalW - _padW; break;
     }
 
-    switch(_textVAlign) {
+    switch(_vAlign) {
       case ALIGN_TOP:    _textY = _padH; break;
       case ALIGN_MIDDLE: _textY = (_h - _textH) / 2; break;
       case ALIGN_BOTTOM: _textY =  _h - _textH - _padH; break;
@@ -149,19 +144,24 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   @Override
   public void logic() {
-    
+    decrementCaretAlpha();
+
+    if(_caretPulse <= Time.get()) {
+      resetCaretAlpha();
+      _caretPulse = Time.get() + Time.MSToTicks(1000);
+    }
   }
 
-  public enum TextHAlign {
-    ALIGN_LEFT,
-    ALIGN_CENTER,
-    ALIGN_RIGHT
+  private void decrementCaretAlpha() {
+    if(_caret.getColour()[3] > 0) {
+      _caret.getColour()[3] -= 0.01;
+    } else {
+      _caret.getColour()[3] = 0;
+    }
   }
 
-  public enum TextVAlign {
-    ALIGN_MIDDLE,
-    ALIGN_TOP,
-    ALIGN_BOTTOM
+  private void resetCaretAlpha() {
+    _caret.getColour()[3] = 1;
   }
 
   private class KeyHandler extends ControlEvents.Key {
