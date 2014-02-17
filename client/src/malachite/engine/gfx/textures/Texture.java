@@ -5,11 +5,14 @@ import malachite.engine.gfx.Manager;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.ByteBuffer;
+import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Texture {
   private int _id;
   private int _w, _h;
 
+  private Events _events = new Events(this);
   private boolean _loaded;
 
   protected Texture(int w, int h, ByteBuffer data) {
@@ -24,6 +27,7 @@ public class Texture {
       GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
       System.out.println("Loaded requested texture ID " + _id);
       _loaded = true;
+      _events.raiseLoad();
     });
   }
 
@@ -31,6 +35,7 @@ public class Texture {
   public int getW()  { return _w; }
   public int getH()  { return _h; }
 
+  public Events events() { return _events; }
   public boolean loaded() { return _loaded; }
 
   public void use() {
@@ -40,5 +45,34 @@ public class Texture {
 
   public void destroy() {
     GL11.glDeleteTextures(_id);
+  }
+
+  public static class Events {
+    private Deque<Event> _load = new ConcurrentLinkedDeque<>();
+
+    private Texture _this;
+
+    public Events(Texture texture) {
+      _this = texture;
+    }
+
+    public void addLoadHandler(Event e) {
+      _load.add(e);
+
+      if(_this._loaded) {
+        raiseLoad();
+      }
+    }
+
+    public void raiseLoad() {
+      Event e = null;
+      while((e = _load.poll()) != null) {
+        e.run();
+      }
+    }
+
+    public interface Event {
+      void run();
+    }
   }
 }
