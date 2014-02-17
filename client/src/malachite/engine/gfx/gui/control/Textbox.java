@@ -2,11 +2,13 @@ package malachite.engine.gfx.gui.control;
 
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.AbstractDrawable;
+import malachite.engine.gfx.AbstractScalable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
 import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
+import malachite.engine.gfx.textures.TextureBuilder;
 import org.lwjgl.input.Keyboard;
 
 import java.util.Deque;
@@ -16,19 +18,21 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   private Font _font = FontBuilder.getInstance().getDefault();
   private String[] _text = new String[3];
   private String _textFull;
-  private float[] _textColour = {1, 1, 1, 1};
+  private float[] _textColour = {65f / 255, 52f / 255, 8f / 255, 1};
   private int _textX, _textY;
   private int[] _textW = new int[3];
   private int _textH;
   private TextHAlign _textHAlign = TextHAlign.ALIGN_LEFT;
   private TextVAlign _textVAlign = TextVAlign.ALIGN_MIDDLE;
 
+  private int _padW = 2;
+  private int _padH = 2;
+
   private AbstractDrawable _caret;
+  private double _caretPulse;
 
   public Textbox(AbstractGUI gui) {
     super(gui,
-      InitFlags.WITH_BACKGROUND,
-      InitFlags.WITH_BORDER,
       InitFlags.ACCEPTS_FOCUS,
       InitFlags.REGISTER
     );
@@ -37,13 +41,24 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     _events.addKeyHandler(new KeyHandler());
 
     _caret = AbstractContext.newDrawable();
-    _caret.setColour(new float[] {1, 1, 1, 1});
+    _caret.setColour(new float[] {_textColour[0], _textColour[1], _textColour[2], 1});
 
     _font.events().addLoadHandler(() -> {
       _caret.setWH(1, _font.getH());
       _caret.createQuad();
       resize();
     });
+
+    AbstractScalable s = AbstractContext.newScalable();
+    s.setTexture(TextureBuilder.getInstance().getTexture("gui/textbox.png"));
+    s.setColour(new float[] {1, 1, 1, 1});
+    s.setXY(-5, -5);
+    s.setSize(new float[] {12, 12, 12, 12},
+        new float[] {12, 12, 12, 12},
+        25, 25, 1
+    );
+
+    _background = s;
   }
 
   public void setText(String text) {
@@ -102,15 +117,15 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     int totalW = _textW[0] + _textW[1] + _textW[2];
 
     switch(_textHAlign) {
-      case ALIGN_LEFT:   _textX = 0; break;
+      case ALIGN_LEFT:   _textX = _padW; break;
       case ALIGN_CENTER: _textX = (_w - totalW) / 2; break;
-      case ALIGN_RIGHT:  _textX =  _w - totalW; break;
+      case ALIGN_RIGHT:  _textX =  _w - totalW - _padW; break;
     }
 
     switch(_textVAlign) {
-      case ALIGN_TOP:    _textY = 0; break;
+      case ALIGN_TOP:    _textY = _padH; break;
       case ALIGN_MIDDLE: _textY = (_h - _textH) / 2; break;
-      case ALIGN_BOTTOM: _textY =  _h - _textH; break;
+      case ALIGN_BOTTOM: _textY =  _h - _textH - _padH; break;
     }
   }
 
@@ -130,6 +145,11 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     }
 
     drawEnd();
+  }
+
+  @Override
+  public void logic() {
+    
   }
 
   public enum TextHAlign {
