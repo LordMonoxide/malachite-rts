@@ -20,6 +20,7 @@ public class Context extends AbstractContext {
     _matrix = new Matrix();
     _vertex = Vertex.class;
     _drawable = Drawable.class;
+    _scalable = Scalable.class;
   }
 
   @Override

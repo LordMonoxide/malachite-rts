@@ -19,6 +19,7 @@ public abstract class AbstractContext {
   protected static AbstractMatrix  _matrix;
   protected static Class<? extends AbstractVertex>   _vertex;
   protected static Class<? extends AbstractDrawable> _drawable;
+  protected static Class<? extends AbstractScalable> _scalable;
 
   public static AbstractContext getContext()  { return _context;  }
   public static AbstractMatrix  getMatrix()   { return _matrix;   }
@@ -36,6 +37,16 @@ public abstract class AbstractContext {
   public static AbstractDrawable newDrawable() {
     try {
       return _drawable.newInstance();
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+  public static AbstractScalable newScalable() {
+    try {
+      return _scalable.newInstance();
     } catch(Exception e) {
       e.printStackTrace();
     }
@@ -121,6 +132,7 @@ public abstract class AbstractContext {
     if(_matrix   == null) { System.err.println("!! Matrix is null !!"); }
     if(_vertex   == null) { System.err.println("!! Vertex is null !!"); }
     if(_drawable == null) { System.err.println("!! Drawable is null !!"); }
+    if(_scalable == null) { System.err.println("!! Scalable is null !!"); }
 
     updateSize();
 
