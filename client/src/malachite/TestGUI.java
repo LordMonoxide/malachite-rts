@@ -1,6 +1,7 @@
 package malachite;
 
 import malachite.engine.gfx.gui.AbstractGUI;
+import malachite.engine.gfx.gui.control.Button;
 import malachite.engine.gfx.gui.control.Image;
 import malachite.engine.gfx.gui.control.Label;
 import malachite.engine.gfx.gui.control.Textbox;
@@ -11,6 +12,7 @@ public class TestGUI extends AbstractGUI {
   private Image[] _imgBackground = new Image[15];
   private Label _lblTest;
   private Textbox _txtTest;
+  private Button _btnTest;
 
   @Override
   protected void load() {
@@ -34,8 +36,13 @@ public class TestGUI extends AbstractGUI {
     _txtTest = new Textbox(this);
     _txtTest.setXYWH(200, 224, 100, 20);
 
+    _btnTest = new Button(this);
+    _btnTest.setXYWH(200, 248, 100, 20);
+    _btnTest.setText("Test");
+
     controls().add(_lblTest);
     controls().add(_txtTest);
+    controls().add(_btnTest);
   }
 
   @Override
