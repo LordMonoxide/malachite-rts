@@ -49,7 +49,7 @@ public class TextureBuilder {
     int w, h;
 
     try {
-      File f = new File("../gfx/textures/" + file);
+      File f = new File("gfx/textures/" + file);
 
       try(InputStream in = new FileInputStream(f)) {
         PNGDecoder png = new PNGDecoder(in);
