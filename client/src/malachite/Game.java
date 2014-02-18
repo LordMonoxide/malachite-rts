@@ -5,8 +5,7 @@ import malachite.engine.gfx.ContextListenerAdapter;
 import malachite.engine.gfx.Loader;
 import malachite.engine.gfx.Manager;
 import malachite.engine.gfx.gl14.Context;
-import malachite.engine.gfx.gui.AbstractGUI;
-import malachite.engine.gfx.gui.control.Label;
+import malachite.gui.MainMenu;
 
 public class Game {
   public static void main(String... args) {
@@ -32,7 +31,7 @@ public class Game {
     @Override
     public void onRun() {
       _context.addLoadCallback(Loader.LoaderThread.GRAPHICS, () -> {
-        _context.GUIs().push(new TestGUI());
+        _context.GUIs().push(new MainMenu());
       });
     }
   }
