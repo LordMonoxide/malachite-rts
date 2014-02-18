@@ -11,13 +11,6 @@ public class Label extends AbstractControl<ControlEvents> {
   private int _textX, _textY;
   private int _textW, _textH;
 
-  public Label() {
-    super(
-        InitFlags.WITH_BACKGROUND,
-        InitFlags.WITH_BORDER
-    );
-  }
-
   @Override
   protected void setGUI(AbstractGUI gui) {
     super.setGUI(gui);
