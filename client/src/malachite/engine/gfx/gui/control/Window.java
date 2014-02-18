@@ -10,6 +10,7 @@ import malachite.engine.gfx.textures.TextureBuilder;
 
 public class Window extends AbstractControl<ControlEvents> {
   private Image _title;
+  private Label _text;
   private Button _close;
   private Image _content;
 
@@ -37,6 +38,10 @@ public class Window extends AbstractControl<ControlEvents> {
     _title.setBackground(s);
     _title.setY(-20);
     _title.setH(21);
+
+    _text = new Label();
+    _text.setX(4);
+    _title.controls().add(_text);
 
     _close = new Button();
     _close.setBackground(AbstractContext.newDrawable());
@@ -83,5 +88,10 @@ public class Window extends AbstractControl<ControlEvents> {
       _w - _content.getX() * 2,
       _h - _content.getY() * 2
     );
+  }
+
+  public void setText(String text) {
+    _text.setText(text);
+    _text.setY((_title.getH() - _text.getH()) / 2);
   }
 }

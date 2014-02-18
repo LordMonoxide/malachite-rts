@@ -40,6 +40,7 @@ public class TestGUI extends AbstractGUI {
 
     _wndTest = new Window();
     _wndTest.setXYWH(400, 400, 400, 300);
+    _wndTest.setText("Test");
 
     controls().add(_lblTest);
     controls().add(_txtTest);
