@@ -34,15 +34,24 @@ public class MainMenu extends AbstractGUI {
       @Override
       public void resize() {
         _txtName.setW(_wndMenu.getContentW() - _txtName.getX() * 2);
+        _txtPass.setW(_wndMenu.getContentW() - _txtPass.getX() * 2);
       }
     });
 
     _txtName = new Textbox();
     _txtName.setXY(4, 4);
     _txtName.setH(20);
+    _txtName.setTextPlaceholder("Username");
+
+    _txtPass = new Textbox();
+    _txtPass.setXY(_txtName.getX(), _txtName.getY() + _txtName.getH() + 8);
+    _txtPass.setH(20);
+    _txtPass.setTextPlaceholder("Password");
+    _txtPass.setMasked(true);
 
     controls().add(_wndMenu);
     _wndMenu.controls().add(_txtName);
+    _wndMenu.controls().add(_txtPass);
   }
 
   @Override
