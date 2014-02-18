@@ -40,14 +40,15 @@ public class Font {
     _events.raiseLoad();
   }
 
-  public int getW(String text) {
+  public int getW(String text) { return getW(text, 0); }
+  public int getW(String text, int mask) {
     if(text == null) { return 0; }
 
     int w = 0;
     for(int i = 0; i < text.length(); i++) {
-      int n = text.codePointAt(i);
+      int n = mask == 0 ? text.codePointAt(i) : mask;
       if(_glyph[n] != null) {
-        w += _glyph[text.codePointAt(i)].w;
+        w += _glyph[n].w;
       }
     }
 
