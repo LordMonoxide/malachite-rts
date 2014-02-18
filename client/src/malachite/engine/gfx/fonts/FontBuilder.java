@@ -30,8 +30,8 @@ public class FontBuilder {
   private FontBuilder() { }
 
   public Font getFont(String name, int size) {
-    return getFont(name, size, 0x20, 0x3FF, 0x25B2, 0x25BA, 0x25BC, 0x25C4);
-    // Extra = Triangle up, right, down, left
+    return getFont(name, size, 0x20, 0x3FF, 0x2022, 0x25B2, 0x25BA, 0x25BC, 0x25C4);
+    // Extra = Bullet, Triangle up, right, down, left
   }
 
   public Font getFont(String name, int size, int startGlyph, int endGlyph, int... extraGlyphs) {
