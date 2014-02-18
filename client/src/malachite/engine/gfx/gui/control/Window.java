@@ -6,6 +6,7 @@ import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.ControlList;
+import malachite.engine.gfx.textures.Texture;
 import malachite.engine.gfx.textures.TextureBuilder;
 
 import java.util.Deque;
@@ -17,15 +18,22 @@ public class Window extends AbstractControl<Window.Events> {
   private Button _close;
   private Image _content;
 
+  private Texture _button, _button_hover, _button_pressed;
+
   public Window() {
     super();
 
     _events = new Events(this);
 
     TextureBuilder t = TextureBuilder.getInstance();
+    _button          = t.getTexture("gui/close.png");
+    _button_hover    = t.getTexture("gui/close_hover.png");
+    _button_pressed  = t.getTexture("gui/close_pressed.png");
+
     AbstractScalable s = AbstractContext.newScalable();
     s.setTexture(t.getTexture("gui/background.png"));
-    s.setSize(new float[] {2, 2, 2, 2},
+    s.setSize(
+        new float[] {2, 2, 2, 2},
         new float[] {2, 2, 2, 2},
         260, 260, 256
     );
@@ -34,7 +42,8 @@ public class Window extends AbstractControl<Window.Events> {
 
     s = AbstractContext.newScalable();
     s.setTexture(t.getTexture("gui/title.png"));
-    s.setSize(new float[] {2, 10, 2, 10},
+    s.setSize(
+        new float[] {2, 10, 2, 10},
         new float[] {2, 10, 2, 10},
         5, 21, 1
     );
@@ -59,10 +68,7 @@ public class Window extends AbstractControl<Window.Events> {
         _y = y;
       }
 
-      @Override
-      public void up(int x, int y, int button) {
-
-      }
+      @Override public void up(int x, int y, int button) { }
     });
 
     _text = new Label();
@@ -71,7 +77,7 @@ public class Window extends AbstractControl<Window.Events> {
 
     _close = new Button();
     _close.setBackground(AbstractContext.newDrawable());
-    _close.getBackground().setTexture(t.getTexture("gui/close.png"));
+    _close.getBackground().setTexture(_button);
     _close.getBackground().setTWH(13, 13);
     _close.setY(4);
     _close.setWH(13, 13);
@@ -83,12 +89,25 @@ public class Window extends AbstractControl<Window.Events> {
       @Override public void clickDbl() { }
     });
 
+    _close.events().addHoverHandler(new ControlEvents.Hover() {
+      @Override
+      public void enter() {
+        _close.getBackground().setTexture(_button_hover);
+      }
+
+      @Override
+      public void leave() {
+        _close.getBackground().setTexture(_button);
+      }
+    });
+
     _title.controls().add(_close);
 
     s = AbstractContext.newScalable();
     s.setTexture(t.getTexture("gui/foreground.png"));
     s.setXY(-7, -7);
-    s.setSize(new float[] {21, 21, 21, 21},
+    s.setSize(
+        new float[] {21, 21, 21, 21},
         new float[] {21, 21, 21, 21},
         43, 43, 1
     );
@@ -127,6 +146,14 @@ public class Window extends AbstractControl<Window.Events> {
   public void setText(String text) {
     _text.setText(text);
     _text.setY((_title.getH() - _text.getH()) / 2);
+  }
+
+  public int getContentW() {
+    return _content.getW();
+  }
+
+  public int getContentH() {
+    return _content.getH();
   }
 
   public static class Events extends ControlEvents {
