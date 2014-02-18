@@ -25,8 +25,8 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   private AbstractDrawable _caret;
   private double _caretPulse;
 
-  public Textbox(AbstractGUI gui) {
-    super(gui,
+  public Textbox() {
+    super(
       InitFlags.ACCEPTS_FOCUS,
       InitFlags.REGISTER
     );
@@ -45,7 +45,6 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
     AbstractScalable s = AbstractContext.newScalable();
     s.setTexture(TextureBuilder.getInstance().getTexture("gui/textbox.png"));
-    s.setColour(new float[] {1, 1, 1, 1});
     s.setXY(-5, -5);
     s.setSize(new float[] {12, 12, 12, 12},
         new float[] {12, 12, 12, 12},
@@ -53,6 +52,11 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     );
 
     _background = s;
+  }
+
+  @Override
+  protected void setGUI(AbstractGUI gui) {
+    super.setGUI(gui);
   }
 
   public void setText(String text) {

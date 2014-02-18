@@ -20,8 +20,8 @@ public class Button extends AbstractControl<ControlEvents> {
   private int     _textX, _textY;
   private int     _textW, _textH;
 
-  public Button(AbstractGUI gui) {
-    super(gui,
+  public Button() {
+    super(
       InitFlags.WITH_DEFAULT_EVENTS,
       InitFlags.ACCEPTS_FOCUS,
       InitFlags.REGISTER
@@ -40,6 +40,11 @@ public class Button extends AbstractControl<ControlEvents> {
     _background = s;
   }
 
+  @Override
+  protected void setGUI(AbstractGUI gui) {
+    super.setGUI(gui);
+  }
+
   public void setText(String text) {
     _font.events().addLoadHandler(() -> {
       _needsUpdate = true;
@@ -51,6 +56,17 @@ public class Button extends AbstractControl<ControlEvents> {
 
   public String getText() {
     return _text;
+  }
+
+  public void setTextColour(float r, float g, float b, float a) {
+    _textColour[0] = r;
+    _textColour[1] = g;
+    _textColour[2] = b;
+    _textColour[3] = a;
+  }
+
+  public float[] getTextColour() {
+    return _textColour;
   }
 
   @Override

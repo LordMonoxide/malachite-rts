@@ -11,9 +11,14 @@ import malachite.engine.gfx.textures.TextureBuilder;
 public class Image extends AbstractControl<ControlEvents> {
   private AbstractDrawable _image;
 
-  public Image(AbstractGUI gui) {
-    super(gui);
+  public Image() {
+    super();
     _image = AbstractContext.newDrawable();
+  }
+
+  @Override
+  protected void setGUI(AbstractGUI gui) {
+    super.setGUI(gui);
   }
 
   public void setTexture(Texture texture) {
