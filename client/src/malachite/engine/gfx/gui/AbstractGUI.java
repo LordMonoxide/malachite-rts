@@ -30,9 +30,10 @@ public abstract class AbstractGUI {
 
   protected AbstractGUI() {
     _context = AbstractContext.getContext();
-    _control = new AbstractControl<ControlEvents>(this) {
+    _control = new AbstractControl<ControlEvents>() {
       @Override protected void resize() { }
     };
+    _control._gui = this;
 
     _context.addLoadCallback(Loader.LoaderThread.OFFLOAD, () -> {
       this.load();
