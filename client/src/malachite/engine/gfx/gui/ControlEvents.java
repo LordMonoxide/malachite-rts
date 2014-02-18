@@ -11,6 +11,7 @@ public class ControlEvents {
   private Deque<Scroll> _scroll = new ConcurrentLinkedDeque<>();
   private Deque<Hover>  _hover  = new ConcurrentLinkedDeque<>();
   private Deque<Focus>  _focus  = new ConcurrentLinkedDeque<>();
+  private Deque<Resize> _resize = new ConcurrentLinkedDeque<>();
 
   public void addDrawHandler  (Draw   e) { _draw  .add(e); }
   public void addMouseHandler (Mouse  e) { _mouse .add(e); }
@@ -19,6 +20,7 @@ public class ControlEvents {
   public void addScrollHandler(Scroll e) { _scroll.add(e); }
   public void addHoverHandler (Hover  e) { _hover .add(e); }
   public void addFocusHandler (Focus  e) { _focus .add(e); }
+  public void addResizeHandler(Resize e) { _resize.add(e); }
 
   protected AbstractControl<? extends ControlEvents> _control;
 
@@ -124,6 +126,13 @@ public class ControlEvents {
     }
   }
 
+  public void raiseResize() {
+    for(Resize e : _resize) {
+      e._control = _control;
+      e.resize();
+    }
+  }
+
   public static class Event {
     protected AbstractControl<? extends ControlEvents> _control;
     public AbstractControl<? extends ControlEvents> control() { return _control; }
@@ -162,5 +171,9 @@ public class ControlEvents {
   public static abstract class Focus extends Event {
     public abstract void got();
     public abstract void lost();
+  }
+
+  public static abstract class Resize extends Event {
+    public abstract void resize();
   }
 }

@@ -322,6 +322,10 @@ public abstract class AbstractControl<T extends ControlEvents> {
 
     resize();
 
+    if(_events != null) {
+      _events.raiseResize();
+    }
+
     _needsUpdate = false;
   }
 
