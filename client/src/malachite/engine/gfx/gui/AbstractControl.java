@@ -39,9 +39,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
 
   protected ControlEvents _events;
 
-  protected AbstractControl(AbstractGUI gui, InitFlags... flags) {
-    _gui = gui;
-
+  protected AbstractControl(InitFlags... flags) {
     for(InitFlags flag : flags) {
       switch(flag) {
         case WITH_BACKGROUND:
@@ -78,6 +76,14 @@ public abstract class AbstractControl<T extends ControlEvents> {
     }
   }
 
+  protected void setGUI(AbstractGUI gui) {
+    _gui = gui;
+  }
+
+  public ControlList controls() {
+    return _controlList;
+  }
+
   public T events() {
     return (T)_events;
   }
@@ -87,8 +93,28 @@ public abstract class AbstractControl<T extends ControlEvents> {
   public int getW() { return _w; }
   public int getH() { return _h; }
 
+  public void setBackground(AbstractDrawable d) {
+    _background = d;
+  }
+
+  public AbstractDrawable getBackground() {
+    return _background;
+  }
+
+  public void setBackgroundColour(float r, float g, float b, float a) {
+    _background.setColour(r, g, b, a);
+  }
+
   public final boolean acceptsFocus() {
     return _acceptsFocus;
+  }
+
+  public final void setX(int x) {
+    _x = x;
+  }
+
+  public final void setY(int y) {
+    _y = y;
   }
 
   public final void setXY(int x, int y) {

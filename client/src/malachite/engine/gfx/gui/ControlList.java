@@ -16,6 +16,7 @@ public class ControlList {
 
   public void add(AbstractControl<? extends ControlEvents> control) {
     control._controlParent = _parent;
+    control.setGUI(_parent._gui);
 
     if(_first != null) {
       control._controlNext = null;
