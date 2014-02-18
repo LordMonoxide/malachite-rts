@@ -8,7 +8,10 @@ import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.ControlList;
 import malachite.engine.gfx.textures.TextureBuilder;
 
-public class Window extends AbstractControl<ControlEvents> {
+import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
+public class Window extends AbstractControl<Window.Events> {
   private Image _title;
   private Label _text;
   private Button _close;
@@ -16,6 +19,8 @@ public class Window extends AbstractControl<ControlEvents> {
 
   public Window() {
     super();
+
+    _events = new Events(this);
 
     TextureBuilder t = TextureBuilder.getInstance();
     AbstractScalable s = AbstractContext.newScalable();
@@ -34,10 +39,31 @@ public class Window extends AbstractControl<ControlEvents> {
         5, 21, 1
     );
 
-    _title = new Image();
+    _title = new Image(InitFlags.WITH_DEFAULT_EVENTS, InitFlags.REGISTER);
     _title.setBackground(s);
     _title.setY(-20);
     _title.setH(21);
+    _title.events().addMouseHandler(new ControlEvents.Mouse() {
+      int _x, _y;
+
+      @Override
+      public void move(int x, int y, int button) {
+        if(button == 0) {
+          setXY(getX() + x - _x, getY() + y - _y);
+        }
+      }
+
+      @Override
+      public void down(int x, int y, int button) {
+        _x = x;
+        _y = y;
+      }
+
+      @Override
+      public void up(int x, int y, int button) {
+
+      }
+    });
 
     _text = new Label();
     _text.setX(4);
@@ -49,6 +75,14 @@ public class Window extends AbstractControl<ControlEvents> {
     _close.getBackground().setTWH(13, 13);
     _close.setY(4);
     _close.setWH(13, 13);
+    _close.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void click() {
+        events().raiseClose();
+      }
+
+      @Override public void clickDbl() { }
+    });
+
     _title.controls().add(_close);
 
     s = AbstractContext.newScalable();
@@ -93,5 +127,27 @@ public class Window extends AbstractControl<ControlEvents> {
   public void setText(String text) {
     _text.setText(text);
     _text.setY((_title.getH() - _text.getH()) / 2);
+  }
+
+  public static class Events extends ControlEvents {
+    private Deque<Close> _close = new ConcurrentLinkedDeque<>();
+
+    public void addCloseHandler(Close e) { _close.add(e); }
+
+    protected Events(AbstractControl<? extends ControlEvents> c) {
+      super(c);
+    }
+
+    public void raiseClose() {
+      for(Close e : _close) {
+        e.setControl(_control);
+        e.close();
+      }
+    }
+
+    public static abstract class Close extends Event {
+      protected void setControl(AbstractControl<? extends ControlEvents> control) { _control = control; }
+      public abstract void close();
+    }
   }
 }
