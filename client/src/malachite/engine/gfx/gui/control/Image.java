@@ -11,8 +11,8 @@ import malachite.engine.gfx.textures.TextureBuilder;
 public class Image extends AbstractControl<ControlEvents> {
   private AbstractDrawable _image;
 
-  public Image() {
-    super();
+  public Image(InitFlags... flags) {
+    super(flags);
     _image = AbstractContext.newDrawable();
   }
 
