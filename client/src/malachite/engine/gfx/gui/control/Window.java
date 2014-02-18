@@ -58,8 +58,8 @@ public class Window extends AbstractControl<ControlEvents> {
     _content.setBackground(s);
     _content.setXY(8, 8);
 
-    controls().add(_title);
-    controls().add(_content);
+    super.controls().add(_title);
+    super.controls().add(_content);
   }
 
   @Override
