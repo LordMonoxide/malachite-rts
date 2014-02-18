@@ -15,9 +15,12 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Textbox extends AbstractControl<Textbox.Events> {
   private Font _font = FontBuilder.getInstance().getDefault();
+  private String _textPlaceholder;
   private String[] _text = new String[3];
   private String _textFull;
   private float[] _textColour = {65f / 255, 52f / 255, 8f / 255, 1};
+  private float[] _textPlaceHolderColour = {_textColour[0], _textColour[1], _textColour[2], 0.5f};
+  private int _mask;
   private int _textX, _textY;
   private int[] _textW = new int[3];
   private int _textH;
@@ -81,6 +84,22 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     return _textFull;
   }
 
+  public void setTextPlaceholder(String text) {
+    _textPlaceholder = text;
+  }
+
+  public String getTextPlaceholder() {
+    return _textPlaceholder;
+  }
+
+  public void setMasked(boolean masked) {
+    _mask = masked ? 0x2022 : 0;
+  }
+
+  public boolean getMasked() {
+    return _mask != 0;
+  }
+
   public void setHAlign(HAlign align) {
     _hAlign = align;
   }
@@ -106,9 +125,9 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       }
     }
 
-    _textW[0] = _font.getW(_text[0]);
-    _textW[1] = _font.getW(_text[1]);
-    _textW[2] = _font.getW(_text[2]);
+    _textW[0] = _font.getW(_text[0], _mask);
+    _textW[1] = _font.getW(_text[1], _mask);
+    _textW[2] = _font.getW(_text[2], _mask);
 
     _textH = _font.getH();
     _caret.setX(_textW[0]);
@@ -134,7 +153,13 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       _matrix.push();
       _matrix.translate(_textX, _textY);
 
-      _font.draw(0, 0, _textFull, _textColour);
+      if(!_textFull.isEmpty()) {
+        _font.draw(0, 0, _textFull, _textColour, _mask);
+      } else {
+        if(!_textPlaceholder.isEmpty()) {
+          _font.draw(0, 0, _textPlaceholder, _textPlaceHolderColour);
+        }
+      }
 
       if(_focus) {
         _caret.draw();
