@@ -93,6 +93,12 @@ public abstract class AbstractDrawable {
   public void setColour(float[] col) {
     _col = col;
   }
+  public void setColour(float r, float g, float b, float a) {
+    _col[0] = r;
+    _col[1] = g;
+    _col[2] = b;
+    _col[3] = a;
+  }
 
   public boolean getVisible() {
     return _visible;
