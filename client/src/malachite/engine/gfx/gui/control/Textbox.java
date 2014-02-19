@@ -100,22 +100,6 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     return _mask != 0;
   }
 
-  public void setHAlign(HAlign align) {
-    _hAlign = align;
-  }
-
-  public HAlign getHAlign() {
-    return _hAlign;
-  }
-
-  public void setVAlign(VAlign align) {
-    _vAlign = align;
-  }
-
-  public VAlign getVAlign() {
-    return _vAlign;
-  }
-
   @Override
   protected void resize() {
     _textFull = "";
