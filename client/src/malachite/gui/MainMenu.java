@@ -10,6 +10,7 @@ public class MainMenu extends AbstractGUI {
   private Window _wndMenu;
   private Textbox _txtName;
   private Textbox _txtPass;
+  private Check _chkRemember;
 
   @Override
   protected void load() {
@@ -49,9 +50,14 @@ public class MainMenu extends AbstractGUI {
     _txtPass.setTextPlaceholder("Password");
     _txtPass.setMasked(true);
 
+    _chkRemember = new Check();
+    _chkRemember.setXY(_txtPass.getX(), _txtPass.getY() + _txtPass.getH() + 8);
+    _chkRemember.setText("Remember me");
+
     controls().add(_wndMenu);
     _wndMenu.controls().add(_txtName);
     _wndMenu.controls().add(_txtPass);
+    _wndMenu.controls().add(_chkRemember);
   }
 
   @Override
