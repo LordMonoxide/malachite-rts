@@ -21,7 +21,7 @@ public final class API {
 
   private API() { }
 
-  private static final String baseURL = "http://dungeonsync.monoxidedesign.com/api/";
+  private static final String baseURL = "http://malachite.monoxidedesign.com/api/client/";
 
   public static Response request(String url, Method method, String encoding, Parameter... param) throws IOException {
     HttpURLConnection con = (HttpURLConnection)new URL(baseURL + url).openConnection();
