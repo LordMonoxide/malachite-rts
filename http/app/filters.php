@@ -11,15 +11,13 @@
 |
 */
 
-App::before(function($request)
-{
-	//
+App::before(function($request) {
+	
 });
 
 
-App::after(function($request, $response)
-{
-	//
+App::after(function($request, $response) {
+	
 });
 
 /*
@@ -33,15 +31,42 @@ App::after(function($request, $response)
 |
 */
 
-Route::filter('auth', function()
-{
-	if (Auth::guest()) return Redirect::guest('login');
+Route::filter('auth', function() {
+  if(Auth::guest()) {
+    return Redirect::guest('login');
+  }
 });
 
+Route::filter('nauth.409', function() {
+  if(Auth::check()) {
+    return Response::json(['error' => ['Already logged in.']], 409);
+  }
+});
 
-Route::filter('auth.basic', function()
-{
-	return Auth::basic();
+Route::filter('auth.basic', function() {
+  return Auth::basic();
+});
+
+Route::filter('user.security', function() {
+  if(Auth::check()) {
+    if(!Auth::user()->logged_in) {
+      Auth::logout();
+    }
+  }
+  
+  if(Auth::guest()) {
+    return Response::json([
+      'error' => 'loginrequired',
+      'show'  => 'login'
+    ], 401);
+  }
+  
+  if(Auth::user()->suspend_until_authorised) {
+    return Response::json([
+      'error' => 'security',
+      'show'  => 'security'
+    ], 401);
+  }
 });
 
 /*
@@ -55,9 +80,10 @@ Route::filter('auth.basic', function()
 |
 */
 
-Route::filter('guest', function()
-{
-	if (Auth::check()) return Redirect::to('/');
+Route::filter('guest', function() {
+  if(Auth::check()) {
+    return Redirect::route('characters.index');
+  }
 });
 
 /*
@@ -71,10 +97,8 @@ Route::filter('guest', function()
 |
 */
 
-Route::filter('csrf', function()
-{
-	if (Session::token() != Input::get('_token'))
-	{
-		throw new Illuminate\Session\TokenMismatchException;
-	}
+Route::filter('csrf', function() {
+  if(Session::token() != Input::get('_token')) {
+    throw new Illuminate\Session\TokenMismatchException;
+  }
 });
