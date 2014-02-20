@@ -8,7 +8,7 @@ import malachite.engine.gfx.textures.Texture;
 public class MainMenu extends AbstractGUI {
   private Image[] _imgBackground = new Image[15];
   private Window _wndLogin;
-  private Textbox _txtName;
+  private Textbox _txtEmail;
   private Textbox _txtPass;
   private Check _chkRemember;
   private Button _btnLogin;
@@ -16,7 +16,7 @@ public class MainMenu extends AbstractGUI {
   private Frame _fraInfo;
 
   private Window _wndRegister;
-  private Textbox _txtRegisterName;
+  private Textbox _txtRegisterEmail;
   private Textbox[] _txtRegisterPass = new Textbox[2];
   private Textbox[] _txtRegisterSecurityQuestion = new Textbox[3];
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
@@ -43,22 +43,22 @@ public class MainMenu extends AbstractGUI {
     _wndLogin.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
       public void resize() {
-        _txtName.setW(_wndLogin.getContentW() - _txtName.getX() * 2);
+        _txtEmail.setW(_wndLogin.getContentW() - _txtEmail.getX() * 2);
         _txtPass.setW(_wndLogin.getContentW() - _txtPass.getX() * 2);
-        _btnLogin.setX(_wndLogin.getContentW() - _btnLogin.getW() - _txtName.getX());
+        _btnLogin.setX(_wndLogin.getContentW() - _btnLogin.getW() - _txtEmail.getX());
         _btnRegister.setX(_btnLogin.getX() - _btnRegister.getW() - 4);
         _fraInfo.setY(_chkRemember.getY() + _btnLogin.getH() + 8);
         _fraInfo.setWH(_wndLogin.getContentW() - _fraInfo.getX() * 2, _wndLogin.getContentH() - _fraInfo.getY() - _fraInfo.getX());
       }
     });
 
-    _txtName = new Textbox();
-    _txtName.setXY(4, 4);
-    _txtName.setH(20);
-    _txtName.setTextPlaceholder("Username");
+    _txtEmail = new Textbox();
+    _txtEmail.setXY(4, 4);
+    _txtEmail.setH(20);
+    _txtEmail.setTextPlaceholder("Email");
 
     _txtPass = new Textbox();
-    _txtPass.setXY(_txtName.getX(), _txtName.getY() + _txtName.getH() + 8);
+    _txtPass.setXY(_txtEmail.getX(), _txtEmail.getY() + _txtEmail.getH() + 8);
     _txtPass.setH(20);
     _txtPass.setTextPlaceholder("Password");
     _txtPass.setMasked(true);
@@ -97,19 +97,19 @@ public class MainMenu extends AbstractGUI {
     _wndRegister.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
       public void resize() {
-        _txtRegisterName.setW(_wndRegister.getContentW() - _txtRegisterName.getX() * 2);
+        _txtRegisterEmail.setW(_wndRegister.getContentW() - _txtRegisterEmail.getX() * 2);
         _txtRegisterPass[0].setW(_wndRegister.getContentW() - _txtRegisterPass[0].getX() * 2);
         _txtRegisterPass[1].setW(_wndRegister.getContentW() - _txtRegisterPass[1].getX() * 2);
       }
     });
 
-    _txtRegisterName = new Textbox();
-    _txtRegisterName.setXY(4, 4);
-    _txtRegisterName.setH(20);
-    _txtRegisterName.setTextPlaceholder("Username");
+    _txtRegisterEmail = new Textbox();
+    _txtRegisterEmail.setXY(4, 4);
+    _txtRegisterEmail.setH(20);
+    _txtRegisterEmail.setTextPlaceholder("Email");
 
     _txtRegisterPass[0] = new Textbox();
-    _txtRegisterPass[0].setXY(_txtRegisterName.getX(), _txtRegisterName.getY() + _txtRegisterName.getH() + 8);
+    _txtRegisterPass[0].setXY(_txtRegisterEmail.getX(), _txtRegisterEmail.getY() + _txtRegisterEmail.getH() + 8);
     _txtRegisterPass[0].setH(20);
     _txtRegisterPass[0].setTextPlaceholder("Password");
     _txtRegisterPass[0].setMasked(true);
@@ -123,18 +123,18 @@ public class MainMenu extends AbstractGUI {
     controls().add(_wndLogin);
     controls().add(_wndRegister);
 
-    _wndLogin.controls().add(_txtName);
+    _wndLogin.controls().add(_txtEmail);
     _wndLogin.controls().add(_txtPass);
     _wndLogin.controls().add(_chkRemember);
     _wndLogin.controls().add(_btnLogin);
     _wndLogin.controls().add(_btnRegister);
     _wndLogin.controls().add(_fraInfo);
 
-    _wndRegister.controls().add(_txtRegisterName);
+    _wndRegister.controls().add(_txtRegisterEmail);
     _wndRegister.controls().add(_txtRegisterPass[0]);
     _wndRegister.controls().add(_txtRegisterPass[1]);
 
-    _txtName.setFocus(true);
+    _txtEmail.setFocus(true);
   }
 
   @Override
