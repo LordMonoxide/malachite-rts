@@ -12,6 +12,7 @@ public class MainMenu extends AbstractGUI {
   private Textbox _txtPass;
   private Check _chkRemember;
   private Button _btnLogin;
+  private Button _btnRegister;
 
   private Frame _fraInfo;
 
@@ -40,6 +41,7 @@ public class MainMenu extends AbstractGUI {
         _txtName.setW(_wndMenu.getContentW() - _txtName.getX() * 2);
         _txtPass.setW(_wndMenu.getContentW() - _txtPass.getX() * 2);
         _btnLogin.setX(_wndMenu.getContentW() - _btnLogin.getW() - _txtName.getX());
+        _btnRegister.setX(_btnLogin.getX() - _btnRegister.getW() - 4);
         _fraInfo.setY(_chkRemember.getY() + _btnLogin.getH() + 8);
         _fraInfo.setWH(_wndMenu.getContentW() - _fraInfo.getX() * 2, _wndMenu.getContentH() - _fraInfo.getY() - _fraInfo.getX());
       }
@@ -65,6 +67,11 @@ public class MainMenu extends AbstractGUI {
     _btnLogin.setWH(50, 20);
     _btnLogin.setText("Login");
 
+    _btnRegister = new Button();
+    _btnRegister.setY(_btnLogin.getY());
+    _btnRegister.setWH(80, 20);
+    _btnRegister.setText("Register...");
+
     _fraInfo = new Frame();
     _fraInfo.setX(_chkRemember.getX());
 
@@ -73,7 +80,10 @@ public class MainMenu extends AbstractGUI {
     _wndMenu.controls().add(_txtPass);
     _wndMenu.controls().add(_chkRemember);
     _wndMenu.controls().add(_btnLogin);
+    _wndMenu.controls().add(_btnRegister);
     _wndMenu.controls().add(_fraInfo);
+
+    _txtName.setFocus(true);
   }
 
   @Override
