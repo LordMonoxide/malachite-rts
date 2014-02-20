@@ -7,7 +7,7 @@ import malachite.engine.gfx.textures.Texture;
 
 public class MainMenu extends AbstractGUI {
   private Image[] _imgBackground = new Image[15];
-  private Window _wndMenu;
+  private Window _wndLogin;
   private Textbox _txtName;
   private Textbox _txtPass;
   private Check _chkRemember;
@@ -31,19 +31,19 @@ public class MainMenu extends AbstractGUI {
       controls().add(_imgBackground[i]);
     }
 
-    _wndMenu = new Window();
-    _wndMenu.setWH(400, 300);
-    _wndMenu.setXY((_context.getW() - _wndMenu.getW()) / 2, (_context.getH() - _wndMenu.getH()) / 2);
-    _wndMenu.setText("Main Menu");
-    _wndMenu.events().addResizeHandler(new ControlEvents.Resize() {
+    _wndLogin = new Window();
+    _wndLogin.setWH(400, 300);
+    _wndLogin.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
+    _wndLogin.setText("Login");
+    _wndLogin.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
       public void resize() {
-        _txtName.setW(_wndMenu.getContentW() - _txtName.getX() * 2);
-        _txtPass.setW(_wndMenu.getContentW() - _txtPass.getX() * 2);
-        _btnLogin.setX(_wndMenu.getContentW() - _btnLogin.getW() - _txtName.getX());
+        _txtName.setW(_wndLogin.getContentW() - _txtName.getX() * 2);
+        _txtPass.setW(_wndLogin.getContentW() - _txtPass.getX() * 2);
+        _btnLogin.setX(_wndLogin.getContentW() - _btnLogin.getW() - _txtName.getX());
         _btnRegister.setX(_btnLogin.getX() - _btnRegister.getW() - 4);
         _fraInfo.setY(_chkRemember.getY() + _btnLogin.getH() + 8);
-        _fraInfo.setWH(_wndMenu.getContentW() - _fraInfo.getX() * 2, _wndMenu.getContentH() - _fraInfo.getY() - _fraInfo.getX());
+        _fraInfo.setWH(_wndLogin.getContentW() - _fraInfo.getX() * 2, _wndLogin.getContentH() - _fraInfo.getY() - _fraInfo.getX());
       }
     });
 
@@ -75,13 +75,13 @@ public class MainMenu extends AbstractGUI {
     _fraInfo = new Frame();
     _fraInfo.setX(_chkRemember.getX());
 
-    controls().add(_wndMenu);
-    _wndMenu.controls().add(_txtName);
-    _wndMenu.controls().add(_txtPass);
-    _wndMenu.controls().add(_chkRemember);
-    _wndMenu.controls().add(_btnLogin);
-    _wndMenu.controls().add(_btnRegister);
-    _wndMenu.controls().add(_fraInfo);
+    controls().add(_wndLogin);
+    _wndLogin.controls().add(_txtName);
+    _wndLogin.controls().add(_txtPass);
+    _wndLogin.controls().add(_chkRemember);
+    _wndLogin.controls().add(_btnLogin);
+    _wndLogin.controls().add(_btnRegister);
+    _wndLogin.controls().add(_fraInfo);
 
     _txtName.setFocus(true);
   }
