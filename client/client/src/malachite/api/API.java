@@ -23,6 +23,18 @@ public final class API {
 
   private static final String baseURL = "http://malachite.monoxidedesign.com/api/client/";
 
+  public static Response login(String email, String password) throws IOException {
+    return request("menu/login", Method.POST, param("email", email), param("password", password));
+  }
+
+  public static Response request(String url, Parameter... param) throws IOException {
+    return request(url, Method.GET, param);
+  }
+
+  public static Response request(String url, Method method, Parameter... param) throws IOException {
+    return request(url, method, "UTF-8", param);
+  }
+
   public static Response request(String url, Method method, String encoding, Parameter... param) throws IOException {
     HttpURLConnection con = (HttpURLConnection)new URL(baseURL + url).openConnection();
 
@@ -87,6 +99,8 @@ public final class API {
     public JSONArray  parseArray () { return new JSONArray (_resp); }
 
     private String read(InputStream is, int length) throws IOException {
+      if(length < 0) { return null; }
+
       BufferedReader rd = new BufferedReader(new InputStreamReader(is));
       StringBuilder resp = new StringBuilder(length);
       String line;
