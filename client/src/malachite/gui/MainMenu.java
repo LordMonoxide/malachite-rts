@@ -1,9 +1,12 @@
 package malachite.gui;
 
+import malachite.api.API;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.control.*;
 import malachite.engine.gfx.textures.Texture;
+
+import java.io.IOException;
 
 public class MainMenu extends AbstractGUI {
   private Image[] _imgBackground = new Image[15];
@@ -71,6 +74,20 @@ public class MainMenu extends AbstractGUI {
     _btnLogin.setY(_txtPass.getY() + _txtPass.getH() + 8);
     _btnLogin.setWH(50, 20);
     _btnLogin.setText("Login");
+    _btnLogin.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void click() {
+        try {
+          API.Response r = API.login(_txtEmail.getText(), _txtPass.getText());
+          if(r.success()) {
+            _wndLogin.hide();
+          }
+        } catch(IOException e) {
+          e.printStackTrace();
+        }
+      }
+
+      @Override public void clickDbl() { }
+    });
 
     _btnRegister = new Button();
     _btnRegister.setY(_btnLogin.getY());

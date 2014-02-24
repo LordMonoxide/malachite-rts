@@ -1,5 +1,6 @@
 package malachite.engine.gfx.gui;
 
+import java.io.IOException;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
