@@ -1,5 +1,12 @@
 <?php namespace api\client;
 
+use Auth;
+use Controller;
+use Input;
+use Request;
+use Response;
+use Validator;
+
 class AuthController extends Controller {
   public function __construct() {
     $this->beforeFilter('auth.401',  ['only'   => ['check', 'logout', 'security', 'unlock']]);
