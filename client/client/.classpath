@@ -19,5 +19,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/client/lib/netty-5.0.0.Alpha1/javadoc/netty-all-5.0.0.Alpha1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/PNGDecoder/PNGDecoder.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
