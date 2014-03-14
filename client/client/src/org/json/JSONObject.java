@@ -103,7 +103,8 @@ public class JSONObject {
      *
      * @return NULL.
      */
-    protected final Object clone() {
+    @Override
+	protected final Object clone() {
       return this;
     }
     
@@ -115,7 +116,8 @@ public class JSONObject {
      * @return true if the object parameter is the JSONObject.NULL object or
      *         null.
      */
-    public boolean equals(Object object) {
+    @Override
+	public boolean equals(Object object) {
       return object == null || object == this;
     }
     
@@ -124,9 +126,15 @@ public class JSONObject {
      *
      * @return The string "null".
      */
-    public String toString() {
+    @Override
+	public String toString() {
       return "null";
     }
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
   }
   
   /**
@@ -240,7 +248,7 @@ public class JSONObject {
     if(map != null) {
       Iterator<Map.Entry<String, Object>> i = map.entrySet().iterator();
       while(i.hasNext()) {
-        Map.Entry<String, Object> e = (Map.Entry<String, Object>)i.next();
+        Map.Entry<String, Object> e = i.next();
         Object value = e.getValue();
         if(value != null) {
           this.map.put(e.getKey(), wrap(value));
@@ -603,7 +611,7 @@ public class JSONObject {
     String[] names = new String[length];
     int i = 0;
     while(iterator.hasNext()) {
-      names[i] = (String)iterator.next();
+      names[i] = iterator.next();
       i += 1;
     }
     return names;
@@ -1311,9 +1319,9 @@ public class JSONObject {
           if(string.equals(myLong.toString())) {
             if(myLong.longValue() == myLong.intValue()) {
               return new Integer(myLong.intValue());
-            } else {
-              return myLong;
             }
+            
+			return myLong;
           }
         }
       } catch(Exception ignore) {
@@ -1378,7 +1386,8 @@ public class JSONObject {
    *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
    *         brace)</small>.
    */
-  public String toString() {
+  @Override
+public String toString() {
     try {
       return this.toString(0);
     } catch(Exception e) {
@@ -1455,7 +1464,7 @@ public class JSONObject {
       return value.toString();
     }
     if(value instanceof Map) {
-      return new JSONObject((Map)value).toString();
+      return new JSONObject((Map<String, Object>)value).toString();
     }
     if(value instanceof Collection) {
       return new JSONArray((Collection)value).toString();
@@ -1500,7 +1509,7 @@ public class JSONObject {
         return new JSONArray(object);
       }
       if(object instanceof Map) {
-        return new JSONObject((Map)object);
+        return new JSONObject((Map<String, Object>)object);
       }
       Package objectPackage = object.getClass().getPackage();
       String objectPackageName = objectPackage != null ? objectPackage
@@ -1538,7 +1547,7 @@ public class JSONObject {
     } else if(value instanceof JSONArray) {
       ((JSONArray)value).write(writer, indentFactor, indent);
     } else if(value instanceof Map) {
-      new JSONObject((Map)value).write(writer, indentFactor, indent);
+      new JSONObject((Map<String, Object>)value).write(writer, indentFactor, indent);
     } else if(value instanceof Collection) {
       new JSONArray((Collection)value).write(writer, indentFactor, indent);
     } else if(value.getClass().isArray()) {
