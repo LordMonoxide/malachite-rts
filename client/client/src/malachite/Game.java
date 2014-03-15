@@ -16,7 +16,7 @@ public class Game {
   public static void main(String... args) throws URISyntaxException {
     Request r = new Request();
     r.setMethod(HttpMethod.POST);
-    r.setRoute("menu/login");
+    r.setRoute("/menu/login");
     r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
     r.addData("email", "corey@narwhunderful.com");
     r.addData("password", "monoxide");
