@@ -7,7 +7,6 @@ import malachite.engine.gfx.Loader;
 import malachite.engine.gfx.Manager;
 import malachite.engine.gfx.gl14.Context;
 import malachite.engine.net.http.Request;
-import malachite.engine.net.http.Response;
 import malachite.gui.MainMenu;
 
 import java.net.URISyntaxException;
@@ -17,9 +16,10 @@ public class Game {
     Request r = new Request();
     r.setMethod(HttpMethod.GET);
     r.setRoute("/api/client/menu/check");
-    Response resp = r.dispatch();
-    System.out.println(resp.response().getStatus());
-    System.out.println(resp.content());
+    r.dispatch(resp -> {
+      System.out.println(resp.response().getStatus());
+      System.out.println(resp.content());
+    });
     //new Game().initialize();
   }
 

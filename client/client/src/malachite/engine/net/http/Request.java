@@ -1,30 +1,47 @@
 package malachite.engine.net.http;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.CharsetUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Request {
   private static final String URL = "malachite.monoxidedesign.com";
 
-  private EventLoopGroup _group;
-  private Bootstrap _bootstrap;
-
+  private static EventLoopGroup _group;
+  private static Bootstrap _bootstrap;
+  
+  private static Map<Channel, Callback> _cb;
+  
   private URI _uri;
   private HttpMethod _method;
 
-  private Response _response;
-
-  public Request() {
+  static {
+    _cb = new HashMap<>();
+    
     _group = new NioEventLoopGroup();
-
     _bootstrap = new Bootstrap()
     .group(_group)
     .channel(NioSocketChannel.class)
@@ -70,7 +87,7 @@ public class Request {
                   System.out.println("} END OF CONTENT"); //$NON-NLS-1$
                 }
 
-                _response = r;
+                _cb.get(ctx.channel()).onResponse(r);
               } else {
                 System.out.println(chunk.content().toString(CharsetUtil.UTF_8));
 
@@ -97,9 +114,7 @@ public class Request {
     _method = method;
   }
 
-  public Response dispatch() {
-    _response = null;
-
+  public void dispatch(Callback cb) {
     Channel ch = _bootstrap.connect(URL, 80).syncUninterruptibly().channel();
 
     FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, _uri.toString());
@@ -110,13 +125,10 @@ public class Request {
     ch.writeAndFlush(request);
     // ch.closeFuture().syncUninterruptibly();
 
-    while(_response == null) {
-      try {
-        Thread.sleep(1);
-      } catch(InterruptedException e) {
-      }
-    }
-
-    return _response;
+    _cb.put(ch, cb);
+  }
+  
+  public interface Callback {
+    void onResponse(Response response);
   }
 }
