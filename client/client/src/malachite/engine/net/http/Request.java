@@ -65,7 +65,7 @@ public class Request {
 
               for(String name : response.headers().names()) {
                 for(String val : response.headers().getAll(name)) {
-                  System.out.println("HEADER: " + name + ": " + val); //$NON-NLS-1$ //$NON-NLS-2$
+                  //System.out.println("HEADER: " + name + ": " + val); //$NON-NLS-1$ //$NON-NLS-2$
                 }
               }
 
@@ -73,9 +73,9 @@ public class Request {
                  response.getStatus().code() <= 299 &&
                  HttpHeaders.isTransferEncodingChunked(response)) {
                 _chunked = true;
-                System.out.println("CHUNKED CONTENT {"); //$NON-NLS-1$
+                //System.out.println("CHUNKED CONTENT {"); //$NON-NLS-1$
               } else {
-                System.out.println("CONTENT {"); //$NON-NLS-1$
+                //System.out.println("CONTENT {"); //$NON-NLS-1$
               }
             } else if(msg instanceof HttpContent) {
               HttpContent chunk = (HttpContent)msg;
@@ -83,14 +83,14 @@ public class Request {
               if(chunk instanceof LastHttpContent) {
                 if(_chunked) {
                   _chunked = false;
-                  System.out.println("} END OF CHUNKED CONTENT"); //$NON-NLS-1$
+                  //System.out.println("} END OF CHUNKED CONTENT"); //$NON-NLS-1$
                 } else {
-                  System.out.println("} END OF CONTENT"); //$NON-NLS-1$
+                  //System.out.println("} END OF CONTENT"); //$NON-NLS-1$
                 }
 
                 _cb.remove(ctx.channel()).onResponse(r);
               } else {
-                System.out.println(chunk.content().toString(CharsetUtil.UTF_8));
+                //System.out.println(chunk.content().toString(CharsetUtil.UTF_8));
 
                 r._content += chunk.content().toString(CharsetUtil.UTF_8);
               }
