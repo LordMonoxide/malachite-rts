@@ -1,7 +1,6 @@
 package malachite.engine.gfx;
 
 import malachite.engine.gfx.gui.GUIManager;
-import malachite.engine.gfx.gui.control.Label;
 import malachite.engine.util.Time;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;

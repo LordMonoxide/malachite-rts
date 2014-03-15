@@ -26,65 +26,67 @@ public class Request {
     _group = new NioEventLoopGroup();
 
     _bootstrap = new Bootstrap()
-      .group(_group)
-      .channel(NioSocketChannel.class)
-      .handler(new ChannelInitializer<SocketChannel>() {
-        private boolean _chunked;
+    .group(_group)
+    .channel(NioSocketChannel.class)
+    .handler(new ChannelInitializer<SocketChannel>() {
+      private boolean _chunked;
 
-        @Override protected void initChannel(SocketChannel ch) throws Exception {
-          ChannelPipeline pipeline = ch.pipeline();
-          pipeline.addLast("codec", new HttpClientCodec());
-          pipeline.addLast("handler", new SimpleChannelInboundHandler<HttpObject>() {
-            private Response r;
+      @Override
+      protected void initChannel(SocketChannel ch) throws Exception {
+        ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast(new HttpClientCodec(), new SimpleChannelInboundHandler<HttpObject>() {
+          private Response r;
 
-            @Override protected void messageReceived(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-              if(msg instanceof HttpResponse) {
-                HttpResponse response = (HttpResponse)msg;
+          @Override
+          protected void messageReceived(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+            if(msg instanceof HttpResponse) {
+              HttpResponse response = (HttpResponse)msg;
 
-                r = new Response();
-                r._response = response;
+              r = new Response();
+              r._response = response;
 
-                for(String name : response.headers().names()) {
-                  for(String val : response.headers().getAll(name)) {
-                    System.out.println("HEADER: " + name + ": " + val);
-                  }
-                }
-
-                if(response.getStatus().code() >= 200 &&
-                   response.getStatus().code() <= 299 &&
-                   HttpHeaders.isTransferEncodingChunked(response)) {
-                  _chunked = true;
-                  System.out.println("CHUNKED CONTENT {");
-                } else {
-                  System.out.println("CONTENT {");
-                }
-              } else if(msg instanceof HttpContent) {
-                HttpContent chunk = (HttpContent)msg;
-
-                if(chunk instanceof LastHttpContent) {
-                  if(_chunked) {
-                    _chunked = false;
-                    System.out.println("} END OF CHUNKED CONTENT");
-                  } else {
-                    System.out.println("} END OF CONTENT");
-                  }
-
-                  _response = r;
-                } else {
-                  System.out.println(chunk.content().toString(CharsetUtil.UTF_8));
-
-                  r._content += chunk.content().toString(CharsetUtil.UTF_8);
+              for(String name : response.headers().names()) {
+                for(String val : response.headers().getAll(name)) {
+                  System.out.println("HEADER: " + name + ": " + val); //$NON-NLS-1$ //$NON-NLS-2$
                 }
               }
-            }
 
-            @Override public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-              cause.printStackTrace();
-              ctx.channel().close();
+              if(response.getStatus().code() >= 200 &&
+                 response.getStatus().code() <= 299 &&
+                 HttpHeaders.isTransferEncodingChunked(response)) {
+                _chunked = true;
+                System.out.println("CHUNKED CONTENT {"); //$NON-NLS-1$
+              } else {
+                System.out.println("CONTENT {"); //$NON-NLS-1$
+              }
+            } else if(msg instanceof HttpContent) {
+              HttpContent chunk = (HttpContent)msg;
+
+              if(chunk instanceof LastHttpContent) {
+                if(_chunked) {
+                  _chunked = false;
+                  System.out.println("} END OF CHUNKED CONTENT"); //$NON-NLS-1$
+                } else {
+                  System.out.println("} END OF CONTENT"); //$NON-NLS-1$
+                }
+
+                _response = r;
+              } else {
+                System.out.println(chunk.content().toString(CharsetUtil.UTF_8));
+
+                r._content += chunk.content().toString(CharsetUtil.UTF_8);
+              }
             }
-          });
-        }
-      });
+          }
+
+          @Override
+          public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            cause.printStackTrace();
+            ctx.channel().close();
+          }
+        });
+      }
+    });
   }
 
   public void setRoute(String route) throws URISyntaxException {
@@ -101,17 +103,18 @@ public class Request {
     Channel ch = _bootstrap.connect(URL, 80).syncUninterruptibly().channel();
 
     FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, _uri.toString());
-    HttpHeaders headers = request.headers();
-    headers.set(HttpHeaders.Names.HOST, URL);
-    headers.set(HttpHeaders.Names.ACCEPT, "application/json");
+    request.headers()
+      .set(HttpHeaders.Names.HOST, URL)
+      .set(HttpHeaders.Names.ACCEPT, "application/json");
 
     ch.writeAndFlush(request);
-    ch.closeFuture().syncUninterruptibly();
+    // ch.closeFuture().syncUninterruptibly();
 
     while(_response == null) {
       try {
         Thread.sleep(1);
-      } catch(InterruptedException e) { }
+      } catch(InterruptedException e) {
+      }
     }
 
     return _response;

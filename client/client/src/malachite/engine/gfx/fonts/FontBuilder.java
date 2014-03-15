@@ -35,7 +35,7 @@ public class FontBuilder {
   }
 
   public Font getFont(String name, int size, int startGlyph, int endGlyph, int... extraGlyphs) {
-    String fullName = name + "." + size;
+    String fullName = name + '.' + size;
     if(_fonts.containsKey(fullName)) {
       return _fonts.get(fullName);
     }
@@ -99,12 +99,12 @@ public class FontBuilder {
     buffer.position(0);
 
     AbstractContext.getContext().addLoadCallback(Loader.LoaderThread.GRAPHICS, () -> {
-      Texture texture = _textures.getTexture("Font." + font.getFontName() + "." + font.getSize(), w, h, buffer);
+      Texture texture = _textures.getTexture("Font." + font.getFontName() + '.' + font.getSize(), w, h, buffer);
 
       f.load(metrics.get(0).h, glyph, texture);
       _fonts.put(fullName, f);
 
-      System.out.println("Font \"" + fullName + "\" created (" + w + "x" + h + ").");
+      System.out.println("Font \"" + fullName + "\" created (" + w + 'x' + h + ").");
     });
 
     return f;

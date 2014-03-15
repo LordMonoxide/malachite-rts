@@ -10,9 +10,6 @@ import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.HAlign;
 import malachite.engine.gfx.textures.TextureBuilder;
 
-import java.util.Deque;
-import java.util.concurrent.ConcurrentLinkedDeque;
-
 public class Button extends AbstractControl<ControlEvents> {
   private Font _font = FontBuilder.getInstance().getDefault();
   private String  _text;

@@ -123,9 +123,9 @@ public abstract class AbstractGUI {
   private AbstractControl<? extends ControlEvents> getSelectControl(int[] colour) {
     if(_control != null) {
       return _control.getSelectControl(colour);
-    } else {
-      return null;
     }
+    
+    return null;
   }
 
   protected final int getAllX(AbstractControl<? extends ControlEvents> control) {

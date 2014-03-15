@@ -109,8 +109,8 @@ public class ControlList {
   public AbstractControl<? extends ControlEvents> getSelectControl(int[] colour) {
     if(_last != null) {
       return _last.getSelectControl(colour);
-    } else {
-      return null;
     }
+    
+    return null;
   }
 }

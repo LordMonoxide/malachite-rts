@@ -3,7 +3,7 @@ package malachite.engine.gfx.gui;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class GUIManager {
-  protected ConcurrentLinkedDeque<AbstractGUI> _gui = new ConcurrentLinkedDeque<AbstractGUI>();
+  protected ConcurrentLinkedDeque<AbstractGUI> _gui = new ConcurrentLinkedDeque<>();
 
   public void push(AbstractGUI gui) {
     _gui.push(gui);

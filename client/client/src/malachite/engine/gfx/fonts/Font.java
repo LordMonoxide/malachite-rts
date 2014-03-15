@@ -6,7 +6,6 @@ import malachite.engine.gfx.AbstractMatrix;
 import malachite.engine.gfx.textures.Texture;
 
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Font {

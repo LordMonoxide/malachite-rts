@@ -6,7 +6,6 @@ import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.textures.Texture;
-import malachite.engine.gfx.textures.TextureBuilder;
 
 public class Image extends AbstractControl<ControlEvents> {
   private AbstractDrawable _image;

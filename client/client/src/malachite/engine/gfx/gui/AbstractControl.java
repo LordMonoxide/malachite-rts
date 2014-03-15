@@ -4,6 +4,7 @@ import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.AbstractMatrix;
 import malachite.engine.util.Time;
+
 import org.lwjgl.input.Keyboard;
 
 public abstract class AbstractControl<T extends ControlEvents> {
@@ -84,6 +85,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
     return _controlList;
   }
 
+  @SuppressWarnings("unchecked")
   public T events() {
     return (T)_events;
   }
@@ -230,12 +232,12 @@ public abstract class AbstractControl<T extends ControlEvents> {
         if(c.acceptsFocus()) {
           c.setFocus(true);
           break;
-        } else {
-          c = c._controlNext;
-          if(c == null) {
-            if(_controlParent != null) {
-              c = _controlParent._controlList.last();
-            }
+        }
+        
+        c = c._controlNext;
+        if(c == null) {
+          if(_controlParent != null) {
+            c = _controlParent._controlList.last();
           }
         }
       }
@@ -407,15 +409,15 @@ public abstract class AbstractControl<T extends ControlEvents> {
   public AbstractControl<? extends ControlEvents> getSelectControl(int[] colour) {
     if(_selBox != null && colour[0] == _selColour[0] && colour[1] == _selColour[1] && colour[2] == _selColour[2]) {
       return this;
-    } else {
-      AbstractControl<? extends ControlEvents> control = _controlList.getSelectControl(colour);
-      if(control != null) {
-        return control;
-      } else {
-        if(_controlNext != null) {
-          return _controlNext.getSelectControl(colour);
-        }
-      }
+    }
+    
+    AbstractControl<? extends ControlEvents> control = _controlList.getSelectControl(colour);
+    if(control != null) {
+      return control;
+    }
+    
+    if(_controlNext != null) {
+      return _controlNext.getSelectControl(colour);
     }
 
     return null;
