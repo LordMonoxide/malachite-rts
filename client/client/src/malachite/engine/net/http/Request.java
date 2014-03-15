@@ -124,7 +124,6 @@ public class Request {
       .set(HttpHeaders.Names.ACCEPT, "application/json");
 
     ch.writeAndFlush(request);
-    // ch.closeFuture().syncUninterruptibly();
 
     _cb.put(ch, cb);
   }
