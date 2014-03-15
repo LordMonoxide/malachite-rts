@@ -1,5 +1,6 @@
 package malachite;
 
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
@@ -14,8 +15,11 @@ import java.net.URISyntaxException;
 public class Game {
   public static void main(String... args) throws URISyntaxException {
     Request r = new Request();
-    r.setMethod(HttpMethod.GET);
-    r.setRoute("/api/client/menu/check");
+    r.setMethod(HttpMethod.POST);
+    r.setRoute("menu/login");
+    r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
+    r.addData("email", "corey@narwhunderful.com");
+    r.addData("password", "monoxide");
     r.dispatch(resp -> {
       System.out.println(resp.response().getStatus());
       System.out.println(resp.content());
