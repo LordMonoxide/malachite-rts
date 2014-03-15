@@ -11,15 +11,21 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpRequestEncoder;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
+import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder;
+import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder.ErrorDataEncoderException;
 import io.netty.util.CharsetUtil;
 
 import java.net.URI;
@@ -38,6 +44,8 @@ public class Request {
   
   private URI _uri;
   private HttpMethod _method;
+  private Map<CharSequence, Object> _header;
+  private Map<String, String> _data;
 
   static {
     _cb = new HashMap<>();
@@ -114,16 +122,57 @@ public class Request {
   public void setMethod(HttpMethod method) {
     _method = method;
   }
+  
+  public void addHeader(CharSequence name, Object value) {
+    if(_header == null) { _header = new HashMap<>(); }
+    _header.put(name, value);
+  }
+  
+  public void addData(String key, String value) {
+    if(_data == null) { _data = new HashMap<>(); }
+    _data.put(key, value);
+  }
 
   public void dispatch(Callback cb) {
     Channel ch = _bootstrap.connect(URL, 80).syncUninterruptibly().channel();
 
-    FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
-    request.headers()
-      .set(HttpHeaders.Names.HOST, URL)
-      .set(HttpHeaders.Names.ACCEPT, "application/json");
+    HttpRequest request = null;
+    
+    if(_method == HttpMethod.GET || _data == null) {
+      request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
+    } else {
+      request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
+    }
 
-    ch.writeAndFlush(request);
+    request.headers().set(HttpHeaders.Names.HOST, URL);
+    
+    if(_header != null) {
+      for(Map.Entry<CharSequence, Object> e : _header.entrySet()) {
+        request.headers().set(e.getKey(), e.getValue());
+      }
+    }
+    
+    HttpPostRequestEncoder post = null;
+    if(_method != HttpMethod.GET && _data != null) {
+      try {
+        post = new HttpPostRequestEncoder(new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE), request, false);
+        
+        for(Map.Entry<String, String> e : _data.entrySet()) {
+          post.addBodyAttribute(e.getKey(), e.getValue());
+        }
+        
+        request = post.finalizeRequest();
+      } catch(ErrorDataEncoderException e) {
+        e.printStackTrace();
+      }
+    }
+    
+    if(post == null || !post.isChunked()) {
+      ch.writeAndFlush(request);
+    } else {
+      ch.write(request);
+      ch.writeAndFlush(post);
+    }
 
     _cb.put(ch, cb);
   }
