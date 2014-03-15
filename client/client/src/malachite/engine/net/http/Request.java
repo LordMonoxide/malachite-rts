@@ -29,6 +29,7 @@ import java.util.Map;
 
 public class Request {
   private static final String URL = "malachite.monoxidedesign.com";
+  private static final String RoutePrefix = "/api/client/";
 
   private static EventLoopGroup _group;
   private static Bootstrap _bootstrap;
@@ -117,7 +118,7 @@ public class Request {
   public void dispatch(Callback cb) {
     Channel ch = _bootstrap.connect(URL, 80).syncUninterruptibly().channel();
 
-    FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, _uri.toString());
+    FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
     request.headers()
       .set(HttpHeaders.Names.HOST, URL)
       .set(HttpHeaders.Names.ACCEPT, "application/json");
