@@ -87,7 +87,7 @@ public class Request {
                   System.out.println("} END OF CONTENT"); //$NON-NLS-1$
                 }
 
-                _cb.get(ctx.channel()).onResponse(r);
+                _cb.remove(ctx.channel()).onResponse(r);
               } else {
                 System.out.println(chunk.content().toString(CharsetUtil.UTF_8));
 
