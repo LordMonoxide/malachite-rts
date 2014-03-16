@@ -179,6 +179,21 @@ public abstract class AbstractControl<T extends ControlEvents> {
   public boolean isDisabled() {
     return !_enabled;
   }
+  
+  public boolean isTreeDisabled() {
+    if(!_enabled) { return true; }
+    
+    AbstractControl<? extends ControlEvents> c = _controlParent;
+    while(c != null) {
+      if(!c._enabled) {
+        return true;
+      }
+      
+      c = c._controlParent;
+    }
+    
+    return false;
+  }
 
   public void show() {
     _visible = true;
