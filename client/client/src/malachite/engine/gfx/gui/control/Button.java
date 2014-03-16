@@ -1,6 +1,7 @@
 package malachite.engine.gfx.gui.control;
 
 import malachite.engine.gfx.AbstractContext;
+import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.AbstractScalable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
@@ -16,6 +17,13 @@ public class Button extends AbstractControl<ControlEvents> {
   private float[] _textColour = {1, 1, 1, 1};
   private int     _textX, _textY;
   private int     _textW, _textH;
+  
+  private float[] _normalColour  = {0x3F / 255f, 0xCF / 255f, 0, 1};
+  private float[] _hoverColour   = {0x46 / 255f, 0xE6 / 255f, 0, 1};
+  private float[] _pressedColour = {0x28 / 255f, 0x82 / 255f, 0, 1};
+  
+  private boolean _pressed;
+  private boolean _hovered;
 
   public Button() {
     super(
@@ -23,18 +31,50 @@ public class Button extends AbstractControl<ControlEvents> {
       InitFlags.ACCEPTS_FOCUS,
       InitFlags.REGISTER
     );
+    
+    _events.addHoverHandler(new HoverHandler());
+    _events.addMouseHandler(new MouseHandler());
 
     _hAlign = HAlign.ALIGN_CENTER;
 
     AbstractScalable s = AbstractContext.newScalable();
     s.setTexture(TextureBuilder.getInstance().getTexture("gui/button.png"));
-    s.setColour(new float[] {0x3F / 255f, 0xCF / 255f, 0, 1});
     s.setSize(new float[] {2, 2, 2, 2},
         new float[] {2, 2, 2, 2},
         5, 5, 1
     );
 
     _background = s;
+    
+    setBackgroundColour(_normalColour);
+  }
+  
+  @Override
+  public void setBackground(AbstractDrawable d) {
+    super.setBackground(d);
+    _normalColour  = d.getColour();
+    
+    for(int i = 0; i < 2; i++) {
+      _hoverColour[i]   = _normalColour[i] + _normalColour[i] * (1 - _normalColour[i]);
+      _pressedColour[i] = _normalColour[i] + _normalColour[i] * (_normalColour[i] - 1);
+    }
+    
+    _hoverColour[3]   = _normalColour[3];
+    _pressedColour[3] = _normalColour[3];
+  }
+  
+  @Override
+  public void setBackgroundColour(float[] c) {
+    super.setBackgroundColour(c);
+    _normalColour  = c;
+    
+    for(int i = 0; i < 2; i++) {
+      _hoverColour[i]   = _normalColour[i] + _normalColour[i] * (1 - _normalColour[i]);
+      _pressedColour[i] = _normalColour[i] + _normalColour[i] * (_normalColour[i] - 1);
+    }
+    
+    _hoverColour[3]   = _normalColour[3];
+    _pressedColour[3] = _normalColour[3];
   }
 
   @Override
@@ -88,5 +128,48 @@ public class Button extends AbstractControl<ControlEvents> {
     }
 
     drawEnd();
+  }
+  
+  private class HoverHandler extends ControlEvents.Hover {
+    @Override
+    public void enter() {
+      _hovered = true;
+
+      if(!_pressed) {
+        _background.setColour(_hoverColour);
+        _background.createQuad();
+      }
+    }
+
+    @Override
+    public void leave() {
+      _hovered = false;
+
+      if(!_pressed) {
+        _background.setColour(_normalColour);
+        _background.createQuad();
+      }
+    }
+  }
+  
+  private class MouseHandler extends ControlEvents.Mouse {
+    @Override
+    public void move(int x, int y, int button) {
+      
+    }
+
+    @Override
+    public void down(int x, int y, int button) {
+      _pressed = true;
+      _background.setColour(_pressedColour);
+      _background.createQuad();
+    }
+
+    @Override
+    public void up(int x, int y, int button) {
+      _pressed = false;
+      _background.setColour(_hovered ? _hoverColour : _normalColour);
+      _background.createQuad();
+    }
   }
 }

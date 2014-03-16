@@ -103,8 +103,12 @@ public abstract class AbstractControl<T extends ControlEvents> {
     return _background;
   }
 
+  public void setBackgroundColour(float[] c) {
+    _background.setColour(c);
+  }
+
   public void setBackgroundColour(float r, float g, float b, float a) {
-    _background.setColour(r, g, b, a);
+    _background.setColour(new float[] {r, g, b, a});
   }
 
   public final boolean acceptsFocus() {
