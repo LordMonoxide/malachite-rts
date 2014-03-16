@@ -26,9 +26,7 @@ public class Window extends AbstractControl<Window.Events> {
     _events = new Events(this);
 
     TextureBuilder t = TextureBuilder.getInstance();
-    _button          = t.getTexture("gui/close.png");
-    _button_hover    = t.getTexture("gui/close_hover.png");
-    _button_pressed  = t.getTexture("gui/close_pressed.png");
+    _button = t.getTexture("gui/close.png");
 
     AbstractScalable s = AbstractContext.newScalable();
     s.setTexture(t.getTexture("gui/background.png"));
@@ -79,6 +77,7 @@ public class Window extends AbstractControl<Window.Events> {
     _close.setBackground(AbstractContext.newDrawable());
     _close.getBackground().setTexture(_button);
     _close.getBackground().setTWH(13, 13);
+    _close.setBackgroundColour(new float[] {0.8f, 0.8f, 0.8f, 1});
     _close.setY(4);
     _close.setWH(13, 13);
     _close.events().addClickHandler(new ControlEvents.Click() {
@@ -87,18 +86,6 @@ public class Window extends AbstractControl<Window.Events> {
       }
 
       @Override public void clickDbl() { }
-    });
-
-    _close.events().addHoverHandler(new ControlEvents.Hover() {
-      @Override
-      public void enter() {
-        _close.getBackground().setTexture(_button_hover);
-      }
-
-      @Override
-      public void leave() {
-        _close.getBackground().setTexture(_button);
-      }
     });
 
     _title.controls().add(_close);
