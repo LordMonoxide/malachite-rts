@@ -6,8 +6,10 @@ import malachite.engine.gfx.AbstractScalable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
 import malachite.engine.gfx.gui.*;
+import malachite.engine.gfx.textures.Texture;
 import malachite.engine.gfx.textures.TextureBuilder;
 import malachite.engine.util.Time;
+
 import org.lwjgl.input.Keyboard;
 
 import java.util.Deque;
@@ -24,6 +26,13 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   private int _textX, _textY;
   private int[] _textW = new int[3];
   private int _textH;
+  
+  private TextureBuilder _textures = TextureBuilder.getInstance();
+  private Texture _textureNormal = _textures.getTexture("gui/textbox.png");
+  private Texture _textureHover = _textures.getTexture("gui/textbox_hover.png");
+  
+  private float[] _normalBorder = {160f / 0xFF, 147f / 0xFF, 111f / 0xFF, 1};
+  private float[] _hoverBorder  = { 11f / 0xFF, 126f / 0xFF,   0f / 0xFF, 1};
 
   private AbstractDrawable _caret;
   private double _caretPulse;
@@ -31,11 +40,14 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   public Textbox() {
     super(
       InitFlags.ACCEPTS_FOCUS,
-      InitFlags.REGISTER
+      InitFlags.REGISTER,
+      InitFlags.WITH_BORDER
     );
 
     _events = new Events(this);
     _events.addKeyHandler(new KeyHandler());
+    _events.addFocusHandler(new FocusHandler());
+    _events.addHoverHandler(new HoverHandler());
 
     _caret = AbstractContext.newDrawable();
     _caret.setColour(new float[] {_textColour[0], _textColour[1], _textColour[2], 1});
@@ -45,16 +57,19 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       _caret.createQuad();
       resize();
     });
+    
+    _border.setColour(_normalBorder);
+    _border.createBorder();
 
     AbstractScalable s = AbstractContext.newScalable();
-    s.setTexture(TextureBuilder.getInstance().getTexture("gui/textbox.png"));
+    _background = s;
+    
+    s.setTexture(_textureNormal);
     s.setXY(-5, -5);
     s.setSize(new float[] {12, 12, 12, 12},
         new float[] {12, 12, 12, 12},
         25, 25, 1
     );
-
-    _background = s;
   }
 
   @Override
@@ -208,6 +223,32 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       }
 
       events().raiseChange();
+    }
+  }
+  
+  private class FocusHandler extends ControlEvents.Focus {
+    @Override
+    public void got() {
+      _border.setColour(_hoverBorder);
+      _border.createBorder();
+    }
+
+    @Override
+    public void lost() {
+      _border.setColour(_normalBorder);
+      _border.createBorder();
+    }
+  }
+  
+  private class HoverHandler extends ControlEvents.Hover {
+    @Override
+    public void enter() {
+      _background.setTexture(_textureHover);
+    }
+
+    @Override
+    public void leave() {
+      _background.setTexture(_textureNormal);
     }
   }
 

@@ -76,6 +76,8 @@ public class MainMenu extends AbstractGUI {
     _btnLogin.setText("Login");
     _btnLogin.events().addClickHandler(new ControlEvents.Click() {
       @Override public void click() {
+        _wndLogin.disable();
+        
         API.login(_txtEmail.getText(), _txtPass.getText(), resp -> {
           if(resp.succeeded()) {
             _wndLogin.hide();
