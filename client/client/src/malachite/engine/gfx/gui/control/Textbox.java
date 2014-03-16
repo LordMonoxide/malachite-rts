@@ -59,7 +59,6 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     });
     
     _border.setColour(_normalBorder);
-    _border.createBorder();
 
     AbstractScalable s = AbstractContext.newScalable();
     _background = s;

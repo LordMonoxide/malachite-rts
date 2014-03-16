@@ -19,18 +19,27 @@ public class Check extends AbstractControl<Check.Events> {
   private float[] _textColour = {65f / 255, 52f / 255, 8f / 255, 1};
   private int _textX, _textY;
   private int _textW, _textH;
+  
+  private float[] _normalBorder = {160f / 0xFF, 147f / 0xFF, 111f / 0xFF, 1};
+  private float[] _hoverBorder  = { 11f / 0xFF, 126f / 0xFF,   0f / 0xFF, 1};
+  
+  private TextureBuilder _textures = TextureBuilder.getInstance();
+  private Texture _textureNormal = _textures.getTexture("gui/check.png");
+  private Texture _textureHover = _textures.getTexture("gui/check_hover.png");
 
-  private AbstractDrawable _check;
-  private Texture _check_unchecked, _check_checked;
+  private AbstractDrawable _bg, _check;
   private boolean _checked;
 
   public Check() {
     super(
         InitFlags.ACCEPTS_FOCUS,
-        InitFlags.REGISTER
+        InitFlags.REGISTER,
+        InitFlags.WITH_BORDER
     );
 
     _events = new Events(this);
+    _events.addFocusHandler(new FocusHandler());
+    _events.addHoverHandler(new HoverHandler());
     _events.addClickHandler(new ControlEvents.Click() {
       @Override public void click() {
         toggle();
@@ -41,21 +50,33 @@ public class Check extends AbstractControl<Check.Events> {
 
     _padW = 0;
     _padH = 0;
-
-    TextureBuilder t = TextureBuilder.getInstance();
-    _check_checked = t.getTexture("gui/check_checked.png");
-    _check_unchecked = t.getTexture("gui/check_unchecked.png");
-
+    
+    _border.setColour(_normalBorder);
+    
+    _bg = AbstractContext.newDrawable();
+    _bg.setTexture(_textureNormal);
+    
+    Texture check = _textures.getTexture("gui/check_check.png");
     _check = AbstractContext.newDrawable();
-    _check.setTexture(_check_unchecked);
+    _check.setTexture(check);
+    _check.setVisible(false);
 
-    _check_unchecked.events().addLoadHandler(new Texture.Events.Event() {
+    _textureNormal.events().addLoadHandler(new Texture.Events.Event() {
+      @Override
+      public void run() {
+        _bg.setTWH(14, 14);
+        _bg.setWH(14, 14);
+        _bg.createQuad();
+        _needsUpdate = true;
+      }
+    });
+
+    check.events().addLoadHandler(new Texture.Events.Event() {
       @Override
       public void run() {
         _check.setTWH(14, 14);
         _check.setWH(14, 14);
         _check.createQuad();
-        _needsUpdate = true;
       }
     });
   }
@@ -80,14 +101,7 @@ public class Check extends AbstractControl<Check.Events> {
   public void setChecked(boolean checked) {
     if(checked == _checked) { return; }
     _checked = checked;
-
-    if(_checked) {
-      _check.setTexture(_check_checked);
-      _check.createQuad();
-    } else {
-      _check.setTexture(_check_unchecked);
-      _check.createQuad();
-    }
+    _check.setVisible(_checked);
 
     events().raiseChange(_checked);
   }
@@ -111,38 +125,68 @@ public class Check extends AbstractControl<Check.Events> {
 
   @Override
   protected void resize() {
-    if(_w < _check.getW() + _textW + 2) {
-      setW((int)_check.getW() + _textW + 2);
+    if(_w < _bg.getW() + _textW + 2) {
+      setW((int)_bg.getW() + _textW + 2);
     }
 
-    if(_h < _check.getH()) {
-      setH((int)_check.getH());
+    if(_h < _bg.getH()) {
+      setH((int)_bg.getH());
     }
 
     switch(_hAlign) {
-      case ALIGN_LEFT:   _check.setX(_padW); break;
-      case ALIGN_CENTER: _check.setX(_w - (_textW + _check.getW()) / 2); break;
-      case ALIGN_RIGHT:  _check.setX(_w -  _textW - _check.getW() - _padW); break;
+      case ALIGN_LEFT:   _bg.setX(_padW); break;
+      case ALIGN_CENTER: _bg.setX(_w - (_textW + _bg.getW()) / 2);    break;
+      case ALIGN_RIGHT:  _bg.setX(_w -  _textW - _bg.getW() - _padW); break;
     }
 
     switch(_vAlign) {
-      case ALIGN_TOP:    _textY = _padH; break;
-      case ALIGN_MIDDLE: _textY = (_h - _textH) / 2; break;
-      case ALIGN_BOTTOM: _textY =  _h - _textH - _padH; break;
+      case ALIGN_TOP:    _bg.setY(_padH); _textY = _padH; break;
+      case ALIGN_MIDDLE: _bg.setY((_h - _bg.getH()) / 2); _textY = (_h - _textH) / 2;    break;
+      case ALIGN_BOTTOM: _bg.setY( _h - _bg.getH());      _textY =  _h - _textH - _padH; break;
     }
+    
+    _check.setXY(_bg.getX(), _bg.getY());
+    _border.setXYWH(_bg.getX() + 1, _bg.getY() + 1, 12, 12);
+    _border.createBorder();
 
-    _textX = (int)(_check.getX() + _check.getW()) + 2;
-    _check.setY((int)(_textY + (_textH - _check.getH()) / 2));
+    _textX = (int)(_bg.getX() + _bg.getW()) + 2;
   }
 
   @Override
   public void draw() {
     if(drawBegin()) {
+      _bg.draw();
       _check.draw();
       _font.draw(_textX, _textY, _text, _textColour);
     }
 
     drawEnd();
+  }
+  
+  private class FocusHandler extends ControlEvents.Focus {
+    @Override
+    public void got() {
+      _border.setColour(_hoverBorder);
+      _border.createBorder();
+    }
+
+    @Override
+    public void lost() {
+      _border.setColour(_normalBorder);
+      _border.createBorder();
+    }
+  }
+  
+  private class HoverHandler extends ControlEvents.Hover {
+    @Override
+    public void enter() {
+      _bg.setTexture(_textureHover);
+    }
+
+    @Override
+    public void leave() {
+      _bg.setTexture(_textureNormal);
+    }
   }
 
   public static class Events extends ControlEvents {
