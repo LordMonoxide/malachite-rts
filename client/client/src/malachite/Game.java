@@ -10,12 +10,7 @@ import malachite.gui.MainMenu;
 
 public class Game {
   public static void main(String... args) {
-    API.login("corey@narwhunderful.com", "monoxide", resp -> {
-      System.out.println(resp.response().getStatus());
-      System.out.println(resp.content());
-    });
-    
-    //new Game().initialize();
+    new Game().initialize();
   }
 
   private AbstractContext _context;

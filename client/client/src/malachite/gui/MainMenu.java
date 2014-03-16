@@ -77,17 +77,10 @@ public class MainMenu extends AbstractGUI {
     _btnLogin.events().addClickHandler(new ControlEvents.Click() {
       @Override public void click() {
         API.login(_txtEmail.getText(), _txtPass.getText(), resp -> {
-          _wndLogin.hide();
-        });
-        
-        /*try {
-          API.Response r = API.login(_txtEmail.getText(), _txtPass.getText());
-          if(r.success()) {
+          if(resp.succeeded()) {
             _wndLogin.hide();
           }
-        } catch(IOException e) {
-          e.printStackTrace();
-        }*/
+        });
       }
 
       @Override public void clickDbl() { }
