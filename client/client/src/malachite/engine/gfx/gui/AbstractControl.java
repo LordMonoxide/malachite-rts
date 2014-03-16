@@ -21,7 +21,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
   protected int _padH = 2;
 
   protected boolean _needsUpdate;
-  protected boolean _enabled = true;
+  protected int _disabled;
   protected boolean _visible = true;
   protected boolean _focus;
 
@@ -165,34 +165,29 @@ public abstract class AbstractControl<T extends ControlEvents> {
   }
 
   public void enable() {
-    _enabled = true;
+    _disabled--;
+    _controlList.enable();
+    
+    if(_disabled < 0) {
+      System.err.println("You screwed up and enabled " + this + " more times than it was disabled.");
+    }
   }
 
   public void disable() {
-    _enabled = false;
+    _disabled++;
+    _controlList.disable();
   }
 
   public boolean isEnabled() {
-    return _enabled;
+    return _disabled == 0;
   }
 
   public boolean isDisabled() {
-    return !_enabled;
+    return _disabled != 0;
   }
   
-  public boolean isTreeDisabled() {
-    if(!_enabled) { return true; }
-    
-    AbstractControl<? extends ControlEvents> c = _controlParent;
-    while(c != null) {
-      if(!c._enabled) {
-        return true;
-      }
-      
-      c = c._controlParent;
-    }
-    
-    return false;
+  public int getDisabled() {
+    return _disabled;
   }
 
   public void show() {
@@ -399,7 +394,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
   }
 
   public void drawSelect() {
-    if(_visible && _enabled) {
+    if(_visible && _disabled == 0) {
       if(_needsUpdate) {
         updateSize();
       }

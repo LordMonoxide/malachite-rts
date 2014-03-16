@@ -79,6 +79,24 @@ public class ControlList {
       c = c._controlNext;
     }
   }
+  
+  public void enable() {
+    AbstractControl<? extends ControlEvents> c = _last;
+    
+    while(c != null) {
+      c.enable();
+      c = c._controlNext;
+    }
+  }
+  
+  public void disable() {
+    AbstractControl<? extends ControlEvents> c = _last;
+    
+    while(c != null) {
+      c.disable();
+      c = c._controlNext;
+    }
+  }
 
   public AbstractControl<? extends ControlEvents> first() {
     return _first;
