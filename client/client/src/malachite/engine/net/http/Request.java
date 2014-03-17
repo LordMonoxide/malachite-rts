@@ -2,6 +2,8 @@ package malachite.engine.net.http;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -47,7 +49,7 @@ public class Request {
   private Map<CharSequence, Object> _header;
   private Map<String, String> _data;
 
-  static {
+  public static void init() {
     _cb = new HashMap<>();
     
     _group = new NioEventLoopGroup();
@@ -134,47 +136,52 @@ public class Request {
   }
 
   public void dispatch(Callback cb) {
-    Channel ch = _bootstrap.connect(URL, 80).syncUninterruptibly().channel();
-
-    HttpRequest request = null;
-    
-    if(_method == HttpMethod.GET || _data == null) {
-      request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
-    } else {
-      request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
-    }
-
-    request.headers().set(HttpHeaders.Names.HOST, URL);
-    
-    if(_header != null) {
-      for(Map.Entry<CharSequence, Object> e : _header.entrySet()) {
-        request.headers().set(e.getKey(), e.getValue());
-      }
-    }
-    
-    HttpPostRequestEncoder post = null;
-    if(_method != HttpMethod.GET && _data != null) {
-      try {
-        post = new HttpPostRequestEncoder(new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE), request, false);
+    _bootstrap.connect(URL, 80).addListener(new ChannelFutureListener() {
+      @Override
+      public void operationComplete(ChannelFuture future) throws Exception {
+        Channel ch = future.channel();
         
-        for(Map.Entry<String, String> e : _data.entrySet()) {
-          post.addBodyAttribute(e.getKey(), e.getValue());
+        HttpRequest request = null;
+        
+        if(_method == HttpMethod.GET || _data == null) {
+          request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
+        } else {
+          request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
+        }
+
+        request.headers().set(HttpHeaders.Names.HOST, URL);
+        
+        if(_header != null) {
+          for(Map.Entry<CharSequence, Object> e : _header.entrySet()) {
+            request.headers().set(e.getKey(), e.getValue());
+          }
         }
         
-        request = post.finalizeRequest();
-      } catch(ErrorDataEncoderException e) {
-        e.printStackTrace();
-      }
-    }
-    
-    if(post == null || !post.isChunked()) {
-      ch.writeAndFlush(request);
-    } else {
-      ch.write(request);
-      ch.writeAndFlush(post);
-    }
+        HttpPostRequestEncoder post = null;
+        if(_method != HttpMethod.GET && _data != null) {
+          try {
+            post = new HttpPostRequestEncoder(new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE), request, false);
+            
+            for(Map.Entry<String, String> e : _data.entrySet()) {
+              post.addBodyAttribute(e.getKey(), e.getValue());
+            }
+            
+            request = post.finalizeRequest();
+          } catch(ErrorDataEncoderException e) {
+            e.printStackTrace();
+          }
+        }
+        
+        if(post == null || !post.isChunked()) {
+          ch.writeAndFlush(request);
+        } else {
+          ch.write(request);
+          ch.writeAndFlush(post);
+        }
 
-    _cb.put(ch, cb);
+        _cb.put(ch, cb);
+      }
+    });
   }
   
   public interface Callback {
