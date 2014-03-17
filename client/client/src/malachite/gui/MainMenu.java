@@ -3,6 +3,7 @@ package malachite.gui;
 import malachite.api.API;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
+import malachite.engine.gfx.gui.builtin.Message;
 import malachite.engine.gfx.gui.control.*;
 import malachite.engine.gfx.textures.Texture;
 
@@ -76,9 +77,14 @@ public class MainMenu extends AbstractGUI {
     _btnLogin.setText("Login");
     _btnLogin.events().addClickHandler(new ControlEvents.Click() {
       @Override public void click() {
-        _wndLogin.disable();
+        Message wait = Message.wait("Logging in...", "Please wait.");
+        wait.push();
+        
+        //_wndLogin.disable();
         
         API.login(_txtEmail.getText(), _txtPass.getText(), resp -> {
+          //wait.pop();
+          
           if(resp.succeeded()) {
             _wndLogin.hide();
           }
