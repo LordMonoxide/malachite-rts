@@ -18,7 +18,7 @@ public class Window extends AbstractControl<Window.Events> {
   private Image _content;
 
   public Window() {
-    super();
+    super(InitFlags.REGISTER);
 
     _events = new Events(this);
 
