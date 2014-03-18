@@ -6,7 +6,6 @@ import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.ControlList;
-import malachite.engine.gfx.textures.Texture;
 import malachite.engine.gfx.textures.TextureBuilder;
 
 import java.util.Deque;
@@ -18,15 +17,12 @@ public class Window extends AbstractControl<Window.Events> {
   private Button _close;
   private Image _content;
 
-  private Texture _button, _button_hover, _button_pressed;
-
   public Window() {
     super();
 
     _events = new Events(this);
 
     TextureBuilder t = TextureBuilder.getInstance();
-    _button = t.getTexture("gui/close.png");
 
     AbstractScalable s = AbstractContext.newScalable();
     s.setTexture(t.getTexture("gui/background.png"));
@@ -75,7 +71,7 @@ public class Window extends AbstractControl<Window.Events> {
 
     _close = new Button();
     _close.setBackground(AbstractContext.newDrawable());
-    _close.getBackground().setTexture(_button);
+    _close.getBackground().setTexture(t.getTexture("gui/close.png"));
     _close.getBackground().setTWH(13, 13);
     _close.setBackgroundColour(new float[] {0.8f, 0.8f, 0.8f, 1});
     _close.setY(4);
