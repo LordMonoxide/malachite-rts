@@ -149,6 +149,8 @@ public abstract class AbstractGUI {
   }
 
   protected final boolean mouseDown(int x, int y, int button) {
+    boolean handled = false;
+    
     _selectButton = button;
 
     drawSelect();
@@ -164,32 +166,39 @@ public abstract class AbstractGUI {
         }
 
         _selectControl.handleMouseDown(x - getAllX(_selectControl), y - getAllY(_selectControl), button);
+        handled = true;
       } else {
         System.err.println("Found no controls of this colour");
       }
     }
 
-    return handleMouseDown(x, y, button);
+    return handleMouseDown(x, y, button) || handled;
   }
 
   protected final boolean mouseUp(int x, int y, int button) {
+    boolean handled = false;
+    
     _selectButton = -1;
 
     if(_selectControl != null) {
       _selectControl.handleMouseUp(x - getAllX(_selectControl), y - getAllY(_selectControl), button);
       _selectControl = null;
-      return true;
+      handled = true;
     }
 
-    return handleMouseUp(x, y, button);
+    return handleMouseUp(x, y, button) || handled;
   }
 
   protected final boolean mouseMove(int x, int y) {
+    boolean handled = false;
+    
     _mouseX = x;
     _mouseY = y;
 
     if(_selectControl != null) {
       _selectControl.handleMouseMove(x - getAllX(_selectControl), y - getAllY(_selectControl), _selectButton);
+      
+      handled = true;
     } else {
       drawSelect();
 
@@ -207,6 +216,8 @@ public abstract class AbstractGUI {
         if(_selectControl != null) {
           _selectControl.handleMouseMove(x - getAllX(_selectControl), y - getAllY(_selectControl), _selectButton);
           _selectControl = null;
+          
+          handled = true;
         }
       } else {
         if(_selectControlMove != null) {
@@ -216,10 +227,12 @@ public abstract class AbstractGUI {
       }
     }
 
-    return handleMouseMove(x, y, _selectButton);
+    return handleMouseMove(x, y, _selectButton) || handled;
   }
 
-  protected final boolean mouseWheel(int delta) {
+  protected final boolean mouseWheel(int delta) {        
+    boolean handled = false;
+
     drawSelect();
 
     int[] pixel = _context.getPixel(_mouseX, _mouseY);
@@ -230,10 +243,12 @@ public abstract class AbstractGUI {
       if(_selectControl != null) {
         _selectControl.handleMouseWheel(delta);
         _selectControl = null;
+        
+        handled = true;
       }
     }
 
-    return handleMouseWheel(delta);
+    return handleMouseWheel(delta) || handled;
   }
 
   protected final boolean keyDown(int key) {
