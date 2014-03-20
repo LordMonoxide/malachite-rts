@@ -1,5 +1,8 @@
 package malachite.engine.net.http;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import io.netty.handler.codec.http.HttpResponse;
 
 public class Response {
@@ -15,5 +18,13 @@ public class Response {
   
   public boolean failed() {
     return _response.getStatus().code() >= 400 && _response.getStatus().code() <= 499;
+  }
+  
+  public JSONObject toJSON() {
+    return new JSONObject(_content);
+  }
+  
+  public JSONArray toJSONArray() {
+    return new JSONArray(_content);
   }
 }
