@@ -2,7 +2,6 @@ package malachite.gui;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.Property;
 
 import malachite.api.API;
 import malachite.engine.gfx.gui.AbstractGUI;
@@ -155,7 +154,12 @@ public class MainMenu extends AbstractGUI {
     _wndRegister.controls().add(_txtRegisterPass[0]);
     _wndRegister.controls().add(_txtRegisterPass[1]);
     
-    checkLogin();
+    //checkLogin();
+    
+    List l = new List();
+    l.setWH(200, 80);
+    l.add("Test", null);
+    controls().add(l);
   }
 
   @Override

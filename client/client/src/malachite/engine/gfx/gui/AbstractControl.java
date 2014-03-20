@@ -84,6 +84,14 @@ public abstract class AbstractControl<T extends ControlEvents> {
   public ControlList controls() {
     return _controlList;
   }
+  
+  public AbstractControl controlNext() {
+    return _controlNext;
+  }
+  
+  public AbstractControl controlPrev() {
+    return _controlPrev;
+  }
 
   @SuppressWarnings("unchecked")
   public T events() {
