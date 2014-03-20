@@ -166,6 +166,7 @@ public class MainMenu extends AbstractGUI {
       } else {
         System.out.println("Not logged in");
         _wndLogin.show();
+        _txtEmail.setFocus(true);
       }
       
       connecting.pop();
