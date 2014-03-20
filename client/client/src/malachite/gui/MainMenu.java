@@ -1,5 +1,8 @@
 package malachite.gui;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import malachite.api.API;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
@@ -22,6 +25,8 @@ public class MainMenu extends AbstractGUI {
   private Textbox[] _txtRegisterPass = new Textbox[2];
   private Textbox[] _txtRegisterSecurityQuestion = new Textbox[3];
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
+  
+  private Window _wndChars;
 
   @Override
   protected void load() {
@@ -75,21 +80,7 @@ public class MainMenu extends AbstractGUI {
     _btnLogin.setWH(50, 20);
     _btnLogin.setText("Login");
     _btnLogin.events().addClickHandler(new ControlEvents.Click() {
-      @Override public void click() {
-        Message wait = Message.wait("Logging in...", "Please wait.");
-        wait.push();
-        
-        //_wndLogin.disable();
-        
-        API.login(_txtEmail.getText(), _txtPass.getText(), resp -> {
-          //wait.pop();
-          
-          if(resp.succeeded()) {
-            _wndLogin.hide();
-          }
-        });
-      }
-
+      @Override public void click()    { attemptLogin(); }
       @Override public void clickDbl() { }
     });
 
@@ -140,9 +131,12 @@ public class MainMenu extends AbstractGUI {
     _txtRegisterPass[1].setH(20);
     _txtRegisterPass[1].setTextPlaceholder("Confirm Password");
     _txtRegisterPass[1].setMasked(true);
+    
+    _wndChars = new Window();
 
     controls().add(_wndLogin);
     controls().add(_wndRegister);
+    controls().add(_wndChars);
 
     _wndLogin.controls().add(_txtEmail);
     _wndLogin.controls().add(_txtPass);
@@ -155,22 +149,7 @@ public class MainMenu extends AbstractGUI {
     _wndRegister.controls().add(_txtRegisterPass[0]);
     _wndRegister.controls().add(_txtRegisterPass[1]);
     
-    Message connecting = Message.wait("Connecting...", "Connecting...");
-    connecting.push();
-    
-    // Check to see if we're set to "Remember me"
-    // Server returns 204 if logged in, 401 otherwise
-    API.check(resp -> {
-      if(resp.succeeded()) {
-        System.out.println("ALREADY LOGGED IN");
-      } else {
-        System.out.println("Not logged in");
-        _wndLogin.show();
-        _txtEmail.setFocus(true);
-      }
-      
-      connecting.pop();
-    });
+    checkLogin();
   }
 
   @Override
@@ -191,5 +170,55 @@ public class MainMenu extends AbstractGUI {
   @Override
   protected boolean logic() {
     return false;
+  }
+  
+  private void checkLogin() {
+    Message connecting = Message.wait("Connecting...", "Connecting...");
+    connecting.push();
+    
+    // Check to see if we're set to "Remember me"
+    // Server returns 204 if logged in, 401 otherwise
+    API.check(resp -> {
+      if(resp.succeeded()) {
+        System.out.println("ALREADY LOGGED IN");
+      } else {
+        System.out.println("Not logged in");
+        _wndLogin.show();
+        _txtEmail.setFocus(true);
+      }
+      
+      connecting.pop();
+    });
+  }
+  
+  private void attemptLogin() {
+    Message wait = Message.wait("Logging in...", "Please wait.");
+    wait.push();
+    
+    _wndLogin.disable();
+    
+    API.login(_txtEmail.getText(), _txtPass.getText(), resp -> {
+      wait.pop();
+      
+      if(resp.succeeded()) {
+        _wndLogin.hide();
+        showCharacters();
+      } else {
+        _wndLogin.enable();
+        System.out.println(resp.content());
+      }
+    });
+  }
+  
+  private void showCharacters() {
+    Message wait = Message.wait("Getting characters...", "Please wait.");
+    wait.push();
+    
+    API.characters(resp -> {
+      System.out.println(resp.content());
+      JSONArray r = resp.toJSONArray();
+      
+      _wndChars.show();
+    });
   }
 }
