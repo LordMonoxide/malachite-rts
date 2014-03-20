@@ -30,6 +30,12 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder.ErrorDataEncoderException;
 import io.netty.util.CharsetUtil;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -73,10 +79,16 @@ public class Request {
               r = new Response();
               r._response = response;
 
-              for(String name : response.headers().names()) {
-                for(String val : response.headers().getAll(name)) {
-                  //System.out.println("HEADER: " + name + ": " + val); //$NON-NLS-1$ //$NON-NLS-2$
-                }
+              //for(String name : response.headers().names()) {
+              //  for(String val : response.headers().getAll(name)) {
+              //    System.out.println("HEADER: " + name + ": " + val); //$NON-NLS-1$ //$NON-NLS-2$
+              //  }
+              //}
+              
+              if(response.headers().contains(HttpHeaders.Names.SET_COOKIE)) {
+                OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream("cookies/" + URL));
+                o.write(response.headers().get(HttpHeaders.Names.SET_COOKIE));
+                o.close();
               }
 
               if(response.getStatus().code() >= 200 &&
@@ -148,8 +160,12 @@ public class Request {
         } else {
           request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
         }
-
+        
         request.headers().set(HttpHeaders.Names.HOST, URL);
+        
+        try(BufferedReader br = new BufferedReader(new FileReader("cookies/" + URL))) {
+          request.headers().set(HttpHeaders.Names.COOKIE, br.readLine());
+        }
         
         if(_header != null) {
           for(Map.Entry<CharSequence, Object> e : _header.entrySet()) {
