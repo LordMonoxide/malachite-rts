@@ -2,6 +2,7 @@ package malachite.gui;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.Property;
 
 import malachite.api.API;
 import malachite.engine.gfx.gui.AbstractGUI;
@@ -180,9 +181,8 @@ public class MainMenu extends AbstractGUI {
     // Server returns 204 if logged in, 401 otherwise
     API.check(resp -> {
       if(resp.succeeded()) {
-        System.out.println("ALREADY LOGGED IN");
+        showCharacters();
       } else {
-        System.out.println("Not logged in");
         _wndLogin.show();
         _txtEmail.setFocus(true);
       }
@@ -215,8 +215,12 @@ public class MainMenu extends AbstractGUI {
     wait.push();
     
     API.characters(resp -> {
-      System.out.println(resp.content());
       JSONArray r = resp.toJSONArray();
+      
+      for(int i = 0; i < r.length(); i++) {
+        JSONObject j = r.getJSONObject(i);
+        System.out.println(j.getString("name"));
+      }
       
       _wndChars.show();
     });
