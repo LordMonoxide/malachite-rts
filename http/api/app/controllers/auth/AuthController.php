@@ -9,8 +9,8 @@ use Validator;
 
 class AuthController extends Controller {
   public function __construct() {
-    $this->beforeFilter('auth.401',  ['only'   => ['check', 'logout', 'security', 'unlock']]);
-    $this->beforeFilter('nauth.409', ['except' => ['check', 'logout', 'security', 'unlock']]);
+    $this->beforeFilter('user.security',  ['only'   => ['check', 'logout', 'security', 'unlock']]);
+    $this->beforeFilter('nauth.409',      ['except' => ['check', 'logout', 'security', 'unlock']]);
   }
   
   public function check() {
