@@ -42,6 +42,7 @@ public class MainMenu extends AbstractGUI {
     _wndLogin.setWH(400, 300);
     _wndLogin.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
     _wndLogin.setText("Login");
+    _wndLogin.hide();
     _wndLogin.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
       public void resize() {
@@ -153,8 +154,22 @@ public class MainMenu extends AbstractGUI {
     _wndRegister.controls().add(_txtRegisterEmail);
     _wndRegister.controls().add(_txtRegisterPass[0]);
     _wndRegister.controls().add(_txtRegisterPass[1]);
-
-    _txtEmail.setFocus(true);
+    
+    Message connecting = Message.wait("Connecting...", "Connecting...");
+    connecting.push();
+    
+    // Check to see if we're set to "Remember me"
+    // Server returns 204 if logged in, 401 otherwise
+    API.check(resp -> {
+      if(resp.succeeded()) {
+        System.out.println("ALREADY LOGGED IN");
+      } else {
+        System.out.println("Not logged in");
+        _wndLogin.show();
+      }
+      
+      connecting.pop();
+    });
   }
 
   @Override
