@@ -8,3 +8,12 @@ Route::group(['prefix' => 'auth'], function() {
   Route::get ('/security', ['as' => 'auth.security', 'uses' => 'auth\AuthController@security']);
   Route::post('/security', ['as' => 'auth.security', 'uses' => 'auth\AuthController@unlock']);
 });
+
+Route::group(['prefix' => 'storage'], function() {
+  Route::group(['prefix' => 'characters'], function() {
+    Route::get   ('/', ['as' => 'storage.characters', 'uses' => 'storage\CharacterController@all']);
+    Route::put   ('/', ['as' => 'storage.characters', 'uses' => 'storage\CharacterController@create']);
+    Route::delete('/', ['as' => 'storage.characters', 'uses' => 'storage\CharacterController@delete']);
+    Route::post  ('/', ['as' => 'storage.characters', 'uses' => 'storage\CharacterController@choose']);
+  });
+});
