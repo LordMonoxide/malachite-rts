@@ -28,6 +28,7 @@ public class MainMenu extends AbstractGUI {
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
   
   private Window _wndChars;
+  private Button[] _btnChar;
 
   @Override
   protected void load() {
@@ -134,6 +135,10 @@ public class MainMenu extends AbstractGUI {
     _txtRegisterPass[1].setMasked(true);
     
     _wndChars = new Window();
+    _wndChars.setText("Characters");
+    _wndChars.setWH(400, 300);
+    _wndChars.setXY((_context.getW() - _wndChars.getW()) / 2, (_context.getH() - _wndChars.getH()) / 2);
+    _wndChars.hide();
 
     controls().add(_wndLogin);
     controls().add(_wndRegister);
@@ -215,14 +220,31 @@ public class MainMenu extends AbstractGUI {
     wait.push();
     
     API.characters(resp -> {
-      JSONArray r = resp.toJSONArray();
-      
-      for(int i = 0; i < r.length(); i++) {
-        JSONObject j = r.getJSONObject(i);
-        System.out.println(j.getString("name"));
+      if(resp.succeeded()) {
+        JSONArray r = resp.toJSONArray();
+        
+        if(_btnChar != null) {
+          for(int i = 0; i < _btnChar.length; i++) {
+            _wndChars.controls().remove(_btnChar[i]);
+          }
+        }
+        
+        _btnChar = new Button[r.length()];
+        
+        for(int i = 0; i < r.length(); i++) {
+          JSONObject j = r.getJSONObject(i);
+          _btnChar[i] = new Button();
+          _btnChar[i].setText(j.getString("name"));
+          _btnChar[i].setWH(50, 20);
+          _btnChar[i].setY(i * 24);
+          _wndChars.controls().add(_btnChar[i]);
+        }
+        
+        _wndChars.show();
+        wait.pop();
+      } else {
+        System.err.println("ERRAR");
       }
-      
-      _wndChars.show();
     });
   }
 }
