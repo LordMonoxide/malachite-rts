@@ -36,8 +36,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Request {
-  private static final String URL = "malachite.monoxidedesign.com";
-  private static final String RoutePrefix = "/api/client";
+  private static final String URL = "api.malachite.monoxidedesign.com";
+  private static final String RoutePrefix = "";
 
   private static EventLoopGroup _group;
   private static Bootstrap _bootstrap;

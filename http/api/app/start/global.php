@@ -87,6 +87,6 @@ require app_path().'/filters.php';
 |--------------------------------------------------------------------------
 */
 
-use api\client\LoginListener;
+use auth\LoginListener;
 
 Event::subscribe(new LoginListener);

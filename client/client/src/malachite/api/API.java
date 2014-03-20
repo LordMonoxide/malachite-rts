@@ -9,14 +9,26 @@ import java.net.URISyntaxException;
 
 public final class API {
   private API() { }
+  
+  public static void check(Request.Callback cb) {
+    Request r = new Request();
+    r.setMethod(HttpMethod.GET);
+    
+    try{
+      r.setRoute("/auth/check");
+    } catch(URISyntaxException e) { }
+    
+    r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
+    r.dispatch(cb);
+  }
 
   public static void login(String email, String password, Request.Callback cb) {
     Request r = new Request();
     r.setMethod(HttpMethod.POST);
     
     try {
-      r.setRoute("/menu/login");
-    } catch(URISyntaxException e) { /* this will never happen */ }
+      r.setRoute("/auth/login");
+    } catch(URISyntaxException e) { }
     
     r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
     r.addData("email", email);

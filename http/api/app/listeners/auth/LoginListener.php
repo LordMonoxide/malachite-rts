@@ -1,4 +1,4 @@
-<?php namespace api\client;
+<?php namespace auth;
 
 use Request;
 
@@ -43,7 +43,7 @@ class LoginListener {
   }
   
   public function subscribe($events) {
-    $events->listen('auth.login',  'api\client\LoginListener@onLogin');
-    $events->listen('auth.logout', 'api\client\LoginListener@onLogout');
+    $events->listen('auth.login',  'auth\LoginListener@onLogin');
+    $events->listen('auth.logout', 'auth\LoginListener@onLogout');
   }
 }
