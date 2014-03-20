@@ -35,4 +35,16 @@ public final class API {
     r.addData("password", password);
     r.dispatch(cb);
   }
+  
+  public static void characters(Request.Callback cb) {
+    Request r = new Request();
+    r.setMethod(HttpMethod.GET);
+    
+    try {
+      r.setRoute("/storage/characters");
+    } catch(URISyntaxException e) { }
+    
+    r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
+    r.dispatch(cb);
+  }
 }
