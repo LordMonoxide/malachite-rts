@@ -7,8 +7,6 @@ import malachite.engine.gfx.gui.builtin.Message;
 import malachite.engine.gfx.gui.control.*;
 import malachite.engine.gfx.textures.Texture;
 
-import java.io.IOException;
-
 public class MainMenu extends AbstractGUI {
   private Image[] _imgBackground = new Image[15];
   private Window _wndLogin;
