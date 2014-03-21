@@ -55,6 +55,10 @@ public class Request {
   private HttpMethod _method;
   private Map<CharSequence, Object> _header;
   private Map<String, String> _data;
+  
+  public static void destroy() {
+    
+  }
 
   public static void init() {
     _cb = new HashMap<>();
