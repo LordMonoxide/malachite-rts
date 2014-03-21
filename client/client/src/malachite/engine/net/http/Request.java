@@ -33,6 +33,7 @@ import io.netty.util.CharsetUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStreamWriter;
@@ -165,7 +166,7 @@ public class Request {
         
         try(BufferedReader br = new BufferedReader(new FileReader("cookies/" + URL))) {
           request.headers().set(HttpHeaders.Names.COOKIE, br.readLine());
-        }
+        } catch(FileNotFoundException e) { }
         
         if(_header != null) {
           for(Map.Entry<CharSequence, Object> e : _header.entrySet()) {
