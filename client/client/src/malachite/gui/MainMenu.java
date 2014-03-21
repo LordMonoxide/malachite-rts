@@ -27,7 +27,7 @@ public class MainMenu extends AbstractGUI {
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
   
   private Window _wndChars;
-  private Button[] _btnChar;
+  private List<?> _lstChars;
 
   @Override
   protected void load() {
@@ -138,7 +138,9 @@ public class MainMenu extends AbstractGUI {
     _wndChars.setWH(400, 300);
     _wndChars.setXY((_context.getW() - _wndChars.getW()) / 2, (_context.getH() - _wndChars.getH()) / 2);
     _wndChars.hide();
-
+    
+    _lstChars = new List<>();
+    
     controls().add(_wndLogin);
     controls().add(_wndRegister);
     controls().add(_wndChars);
@@ -154,12 +156,9 @@ public class MainMenu extends AbstractGUI {
     _wndRegister.controls().add(_txtRegisterPass[0]);
     _wndRegister.controls().add(_txtRegisterPass[1]);
     
-    //checkLogin();
+    _wndChars.controls().add(_lstChars);
     
-    List l = new List();
-    l.setWH(200, 80);
-    l.add("Test", null);
-    controls().add(l);
+    checkLogin();
   }
 
   @Override
@@ -169,7 +168,7 @@ public class MainMenu extends AbstractGUI {
 
   @Override
   protected void resize() {
-
+    _lstChars.setWH(_wndChars.getContentW(), _wndChars.getContentH());
   }
 
   @Override
@@ -227,21 +226,9 @@ public class MainMenu extends AbstractGUI {
       if(resp.succeeded()) {
         JSONArray r = resp.toJSONArray();
         
-        if(_btnChar != null) {
-          for(int i = 0; i < _btnChar.length; i++) {
-            _wndChars.controls().remove(_btnChar[i]);
-          }
-        }
-        
-        _btnChar = new Button[r.length()];
-        
         for(int i = 0; i < r.length(); i++) {
           JSONObject j = r.getJSONObject(i);
-          _btnChar[i] = new Button();
-          _btnChar[i].setText(j.getString("name"));
-          _btnChar[i].setWH(50, 20);
-          _btnChar[i].setY(i * 24);
-          _wndChars.controls().add(_btnChar[i]);
+          _lstChars.add(j.getString("name"), null);
         }
         
         _wndChars.show();
