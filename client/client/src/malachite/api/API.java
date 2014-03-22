@@ -1,16 +1,18 @@
 package malachite.api;
 
 import malachite.engine.net.http.Request;
-
+import malachite.engine.net.http.Response;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 
 import java.net.URISyntaxException;
 
+import org.json.JSONObject;
+
 public final class API {
   private API() { }
   
-  public static void check(Request.Callback cb) {
+  public static void check(CheckResponse resp) {
     Request r = new Request();
     r.setMethod(HttpMethod.GET);
     
@@ -19,7 +21,18 @@ public final class API {
     } catch(URISyntaxException e) { }
     
     r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
-    r.dispatch(cb);
+    r.dispatch(response -> {
+      if(response.succeeded()) {
+        resp.loggedIn();
+      } else {
+        if(response.response().getStatus().code() == 401) {
+          JSONObject j = new JSONObject(response.content());
+          resp.problem();
+        } else {
+          resp.error(response);
+        }
+      }
+    });
   }
 
   public static void login(String email, String password, Request.Callback cb) {
@@ -46,5 +59,12 @@ public final class API {
     
     r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
     r.dispatch(cb);
+  }
+  
+  public interface CheckResponse {
+    public void loggedIn();
+    public void loginRequired();
+    public void securityRequired();
+    public void error(Response r);
   }
 }
