@@ -57,7 +57,7 @@ public class Request {
   private Map<String, String> _data;
   
   public static void destroy() {
-    
+    _group.shutdownGracefully();
   }
 
   public static void init() {

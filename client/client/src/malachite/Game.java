@@ -36,5 +36,10 @@ public class Game {
         _context.GUIs().push(new MainMenu());
       });
     }
+    
+    @Override
+    public void onClosed() {
+      Request.destroy();
+    }
   }
 }
