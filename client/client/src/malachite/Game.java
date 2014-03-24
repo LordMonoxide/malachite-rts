@@ -33,7 +33,7 @@ public class Game {
     @Override
     public void onRun() {
       _context.addLoadCallback(Loader.LoaderThread.GRAPHICS, () -> {
-        _context.GUIs().push(new MainMenu());
+        new MainMenu().push();
       });
     }
     
