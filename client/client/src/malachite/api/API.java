@@ -28,8 +28,9 @@ public final class API {
         if(response.response().getStatus().code() == 401) {
           JSONObject j = new JSONObject(response.content());
           switch(j.getString("show")) {
-            case "login"   : resp.loginRequired();    break;
+            case "login":    resp.loginRequired();    break;
             case "security": resp.securityRequired(); break;
+            default:         resp.error(response);
           }
         } else {
           resp.error(response);
