@@ -85,11 +85,11 @@ public abstract class AbstractControl<T extends ControlEvents> {
     return _controlList;
   }
   
-  public AbstractControl controlNext() {
+  public AbstractControl<? extends ControlEvents> controlNext() {
     return _controlNext;
   }
   
-  public AbstractControl controlPrev() {
+  public AbstractControl<? extends ControlEvents> controlPrev() {
     return _controlPrev;
   }
 
