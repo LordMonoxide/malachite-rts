@@ -138,6 +138,11 @@ public class MainMenu extends AbstractGUI {
     _wndChars.setWH(400, 300);
     _wndChars.setXY((_context.getW() - _wndChars.getW()) / 2, (_context.getH() - _wndChars.getH()) / 2);
     _wndChars.hide();
+    _wndChars.events().addResizeHandler(new ControlEvents.Resize() {
+      @Override public void resize() {
+        _lstChars.setWH(_wndChars.getContentW(), _wndChars.getContentH());
+      }
+    });
     
     _lstChars = new List<>();
     
@@ -168,7 +173,7 @@ public class MainMenu extends AbstractGUI {
 
   @Override
   protected void resize() {
-    _lstChars.setWH(_wndChars.getContentW(), _wndChars.getContentH());
+    
   }
 
   @Override
