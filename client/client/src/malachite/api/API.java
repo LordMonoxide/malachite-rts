@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public final class API {
   private API() { }
   
-  public static void check(CheckResponse resp) {
+  public static void check(CheckResponse cb) {
     Request r = new Request();
     r.setMethod(HttpMethod.GET);
     
@@ -21,25 +21,25 @@ public final class API {
     } catch(URISyntaxException e) { }
     
     r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
-    r.dispatch(response -> {
-      if(response.succeeded()) {
-        resp.loggedIn();
+    r.dispatch(resp -> {
+      if(resp.succeeded()) {
+        cb.loggedIn();
       } else {
-        if(response.response().getStatus().code() == 401) {
-          JSONObject j = new JSONObject(response.content());
+        if(resp.response().getStatus().code() == 401) {
+          JSONObject j = new JSONObject(resp.content());
           switch(j.getString("show")) {
-            case "login":    resp.loginRequired();    break;
-            case "security": resp.securityRequired(); break;
-            default:         resp.error(response);
+            case "login":    cb.loginRequired();    break;
+            case "security": cb.securityRequired(); break;
+            default:         cb.error(resp);
           }
         } else {
-          resp.error(response);
+          cb.error(resp);
         }
       }
     });
   }
 
-  public static void login(String email, String password, Request.Callback cb) {
+  public static void login(String email, String password, LoginResponse cb) {
     Request r = new Request();
     r.setMethod(HttpMethod.POST);
     
@@ -50,7 +50,29 @@ public final class API {
     r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
     r.addData("email", email);
     r.addData("password", password);
-    r.dispatch(cb);
+    r.dispatch(resp -> {
+      if(resp.succeeded()) {
+        cb.success();
+      } else {
+        switch(resp.response().getStatus().code()) {
+          case 401:
+            JSONObject j = new JSONObject(resp.content());
+            switch(j.getString("security")) {
+              case "security": cb.securityRequired(); break;
+              default:         cb.error(resp);
+            }
+            
+            break;
+          
+          case 409:
+            cb.invalid(new JSONObject(resp.content()));
+            break;
+          
+          default:
+            cb.error(resp);
+        }
+      }
+    });
   }
   
   public static void characters(Request.Callback cb) {
@@ -68,6 +90,13 @@ public final class API {
   public interface CheckResponse {
     public void loggedIn();
     public void loginRequired();
+    public void securityRequired();
+    public void error(Response r);
+  }
+  
+  public interface LoginResponse {
+    public void success();
+    public void invalid(JSONObject errors);
     public void securityRequired();
     public void error(Response r);
   }

@@ -220,15 +220,23 @@ public class MainMenu extends AbstractGUI {
     
     _wndLogin.disable();
     
-    API.login(_txtEmail.getText(), _txtPass.getText(), resp -> {
-      wait.pop();
-      
-      if(resp.succeeded()) {
+    API.login(_txtEmail.getText(), _txtPass.getText(), new API.LoginResponse() {
+      @Override public void success() {
         _wndLogin.hide();
         showCharacters();
-      } else {
-        _wndLogin.enable();
-        System.out.println(resp.content());
+      }
+      
+      @Override public void securityRequired() {
+        _wndLogin.hide();
+        showSecurity();
+      }
+      
+      @Override public void invalid(JSONObject errors) {
+        System.out.println(errors);
+      }
+      
+      @Override public void error(Response r) {
+        System.out.println(r.content());
       }
     });
   }
