@@ -27,7 +27,10 @@ public final class API {
       } else {
         if(response.response().getStatus().code() == 401) {
           JSONObject j = new JSONObject(response.content());
-          resp.problem();
+          switch(j.getString("show")) {
+            case "login"   : resp.loginRequired();    break;
+            case "security": resp.securityRequired(); break;
+          }
         } else {
           resp.error(response);
         }

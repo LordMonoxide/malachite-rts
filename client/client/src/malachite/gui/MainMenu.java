@@ -9,6 +9,7 @@ import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.builtin.Message;
 import malachite.engine.gfx.gui.control.*;
 import malachite.engine.gfx.textures.Texture;
+import malachite.engine.net.http.Response;
 
 public class MainMenu extends AbstractGUI {
   private Image[] _imgBackground = new Image[15];
@@ -190,17 +191,26 @@ public class MainMenu extends AbstractGUI {
     Message connecting = Message.wait("Connecting...", "Connecting...");
     connecting.push();
     
-    // Check to see if we're set to "Remember me"
-    // Server returns 204 if logged in, 401 otherwise
-    API.check(resp -> {
-      if(resp.succeeded()) {
+    API.check(new API.CheckResponse() {
+      @Override public void loggedIn() {
         showCharacters();
-      } else {
-        _wndLogin.show();
-        _txtEmail.setFocus(true);
+        connecting.pop();
       }
       
-      connecting.pop();
+      @Override public void loginRequired() {
+        showLogin();
+        connecting.pop();
+      }
+      
+      @Override public void securityRequired() {
+        showSecurity();
+        connecting.pop();
+      }
+      
+      @Override public void error(Response r) {
+        System.out.println(r.content());
+        connecting.pop();
+      }
     });
   }
   
@@ -221,6 +231,15 @@ public class MainMenu extends AbstractGUI {
         System.out.println(resp.content());
       }
     });
+  }
+  
+  private void showLogin() {
+    _wndLogin.show();
+    _txtEmail.setFocus(true);
+  }
+  
+  private void showSecurity() {
+    
   }
   
   private void showCharacters() {
