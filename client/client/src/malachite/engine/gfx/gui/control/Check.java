@@ -77,6 +77,7 @@ public class Check extends AbstractControl<Check.Events> {
         _check.setTWH(14, 14);
         _check.setWH(14, 14);
         _check.createQuad();
+        resize();
       }
     });
   }
