@@ -15,7 +15,18 @@ class CharacterController extends Controller {
   }
   
   public function all() {
-    return Response::json(Auth::user()->characters, 200);
+    $chars = [];
+    
+    Auth::user()->characters()->get()->each(function($char) use(&$chars) {
+      $chars[$char->id] = [
+        'name' => $char->name,
+        'race' => $char->race->name,
+        'sex'  => $char->sex
+      ];
+    });
+    
+    
+    return Response::json($chars, 200);
   }
   
   public function create() {
