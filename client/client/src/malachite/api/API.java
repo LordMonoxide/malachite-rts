@@ -1,5 +1,6 @@
 package malachite.api;
 
+import malachite.api.models.Character;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -7,6 +8,8 @@ import io.netty.handler.codec.http.HttpMethod;
 
 import java.net.URISyntaxException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public final class API {
@@ -22,19 +25,23 @@ public final class API {
     
     r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
     r.dispatch(resp -> {
-      if(resp.succeeded()) {
-        cb.loggedIn();
-      } else {
-        if(resp.response().getStatus().code() == 401) {
-          JSONObject j = new JSONObject(resp.content());
-          switch(j.getString("show")) {
-            case "login":    cb.loginRequired();    break;
-            case "security": cb.securityRequired(); break;
-            default:         cb.error(resp);
-          }
+      try {
+        if(resp.succeeded()) {
+          cb.loggedIn();
         } else {
-          cb.error(resp);
+          if(resp.response().getStatus().code() == 401) {
+            JSONObject j = new JSONObject(resp.content());
+            switch(j.getString("show")) {
+              case "login":    cb.loginRequired();    break;
+              case "security": cb.securityRequired(); break;
+              default:         cb.error(resp);
+            }
+          } else {
+            cb.error(resp);
+          }
         }
+      } catch(JSONException e) {
+        cb.error(resp);
       }
     });
   }
@@ -51,31 +58,36 @@ public final class API {
     r.addData("email", email);
     r.addData("password", password);
     r.dispatch(resp -> {
-      if(resp.succeeded()) {
-        cb.success();
-      } else {
-        switch(resp.response().getStatus().code()) {
-          case 401:
-            JSONObject j = new JSONObject(resp.content());
-            switch(j.getString("security")) {
-              case "security": cb.securityRequired(); break;
-              default:         cb.error(resp);
-            }
+      try {
+        if(resp.succeeded()) {
+          cb.success();
+        } else {
+          switch(resp.response().getStatus().code()) {
+            case 401:
+              JSONObject j = new JSONObject(resp.content());
+              switch(j.getString("security")) {
+                case "login":    cb.loginRequired();    break;
+                case "security": cb.securityRequired(); break;
+                default:         cb.error(resp);
+              }
+              
+              break;
             
-            break;
-          
-          case 409:
-            cb.invalid(new JSONObject(resp.content()));
-            break;
-          
-          default:
-            cb.error(resp);
+            case 409:
+              cb.invalid(new JSONObject(resp.content()));
+              break;
+            
+            default:
+              cb.error(resp);
+          }
         }
+      } catch(JSONException e) {
+        cb.error(resp);
       }
     });
   }
   
-  public static void characters(Request.Callback cb) {
+  public static void characters(CharacterResponse cb) {
     Request r = new Request();
     r.setMethod(HttpMethod.GET);
     
@@ -84,7 +96,35 @@ public final class API {
     } catch(URISyntaxException e) { }
     
     r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
-    r.dispatch(cb);
+    r.dispatch(resp -> {
+      try {
+        if(resp.succeeded()) {
+          JSONArray j = new JSONArray(resp.content());
+          
+          Character[] characters = new Character[j.length()];
+          
+          for(int i = 0; i < j.length(); i++) {
+            JSONObject c = j.getJSONObject(i);
+            characters[i] = new Character(c.getString("name"), c.getString("race"), c.getString("sex"));
+          }
+          
+          cb.success(characters);
+        } else {
+          if(resp.response().getStatus().code() == 401) {
+            JSONObject j = new JSONObject(resp.content());
+            switch(j.getString("show")) {
+              case "login":    cb.loginRequired();    break;
+              case "security": cb.securityRequired(); break;
+              default:         cb.error(resp);
+            }
+          } else {
+            cb.error(resp);
+          }
+        }
+      } catch(JSONException e) {
+        cb.error(resp);
+      }
+    });
   }
   
   public interface CheckResponse {
@@ -97,6 +137,14 @@ public final class API {
   public interface LoginResponse {
     public void success();
     public void invalid(JSONObject errors);
+    public void loginRequired();
+    public void securityRequired();
+    public void error(Response r);
+  }
+  
+  public interface CharacterResponse {
+    public void success(Character[] characters);
+    public void loginRequired();
     public void securityRequired();
     public void error(Response r);
   }
