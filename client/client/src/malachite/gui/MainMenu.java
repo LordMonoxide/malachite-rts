@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import malachite.api.API;
+import malachite.api.models.Character;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.builtin.Message;
@@ -227,6 +228,11 @@ public class MainMenu extends AbstractGUI {
         showCharacters();
       }
       
+      @Override public void loginRequired() {
+        wait.pop();
+        showLogin();
+      }
+      
       @Override public void securityRequired() {
         wait.pop();
         _wndLogin.hide();
@@ -258,20 +264,29 @@ public class MainMenu extends AbstractGUI {
     Message wait = Message.wait("Getting characters...", "Please wait.");
     wait.push();
     
-    API.characters(resp -> {
-      if(resp.succeeded()) {
-        JSONArray r = resp.toJSONArray();
-        
-        for(int i = 0; i < r.length(); i++) {
-          JSONObject j = r.getJSONObject(i);
-          _lstChars.add(j.getString("name"), null);
-        }
-        
-        _wndChars.show();
+    API.characters(new API.CharacterResponse() {
+      @Override public void success(Character[] characters) {
         wait.pop();
-      } else {
-        System.err.println("ERRAR");
-        System.err.println(resp.content());
+        _wndChars.show();
+        
+        for(Character c : characters) {
+          _lstChars.add(c.name + ", a " + c.sex + ' ' + c.race, null);
+        }
+      }
+      
+      @Override public void loginRequired() {
+        wait.pop();
+        showLogin();
+      }
+      
+      @Override public void securityRequired() {
+        wait.pop();
+        showSecurity();
+      }
+      
+      @Override public void error(Response r) {
+        wait.pop();
+        System.out.println(r.content());
       }
     });
   }
