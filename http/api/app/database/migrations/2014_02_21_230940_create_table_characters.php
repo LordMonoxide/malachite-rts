@@ -10,23 +10,21 @@ class CreateTableCharacters extends Migration {
       $table->integer('auth_id')->unsigned()->nullable();
       
       $table->string('name', 20);
+      $table->integer('race_id')->unsigned();
       $table->enum('sex', ['male', 'female']);
-      
-      $table->integer('lvl')->unsigned()->default(1);
-      $table->integer('exp')->unsigned()->default(0);
       
       $table->integer('hp')->unsigned()->default(0);
       $table->integer('mp')->unsigned()->default(0);
-      
-      $table->integer('str')->unsigned()->default(0);
-      $table->integer('dex')->unsigned()->default(0);
-      $table->integer('int')->unsigned()->default(0);
       
       $table->timestamps();
       
       $table->foreign('user_id')
              ->references('id')
              ->on('users');
+      
+      $table->foreign('race_id')
+             ->references('id')
+             ->on('races');
     });
   }
   
