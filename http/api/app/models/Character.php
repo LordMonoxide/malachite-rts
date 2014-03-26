@@ -10,7 +10,7 @@ class Character extends Eloquent {
   }
   
   public function race() {
-    return $this->hasOne('Race');
+    return $this->belongsTo('Race');
   }
   
   public function stats() {
