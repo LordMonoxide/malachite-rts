@@ -222,20 +222,24 @@ public class MainMenu extends AbstractGUI {
     
     API.login(_txtEmail.getText(), _txtPass.getText(), new API.LoginResponse() {
       @Override public void success() {
+        wait.pop();
         _wndLogin.hide();
         showCharacters();
       }
       
       @Override public void securityRequired() {
+        wait.pop();
         _wndLogin.hide();
         showSecurity();
       }
       
       @Override public void invalid(JSONObject errors) {
+        wait.pop();
         System.out.println(errors);
       }
       
       @Override public void error(Response r) {
+        wait.pop();
         System.out.println(r.content());
       }
     });
