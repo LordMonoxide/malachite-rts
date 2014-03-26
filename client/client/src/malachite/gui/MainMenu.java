@@ -271,6 +271,7 @@ public class MainMenu extends AbstractGUI {
         wait.pop();
       } else {
         System.err.println("ERRAR");
+        System.err.println(resp.content());
       }
     });
   }
