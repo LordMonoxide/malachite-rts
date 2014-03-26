@@ -16,15 +16,15 @@ class CharacterController extends Controller {
   
   public function all() {
     $chars = [];
+    $i = 0;
     
-    Auth::user()->characters()->get()->each(function($char) use(&$chars) {
-      $chars[$char->id] = [
+    Auth::user()->characters()->get()->each(function($char) use(&$chars, &$i) {
+      $chars[$i++] = [
         'name' => $char->name,
         'race' => $char->race->name,
         'sex'  => $char->sex
       ];
     });
-    
     
     return Response::json($chars, 200);
   }
