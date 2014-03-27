@@ -4,8 +4,8 @@ import java.util.Map;
 
 import malachite.engine.net.http.Response;
 
-public class Lang {
-  public static final Lang Menu = new Lang();
+public class Lang<T> {
+  public static final Lang<MenuKeys> Menu = new Lang<>();
   
   public static void load() {
     System.out.println("Getting lang..."); //$NON-NLS-1$
@@ -31,8 +31,14 @@ public class Lang {
   
   private Lang() { }
   
-  public String get(String key) {
-    return _lang.get(key);
+  public String get(T key, String... substitute) {
+    String lang = _lang.get(key.toString());
+    
+    for(String s : substitute) {
+      lang = lang.replaceFirst(":\\w+", s); //$NON-NLS-1$
+    }
+    
+    return lang;
   }
   
   public enum MenuKeys {
@@ -41,7 +47,16 @@ public class Lang {
     LOGIN_PASS    ("login.pass"),     //$NON-NLS-1$
     LOGIN_REMEMBER("login.remember"), //$NON-NLS-1$
     
-    REGISTER_TITLE("register.title"); //$NON-NLS-1$
+    REGISTER_TITLE  ("register.title"),   //$NON-NLS-1$
+    REGISTER_EMAIL  ("register.email"),   //$NON-NLS-1$
+    REGISTER_PASS   ("register.pass"),    //$NON-NLS-1$
+    REGISTER_CONFIRM("register.confirm"), //$NON-NLS-1$
+    
+    CHARS_TITLE("chars.title"), //$NON-NLS-1$
+    CHARS_NEW  ("chars.new"),   //$NON-NLS-1$
+    CHARS_DEL  ("chars.del"),   //$NON-NLS-1$
+    CHARS_USE  ("chars.use"),   //$NON-NLS-1$
+    CHARS_LIST ("chars.list");  //$NON-NLS-1$
     
     String _text;
     
