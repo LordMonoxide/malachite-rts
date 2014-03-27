@@ -134,6 +134,10 @@ public class Request {
     if(_data == null) { _data = new HashMap<>(); }
     _data.put(key, value);
   }
+  
+  public void setData(Map<String, String> data) {
+    _data = data;
+  }
 
   public void dispatch(Callback cb) {
     _bootstrap.connect(URL, 80).addListener(new ChannelFutureListener() {
@@ -183,6 +187,7 @@ public class Request {
           ch.writeAndFlush(post);
         }
 
+        System.out.println(ch);
         _cb.put(ch, cb);
       }
     });
