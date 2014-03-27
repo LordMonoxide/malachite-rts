@@ -144,14 +144,25 @@ public class MainMenu extends AbstractGUI {
     _wndChars.hide();
     _wndChars.events().addResizeHandler(new ControlEvents.Resize() {
       @Override public void resize() {
-        _lstChars.setWH(_wndChars.getContentW(), _wndChars.getContentH());
+        _lstChars.setWH(_wndChars.getContentW(), _wndChars.getContentH() - _btnCharUse.getH() - 8);
+        _btnCharDel.setXY(4, _lstChars.getH() + 6);
+        _btnCharNew.setXY(_btnCharDel.getX() + _btnCharDel.getW() + 4, _btnCharDel.getY());
+        _btnCharUse.setXY(_lstChars.getW() - _btnCharUse.getW() - 4, _btnCharDel.getY());
       }
     });
     
     _lstChars = new List<>();
     
+    _btnCharDel = new Button();
+    _btnCharDel.setWH(50, 20);
+    _btnCharDel.setText("Del");
+    
+    _btnCharNew = new Button();
+    _btnCharNew.setWH(50, 20);
+    _btnCharNew.setText("New");
+    
     _btnCharUse = new Button();
-    _btnCharUse.setWH(80, 20);
+    _btnCharUse.setWH(50, 20);
     _btnCharUse.setText("Use");
     
     controls().add(_wndLogin);
@@ -170,6 +181,8 @@ public class MainMenu extends AbstractGUI {
     _wndRegister.controls().add(_txtRegisterPass[1]);
     
     _wndChars.controls().add(_lstChars);
+    _wndChars.controls().add(_btnCharDel);
+    _wndChars.controls().add(_btnCharNew);
     _wndChars.controls().add(_btnCharUse);
     
     checkLogin();
