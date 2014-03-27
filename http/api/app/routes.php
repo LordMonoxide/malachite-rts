@@ -1,6 +1,7 @@
 <?php
 
 Route::group(['prefix' => 'lang'], function() {
+  Route::get('/app',  ['as' => 'lang.app',  'uses' => 'lang\LanguageController@app']);
   Route::get('/menu', ['as' => 'lang.menu', 'uses' => 'lang\LanguageController@menu']);
 });
 

@@ -5,12 +5,23 @@ import java.util.Map;
 import malachite.engine.net.http.Response;
 
 public class Lang<T> {
+  public static final Lang<AppKeys>  App  = new Lang<>();
   public static final Lang<MenuKeys> Menu = new Lang<>();
   
   public static void load() {
     System.out.println("Getting lang..."); //$NON-NLS-1$
     
-    API.langMenu(new API.LangResponse() {
+    API.lang("/lang/app", new API.LangResponse() {
+      @Override public void success(Map<String, String> lang) {
+        App._lang = lang;
+      }
+      
+      @Override public void error(Response r) {
+        System.err.println(r.content());
+      }
+    });
+    
+    API.lang("/lang/menu", new API.LangResponse() {
       @Override public void success(Map<String, String> lang) {
         Menu._lang = lang;
       }
@@ -20,7 +31,7 @@ public class Lang<T> {
       }
     });
     
-    while(Menu._lang == null) {
+    while(App._lang == null || Menu._lang == null) {
       try {
         Thread.sleep(10);
       } catch(InterruptedException e) { }
@@ -39,6 +50,21 @@ public class Lang<T> {
     }
     
     return lang;
+  }
+  
+  public enum AppKeys {
+    TITLE("title"); //$NON-NLS-1$
+    
+    String _text;
+    
+    AppKeys(String text) {
+      _text = text;
+    }
+    
+    @Override
+    public String toString() {
+      return _text;
+    }
   }
   
   public enum MenuKeys {

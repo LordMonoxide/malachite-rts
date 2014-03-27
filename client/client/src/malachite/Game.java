@@ -1,6 +1,7 @@
 package malachite;
 
 import malachite.api.Lang;
+import malachite.api.Lang.AppKeys;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
 import malachite.engine.gfx.Loader;
@@ -22,7 +23,7 @@ public class Game {
     
     Manager.registerContext(Context.class);
     _context = Manager.create(ctx -> {
-      ctx.setTitle("Engine Test");
+      ctx.setTitle(Lang.App.get(AppKeys.TITLE));
       ctx.setResizable(true);
       ctx.setWH(1280, 720);
       ctx.setFPSTarget(60);
