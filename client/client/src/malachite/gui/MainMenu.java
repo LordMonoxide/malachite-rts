@@ -3,6 +3,7 @@ package malachite.gui;
 import org.json.JSONObject;
 
 import malachite.api.API;
+import malachite.api.Lang;
 import malachite.api.models.Character;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
@@ -36,7 +37,7 @@ public class MainMenu extends AbstractGUI {
   @Override
   protected void load() {
     for(int i = 0; i < _imgBackground.length; i++) {
-      Texture t = _textures.getTexture("gui/menu/" + i + ".png");
+      Texture t = _textures.getTexture("gui/menu/" + i + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
       _imgBackground[i] = new Image();
       _imgBackground[i].setTexture(t);
 
@@ -51,7 +52,7 @@ public class MainMenu extends AbstractGUI {
     _wndLogin = new Window();
     _wndLogin.setWH(400, 300);
     _wndLogin.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
-    _wndLogin.setText("Login");
+    _wndLogin.setText(Lang.Menu.get(Lang.MenuKeys.LOGIN_TITLE.toString()));
     _wndLogin.hide();
     _wndLogin.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
@@ -68,17 +69,17 @@ public class MainMenu extends AbstractGUI {
     _txtEmail = new Textbox();
     _txtEmail.setXY(4, 4);
     _txtEmail.setH(20);
-    _txtEmail.setTextPlaceholder("Email");
+    _txtEmail.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.LOGIN_EMAIL.toString()));
 
     _txtPass = new Textbox();
     _txtPass.setXY(_txtEmail.getX(), _txtEmail.getY() + _txtEmail.getH() + 8);
     _txtPass.setH(20);
-    _txtPass.setTextPlaceholder("Password");
+    _txtPass.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.LOGIN_PASS.toString()));
     _txtPass.setMasked(true);
 
     _chkRemember = new Check();
     _chkRemember.setXY(_txtPass.getX(), _txtPass.getY() + _txtPass.getH() + 8);
-    _chkRemember.setText("Remember me");
+    _chkRemember.setText(Lang.Menu.get(Lang.MenuKeys.LOGIN_REMEMBER.toString()));
 
     _btnLogin = new Button();
     _btnLogin.setY(_txtPass.getY() + _txtPass.getH() + 8);
@@ -109,7 +110,7 @@ public class MainMenu extends AbstractGUI {
     _wndRegister = new Window();
     _wndRegister.setWH(400, 300);
     _wndRegister.setXY((_context.getW() - _wndRegister.getW()) / 2, (_context.getH() - _wndRegister.getH()) / 2);
-    _wndRegister.setText("Register");
+    _wndRegister.setText(Lang.Menu.get(Lang.MenuKeys.REGISTER_TITLE.toString()));
     _wndRegister.hide();
     _wndRegister.events().addResizeHandler(new ControlEvents.Resize() {
       @Override

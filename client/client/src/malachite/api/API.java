@@ -7,6 +7,8 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -127,6 +129,36 @@ public final class API {
     });
   }
   
+  public static void langMenu(LangResponse cb) {
+    Request r = new Request();
+    r.setMethod(HttpMethod.GET);
+    
+    try {
+      r.setRoute("/lang/menu");
+    } catch(URISyntaxException e) { }
+    
+    r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
+    r.dispatch(resp -> {
+      try {
+        if(resp.succeeded()) {
+          JSONObject j = new JSONObject(resp.content());
+          
+          Map<String, String> lang = new HashMap<>();
+          
+          for(String key : j.keySet()) {
+            lang.put(key, j.getString(key));
+          }
+          
+          cb.success(lang);
+        } else {
+          cb.error(resp);
+        }
+      } catch(JSONException e) {
+        cb.error(resp);
+      }
+    });
+  }
+  
   public interface CheckResponse {
     public void loggedIn();
     public void loginRequired();
@@ -146,6 +178,11 @@ public final class API {
     public void success(Character[] characters);
     public void loginRequired();
     public void securityRequired();
+    public void error(Response r);
+  }
+  
+  public interface LangResponse {
+    public void success(Map<String, String> lang);
     public void error(Response r);
   }
 }

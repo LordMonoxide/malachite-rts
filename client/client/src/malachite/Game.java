@@ -1,5 +1,6 @@
 package malachite;
 
+import malachite.api.Lang;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
 import malachite.engine.gfx.Loader;
@@ -17,6 +18,8 @@ public class Game {
 
   public void initialize() {
     Request.init();
+    Lang.load();
+    
     Manager.registerContext(Context.class);
     _context = Manager.create(ctx -> {
       ctx.setTitle("Engine Test");

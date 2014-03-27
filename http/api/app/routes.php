@@ -1,5 +1,9 @@
 <?php
 
+Route::group(['prefix' => 'lang'], function() {
+  Route::get('/menu', ['as' => 'lang.menu', 'uses' => 'lang\LanguageController@menu']);
+});
+
 Route::group(['prefix' => 'auth'], function() {
   Route::get ('/check',    ['as' => 'auth.check',    'uses' => 'auth\AuthController@check']);
   Route::put ('/register', ['as' => 'auth.register', 'uses' => 'auth\AuthController@register']);
