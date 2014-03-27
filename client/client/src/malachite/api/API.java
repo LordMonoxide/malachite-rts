@@ -1,6 +1,7 @@
 package malachite.api;
 
 import malachite.api.models.Character;
+import malachite.api.models.User;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -17,6 +18,8 @@ import org.json.JSONObject;
 public final class API {
   private API() { }
   
+  private static final String APPLICATION_JSON = "application/json"; //$NON-NLS-1$
+  
   public static void check(CheckResponse cb) {
     Request r = new Request();
     r.setMethod(HttpMethod.GET);
@@ -25,7 +28,7 @@ public final class API {
       r.setRoute("/auth/check");
     } catch(URISyntaxException e) { }
     
-    r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
+    r.addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
     r.dispatch(resp -> {
       try {
         if(resp.succeeded()) {
@@ -56,9 +59,9 @@ public final class API {
       r.setRoute("/auth/login");
     } catch(URISyntaxException e) { }
     
-    r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
-    r.addData("email", email);
-    r.addData("password", password);
+    r.addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
+    r.addData(User.EMAIL, email);
+    r.addData(User.PASSWORD, password);
     r.dispatch(resp -> {
       try {
         if(resp.succeeded()) {
@@ -97,7 +100,7 @@ public final class API {
       r.setRoute("/storage/characters");
     } catch(URISyntaxException e) { }
     
-    r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
+    r.addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
     r.dispatch(resp -> {
       try {
         if(resp.succeeded()) {
@@ -107,7 +110,7 @@ public final class API {
           
           for(int i = 0; i < j.length(); i++) {
             JSONObject c = j.getJSONObject(i);
-            characters[i] = new Character(c.getString("name"), c.getString("race"), c.getString("sex"));
+            characters[i] = new Character(c.getString(Character.NAME), c.getString(Character.RACE), c.getString(Character.SEX));
           }
           
           cb.success(characters);
@@ -137,7 +140,7 @@ public final class API {
       r.setRoute("/lang/menu");
     } catch(URISyntaxException e) { }
     
-    r.addHeader(HttpHeaders.Names.ACCEPT, "application/json");
+    r.addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
     r.dispatch(resp -> {
       try {
         if(resp.succeeded()) {

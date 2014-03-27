@@ -83,6 +83,7 @@ public abstract class AbstractContext {
   public int     getW()         { return _w; }
   public int     getH()         { return _h; }
   public int     getFPSTarget() { return _fpsTarget; }
+  public double  getSPF      () { return _spf; }
 
   public void setTitle    (String title)      { Display.setTitle(title); }
   public void setResizable(boolean resizable) { Display.setResizable(resizable); }
@@ -117,10 +118,10 @@ public abstract class AbstractContext {
       }
     }
 
-    System.out.println("Creating context " + Display.getTitle());
-    System.out.println("Display adapter: " + Display.getAdapter());
-    System.out.println("Driver version:  " + Display.getVersion());
-    System.out.println("OpenGL version:  " + GL11.glGetString(GL11.GL_VERSION));
+    System.out.println("Creating context " + Display.getTitle()); //$NON-NLS-1$
+    System.out.println("Display adapter: " + Display.getAdapter()); //$NON-NLS-1$
+    System.out.println("Driver version:  " + Display.getVersion()); //$NON-NLS-1$
+    System.out.println("OpenGL version:  " + GL11.glGetString(GL11.GL_VERSION)); //$NON-NLS-1$
 
     GL11.glEnable(GL11.GL_BLEND);
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -128,10 +129,10 @@ public abstract class AbstractContext {
     _context = this;
     createInstances();
 
-    if(_matrix   == null) { System.err.println("!! Matrix is null !!"); }
-    if(_vertex   == null) { System.err.println("!! Vertex is null !!"); }
-    if(_drawable == null) { System.err.println("!! Drawable is null !!"); }
-    if(_scalable == null) { System.err.println("!! Scalable is null !!"); }
+    if(_matrix   == null) { System.err.println("!! Matrix is null !!"); } //$NON-NLS-1$
+    if(_vertex   == null) { System.err.println("!! Vertex is null !!"); } //$NON-NLS-1$
+    if(_drawable == null) { System.err.println("!! Drawable is null !!"); } //$NON-NLS-1$
+    if(_scalable == null) { System.err.println("!! Scalable is null !!"); } //$NON-NLS-1$
 
     updateSize();
 

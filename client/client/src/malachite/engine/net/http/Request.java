@@ -14,14 +14,12 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultHttpRequest;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpRequestEncoder;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
@@ -31,8 +29,6 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder.ErrorDataEnc
 import io.netty.util.CharsetUtil;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -43,8 +39,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Request {
-  private static final String URL = "api.malachite.monoxidedesign.com";
-  private static final String RoutePrefix = "";
+  private static final String URL = "api.malachite.monoxidedesign.com"; //$NON-NLS-1$
+  private static final String RoutePrefix = ""; //$NON-NLS-1$
+  private static final String CookieDir = "cookies/"; //$NON-NLS-1$
 
   private static EventLoopGroup _group;
   private static Bootstrap _bootstrap;
@@ -84,25 +81,16 @@ public class Request {
               r = new Response();
               r._response = response;
 
-              //for(String name : response.headers().names()) {
-              //  for(String val : response.headers().getAll(name)) {
-              //    System.out.println("HEADER: " + name + ": " + val); //$NON-NLS-1$ //$NON-NLS-2$
-              //  }
-              //}
-              
               if(response.headers().contains(HttpHeaders.Names.SET_COOKIE)) {
-                OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream("cookies/" + URL));
-                o.write(response.headers().get(HttpHeaders.Names.SET_COOKIE));
-                o.close();
+                try(OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream(CookieDir + URL))) {
+                  o.write(response.headers().get(HttpHeaders.Names.SET_COOKIE));
+                }
               }
 
               if(response.getStatus().code() >= 200 &&
                  response.getStatus().code() <= 299 &&
                  HttpHeaders.isTransferEncodingChunked(response)) {
                 _chunked = true;
-                //System.out.println("CHUNKED CONTENT {"); //$NON-NLS-1$
-              } else {
-                //System.out.println("CONTENT {"); //$NON-NLS-1$
               }
             } else if(msg instanceof HttpContent) {
               HttpContent chunk = (HttpContent)msg;
@@ -110,15 +98,10 @@ public class Request {
               if(chunk instanceof LastHttpContent) {
                 if(_chunked) {
                   _chunked = false;
-                  //System.out.println("} END OF CHUNKED CONTENT"); //$NON-NLS-1$
-                } else {
-                  //System.out.println("} END OF CONTENT"); //$NON-NLS-1$
                 }
 
                 _cb.remove(ctx.channel()).onResponse(r);
               } else {
-                //System.out.println(chunk.content().toString(CharsetUtil.UTF_8));
-
                 r._content += chunk.content().toString(CharsetUtil.UTF_8);
               }
             }
@@ -168,7 +151,7 @@ public class Request {
         
         request.headers().set(HttpHeaders.Names.HOST, URL);
         
-        try(BufferedReader br = new BufferedReader(new FileReader("cookies/" + URL))) {
+        try(BufferedReader br = new BufferedReader(new FileReader(CookieDir + URL))) {
           request.headers().set(HttpHeaders.Names.COOKIE, br.readLine());
         } catch(FileNotFoundException e) { }
         

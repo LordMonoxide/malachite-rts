@@ -1,11 +1,19 @@
 <?php
 
 return [
+  // Status
+  'status.loading'      => 'Loading...',
+  'status.connecting'   => 'Connecting...',
+  'status.loggingin'    => 'Logging in...',
+  'status.gettingchars' => 'Getting characters...',
+  
   // Login menu
   'login.title'    => 'Login',
   'login.email'    => 'Email',
   'login.pass'     => 'Password',
   'login.remember' => 'Remember me',
+  'login.login'    => 'Login',
+  'login.register' => 'Register...',
   
   // Register menu
   'register.title'   => 'Register',

@@ -181,7 +181,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
     _controlList.enable();
     
     if(_disabled < 0) {
-      System.err.println("You screwed up and enabled " + this + " more times than it was disabled.");
+      System.err.println("You screwed up and enabled " + this + " more times than it was disabled."); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 

@@ -168,7 +168,7 @@ public abstract class AbstractGUI {
         _selectControl.handleMouseDown(x - getAllX(_selectControl), y - getAllY(_selectControl), button);
         handled = true;
       } else {
-        System.err.println("Found no controls of this colour");
+        System.err.println("Found no controls of this colour"); //$NON-NLS-1$
       }
     }
 
@@ -256,9 +256,9 @@ public abstract class AbstractGUI {
       _forceSelect = !_forceSelect;
 
       if(_forceSelect) {
-        System.out.println("Switching GUI render mode to select");
+        System.out.println("Switching GUI render mode to select"); //$NON-NLS-1$
       } else {
-        System.out.println("Switching GUI render mode to normal");
+        System.out.println("Switching GUI render mode to normal"); //$NON-NLS-1$
       }
     }
 

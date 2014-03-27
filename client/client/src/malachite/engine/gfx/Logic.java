@@ -25,7 +25,7 @@ class Logic implements Runnable {
     _thread = new Thread(this);
     _thread.start();
 
-    System.out.println("Logic thread started.");
+    System.out.println("Logic thread started."); //$NON-NLS-1$
   }
 
   public void stop() {
@@ -70,7 +70,7 @@ class Logic implements Runnable {
 
     _finished = true;
 
-    System.out.println("Logic thread finished.");
+    System.out.println("Logic thread finished."); //$NON-NLS-1$
   }
 
   protected void keyboard() {

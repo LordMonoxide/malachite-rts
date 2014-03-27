@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import malachite.api.API;
 import malachite.api.Lang;
+import malachite.api.Lang.MenuKeys;
 import malachite.api.models.Character;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
@@ -52,7 +53,7 @@ public class MainMenu extends AbstractGUI {
     _wndLogin = new Window();
     _wndLogin.setWH(400, 300);
     _wndLogin.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
-    _wndLogin.setText(Lang.Menu.get(Lang.MenuKeys.LOGIN_TITLE));
+    _wndLogin.setText(Lang.Menu.get(MenuKeys.LOGIN_TITLE));
     _wndLogin.hide();
     _wndLogin.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
@@ -69,22 +70,22 @@ public class MainMenu extends AbstractGUI {
     _txtEmail = new Textbox();
     _txtEmail.setXY(4, 4);
     _txtEmail.setH(20);
-    _txtEmail.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.LOGIN_EMAIL));
+    _txtEmail.setTextPlaceholder(Lang.Menu.get(MenuKeys.LOGIN_EMAIL));
 
     _txtPass = new Textbox();
     _txtPass.setXY(_txtEmail.getX(), _txtEmail.getY() + _txtEmail.getH() + 8);
     _txtPass.setH(20);
-    _txtPass.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.LOGIN_PASS));
+    _txtPass.setTextPlaceholder(Lang.Menu.get(MenuKeys.LOGIN_PASS));
     _txtPass.setMasked(true);
 
     _chkRemember = new Check();
     _chkRemember.setXY(_txtPass.getX(), _txtPass.getY() + _txtPass.getH() + 8);
-    _chkRemember.setText(Lang.Menu.get(Lang.MenuKeys.LOGIN_REMEMBER));
+    _chkRemember.setText(Lang.Menu.get(MenuKeys.LOGIN_REMEMBER));
 
     _btnLogin = new Button();
     _btnLogin.setY(_txtPass.getY() + _txtPass.getH() + 8);
     _btnLogin.setWH(50, 20);
-    _btnLogin.setText("Login");
+    _btnLogin.setText(Lang.Menu.get(MenuKeys.LOGIN_LOGIN));
     _btnLogin.events().addClickHandler(new ControlEvents.Click() {
       @Override public void click()    { attemptLogin(); }
       @Override public void clickDbl() { }
@@ -93,7 +94,7 @@ public class MainMenu extends AbstractGUI {
     _btnRegister = new Button();
     _btnRegister.setY(_btnLogin.getY());
     _btnRegister.setWH(80, 20);
-    _btnRegister.setText("Register...");
+    _btnRegister.setText(Lang.Menu.get(MenuKeys.LOGIN_REGISTER));
     _btnRegister.events().addClickHandler(new ControlEvents.Click() {
       @Override
       public void click() {
@@ -110,7 +111,7 @@ public class MainMenu extends AbstractGUI {
     _wndRegister = new Window();
     _wndRegister.setWH(400, 300);
     _wndRegister.setXY((_context.getW() - _wndRegister.getW()) / 2, (_context.getH() - _wndRegister.getH()) / 2);
-    _wndRegister.setText(Lang.Menu.get(Lang.MenuKeys.REGISTER_TITLE));
+    _wndRegister.setText(Lang.Menu.get(MenuKeys.REGISTER_TITLE));
     _wndRegister.hide();
     _wndRegister.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
@@ -124,22 +125,22 @@ public class MainMenu extends AbstractGUI {
     _txtRegisterEmail = new Textbox();
     _txtRegisterEmail.setXY(4, 4);
     _txtRegisterEmail.setH(20);
-    _txtRegisterEmail.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.REGISTER_EMAIL));
+    _txtRegisterEmail.setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_EMAIL));
 
     _txtRegisterPass[0] = new Textbox();
     _txtRegisterPass[0].setXY(_txtRegisterEmail.getX(), _txtRegisterEmail.getY() + _txtRegisterEmail.getH() + 8);
     _txtRegisterPass[0].setH(20);
-    _txtRegisterPass[0].setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.REGISTER_PASS));
+    _txtRegisterPass[0].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_PASS));
     _txtRegisterPass[0].setMasked(true);
 
     _txtRegisterPass[1] = new Textbox();
     _txtRegisterPass[1].setXY(_txtRegisterPass[0].getX(), _txtRegisterPass[0].getY() + _txtRegisterPass[0].getH() + 8);
     _txtRegisterPass[1].setH(20);
-    _txtRegisterPass[1].setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.REGISTER_CONFIRM));
+    _txtRegisterPass[1].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_CONFIRM));
     _txtRegisterPass[1].setMasked(true);
     
     _wndChars = new Window();
-    _wndChars.setText(Lang.Menu.get(Lang.MenuKeys.CHARS_TITLE));
+    _wndChars.setText(Lang.Menu.get(MenuKeys.CHARS_TITLE));
     _wndChars.setWH(400, 300);
     _wndChars.setXY((_context.getW() - _wndChars.getW()) / 2, (_context.getH() - _wndChars.getH()) / 2);
     _wndChars.hide();
@@ -156,15 +157,15 @@ public class MainMenu extends AbstractGUI {
     
     _btnCharDel = new Button();
     _btnCharDel.setWH(50, 20);
-    _btnCharDel.setText(Lang.Menu.get(Lang.MenuKeys.CHARS_DEL));
+    _btnCharDel.setText(Lang.Menu.get(MenuKeys.CHARS_DEL));
     
     _btnCharNew = new Button();
     _btnCharNew.setWH(50, 20);
-    _btnCharNew.setText(Lang.Menu.get(Lang.MenuKeys.CHARS_NEW));
+    _btnCharNew.setText(Lang.Menu.get(MenuKeys.CHARS_NEW));
     
     _btnCharUse = new Button();
     _btnCharUse.setWH(50, 20);
-    _btnCharUse.setText(Lang.Menu.get(Lang.MenuKeys.CHARS_USE));
+    _btnCharUse.setText(Lang.Menu.get(MenuKeys.CHARS_USE));
     
     controls().add(_wndLogin);
     controls().add(_wndRegister);
@@ -210,7 +211,7 @@ public class MainMenu extends AbstractGUI {
   }
   
   private void checkLogin() {
-    Message connecting = Message.wait("Connecting...", "Connecting...");
+    Message connecting = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_CONNECTING));
     connecting.push();
     
     API.check(new API.CheckResponse() {
@@ -237,7 +238,7 @@ public class MainMenu extends AbstractGUI {
   }
   
   private void attemptLogin() {
-    Message wait = Message.wait("Logging in...", "Please wait.");
+    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_LOGGINGIN));
     wait.push();
     
     _wndLogin.disable();
@@ -282,7 +283,7 @@ public class MainMenu extends AbstractGUI {
   }
   
   private void showCharacters() {
-    Message wait = Message.wait("Getting characters...", "Please wait.");
+    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_GETTINGCHARS));
     wait.push();
     
     API.characters(new API.CharacterResponse() {
@@ -292,7 +293,7 @@ public class MainMenu extends AbstractGUI {
         
         for(Character c : characters) {
           //_lstChars.add(c.name + ", a " + c.sex + ' ' + c.race, null);
-          _lstChars.add(Lang.Menu.get(Lang.MenuKeys.CHARS_LIST, c.name, c.sex, c.race), null);
+          _lstChars.add(Lang.Menu.get(MenuKeys.CHARS_LIST, c.name, c.sex, c.race), null);
         }
       }
       

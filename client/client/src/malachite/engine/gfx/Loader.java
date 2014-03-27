@@ -19,12 +19,11 @@ public class Loader implements Runnable {
   public int getFPS() { return _fps; }
 
   public void start() {
-    System.out.println("Starting");
     _running = true;
     _thread.setPriority(Thread.MIN_PRIORITY);
     _thread.start();
 
-    System.out.println("Loader thread started.");
+    System.out.println("Loader thread started."); //$NON-NLS-1$
   }
 
   public void stop() {
@@ -81,7 +80,7 @@ public class Loader implements Runnable {
       _thread.notifyAll();
     }
 
-    System.out.println("Loader thread finished.");
+    System.out.println("Loader thread finished."); //$NON-NLS-1$
   }
 
   public interface Callback { void load(); }
