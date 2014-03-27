@@ -132,12 +132,12 @@ public final class API {
     });
   }
   
-  public static void langMenu(LangResponse cb) {
+  public static void lang(String route, LangResponse cb) {
     Request r = new Request();
     r.setMethod(HttpMethod.GET);
     
     try {
-      r.setRoute("/lang/menu");
+      r.setRoute(route);
     } catch(URISyntaxException e) { }
     
     r.addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
