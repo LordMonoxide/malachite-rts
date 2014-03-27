@@ -52,7 +52,7 @@ public class MainMenu extends AbstractGUI {
     _wndLogin = new Window();
     _wndLogin.setWH(400, 300);
     _wndLogin.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
-    _wndLogin.setText(Lang.Menu.get(Lang.MenuKeys.LOGIN_TITLE.toString()));
+    _wndLogin.setText(Lang.Menu.get(Lang.MenuKeys.LOGIN_TITLE));
     _wndLogin.hide();
     _wndLogin.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
@@ -69,17 +69,17 @@ public class MainMenu extends AbstractGUI {
     _txtEmail = new Textbox();
     _txtEmail.setXY(4, 4);
     _txtEmail.setH(20);
-    _txtEmail.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.LOGIN_EMAIL.toString()));
+    _txtEmail.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.LOGIN_EMAIL));
 
     _txtPass = new Textbox();
     _txtPass.setXY(_txtEmail.getX(), _txtEmail.getY() + _txtEmail.getH() + 8);
     _txtPass.setH(20);
-    _txtPass.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.LOGIN_PASS.toString()));
+    _txtPass.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.LOGIN_PASS));
     _txtPass.setMasked(true);
 
     _chkRemember = new Check();
     _chkRemember.setXY(_txtPass.getX(), _txtPass.getY() + _txtPass.getH() + 8);
-    _chkRemember.setText(Lang.Menu.get(Lang.MenuKeys.LOGIN_REMEMBER.toString()));
+    _chkRemember.setText(Lang.Menu.get(Lang.MenuKeys.LOGIN_REMEMBER));
 
     _btnLogin = new Button();
     _btnLogin.setY(_txtPass.getY() + _txtPass.getH() + 8);
@@ -110,7 +110,7 @@ public class MainMenu extends AbstractGUI {
     _wndRegister = new Window();
     _wndRegister.setWH(400, 300);
     _wndRegister.setXY((_context.getW() - _wndRegister.getW()) / 2, (_context.getH() - _wndRegister.getH()) / 2);
-    _wndRegister.setText(Lang.Menu.get(Lang.MenuKeys.REGISTER_TITLE.toString()));
+    _wndRegister.setText(Lang.Menu.get(Lang.MenuKeys.REGISTER_TITLE));
     _wndRegister.hide();
     _wndRegister.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
@@ -124,22 +124,22 @@ public class MainMenu extends AbstractGUI {
     _txtRegisterEmail = new Textbox();
     _txtRegisterEmail.setXY(4, 4);
     _txtRegisterEmail.setH(20);
-    _txtRegisterEmail.setTextPlaceholder("Email");
+    _txtRegisterEmail.setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.REGISTER_EMAIL));
 
     _txtRegisterPass[0] = new Textbox();
     _txtRegisterPass[0].setXY(_txtRegisterEmail.getX(), _txtRegisterEmail.getY() + _txtRegisterEmail.getH() + 8);
     _txtRegisterPass[0].setH(20);
-    _txtRegisterPass[0].setTextPlaceholder("Password");
+    _txtRegisterPass[0].setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.REGISTER_PASS));
     _txtRegisterPass[0].setMasked(true);
 
     _txtRegisterPass[1] = new Textbox();
     _txtRegisterPass[1].setXY(_txtRegisterPass[0].getX(), _txtRegisterPass[0].getY() + _txtRegisterPass[0].getH() + 8);
     _txtRegisterPass[1].setH(20);
-    _txtRegisterPass[1].setTextPlaceholder("Confirm Password");
+    _txtRegisterPass[1].setTextPlaceholder(Lang.Menu.get(Lang.MenuKeys.REGISTER_CONFIRM));
     _txtRegisterPass[1].setMasked(true);
     
     _wndChars = new Window();
-    _wndChars.setText("Characters");
+    _wndChars.setText(Lang.Menu.get(Lang.MenuKeys.CHARS_TITLE));
     _wndChars.setWH(400, 300);
     _wndChars.setXY((_context.getW() - _wndChars.getW()) / 2, (_context.getH() - _wndChars.getH()) / 2);
     _wndChars.hide();
@@ -156,15 +156,15 @@ public class MainMenu extends AbstractGUI {
     
     _btnCharDel = new Button();
     _btnCharDel.setWH(50, 20);
-    _btnCharDel.setText("Del");
+    _btnCharDel.setText(Lang.Menu.get(Lang.MenuKeys.CHARS_DEL));
     
     _btnCharNew = new Button();
     _btnCharNew.setWH(50, 20);
-    _btnCharNew.setText("New");
+    _btnCharNew.setText(Lang.Menu.get(Lang.MenuKeys.CHARS_NEW));
     
     _btnCharUse = new Button();
     _btnCharUse.setWH(50, 20);
-    _btnCharUse.setText("Use");
+    _btnCharUse.setText(Lang.Menu.get(Lang.MenuKeys.CHARS_USE));
     
     controls().add(_wndLogin);
     controls().add(_wndRegister);
@@ -291,7 +291,8 @@ public class MainMenu extends AbstractGUI {
         _wndChars.show();
         
         for(Character c : characters) {
-          _lstChars.add(c.name + ", a " + c.sex + ' ' + c.race, null);
+          //_lstChars.add(c.name + ", a " + c.sex + ' ' + c.race, null);
+          _lstChars.add(Lang.Menu.get(Lang.MenuKeys.CHARS_LIST, c.name, c.sex, c.race), null);
         }
       }
       
