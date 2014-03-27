@@ -1,6 +1,5 @@
 package malachite.gui;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import malachite.api.API;
@@ -30,6 +29,9 @@ public class MainMenu extends AbstractGUI {
   
   private Window _wndChars;
   private List<?> _lstChars;
+  private Button _btnCharUse;
+  private Button _btnCharNew;
+  private Button _btnCharDel;
 
   @Override
   protected void load() {
@@ -148,6 +150,10 @@ public class MainMenu extends AbstractGUI {
     
     _lstChars = new List<>();
     
+    _btnCharUse = new Button();
+    _btnCharUse.setWH(80, 20);
+    _btnCharUse.setText("Use");
+    
     controls().add(_wndLogin);
     controls().add(_wndRegister);
     controls().add(_wndChars);
@@ -164,6 +170,7 @@ public class MainMenu extends AbstractGUI {
     _wndRegister.controls().add(_txtRegisterPass[1]);
     
     _wndChars.controls().add(_lstChars);
+    _wndChars.controls().add(_btnCharUse);
     
     checkLogin();
   }
