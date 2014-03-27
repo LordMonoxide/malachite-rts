@@ -44,7 +44,6 @@ public class TextureBuilder {
     }
 
     _lock++;
-    System.out.println("Texture \"" + file + "\" loading to memory..."); //$NON-NLS-1$ //$NON-NLS-2$
 
     ByteBuffer data = null;
 
