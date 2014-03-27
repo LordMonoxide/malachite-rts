@@ -20,25 +20,38 @@ public final class API {
   
   private static final String APPLICATION_JSON = "application/json"; //$NON-NLS-1$
   
-  public static void check(CheckResponse cb) {
+  private static final String NOT_AUTHED_SHOW          = "show";     //$NON-NLS-1$
+  private static final String NOT_AUTHED_SHOW_LOGIN    = "login";    //$NON-NLS-1$
+  private static final String NOT_AUTHED_SHOW_SECURITY = "security"; //$NON-NLS-1$
+  
+  private static void dispatch(Route route, Request.Callback resp) {
+    dispatch(route, null, resp);
+  }
+  
+  private static void dispatch(Route route, Map<String, String> data, Request.Callback resp) {
     Request r = new Request();
-    r.setMethod(HttpMethod.GET);
+    r.setMethod(route.method);
     
-    try{
-      r.setRoute("/auth/check");
+    try {
+      r.setRoute(route.route);
     } catch(URISyntaxException e) { }
     
     r.addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
-    r.dispatch(resp -> {
+    r.setData(data);
+    r.dispatch(resp);
+  }
+  
+  public static void check(CheckResponse cb) {
+    dispatch(Route.Auth.Check, resp -> {
       try {
         if(resp.succeeded()) {
           cb.loggedIn();
         } else {
           if(resp.response().getStatus().code() == 401) {
             JSONObject j = new JSONObject(resp.content());
-            switch(j.getString("show")) {
-              case "login":    cb.loginRequired();    break;
-              case "security": cb.securityRequired(); break;
+            switch(j.getString(NOT_AUTHED_SHOW)) {
+              case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
+              case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
               default:         cb.error(resp);
             }
           } else {
@@ -52,17 +65,11 @@ public final class API {
   }
 
   public static void login(String email, String password, LoginResponse cb) {
-    Request r = new Request();
-    r.setMethod(HttpMethod.POST);
+    Map<String, String> data = new HashMap<>();
+    data.put(User.EMAIL,    email);
+    data.put(User.PASSWORD, password);
     
-    try {
-      r.setRoute("/auth/login");
-    } catch(URISyntaxException e) { }
-    
-    r.addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
-    r.addData(User.EMAIL, email);
-    r.addData(User.PASSWORD, password);
-    r.dispatch(resp -> {
+    dispatch(Route.Auth.Login, data, resp -> {
       try {
         if(resp.succeeded()) {
           cb.success();
@@ -70,9 +77,9 @@ public final class API {
           switch(resp.response().getStatus().code()) {
             case 401:
               JSONObject j = new JSONObject(resp.content());
-              switch(j.getString("security")) {
-                case "login":    cb.loginRequired();    break;
-                case "security": cb.securityRequired(); break;
+              switch(j.getString(NOT_AUTHED_SHOW)) {
+                case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
+                case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
                 default:         cb.error(resp);
               }
               
@@ -93,15 +100,7 @@ public final class API {
   }
   
   public static void characters(CharacterResponse cb) {
-    Request r = new Request();
-    r.setMethod(HttpMethod.GET);
-    
-    try {
-      r.setRoute("/storage/characters");
-    } catch(URISyntaxException e) { }
-    
-    r.addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
-    r.dispatch(resp -> {
+    dispatch(Route.Storage.Characters.All, resp -> {
       try {
         if(resp.succeeded()) {
           JSONArray j = new JSONArray(resp.content());
@@ -117,9 +116,9 @@ public final class API {
         } else {
           if(resp.response().getStatus().code() == 401) {
             JSONObject j = new JSONObject(resp.content());
-            switch(j.getString("show")) {
-              case "login":    cb.loginRequired();    break;
-              case "security": cb.securityRequired(); break;
+            switch(j.getString(NOT_AUTHED_SHOW)) {
+              case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
+              case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
               default:         cb.error(resp);
             }
           } else {
@@ -132,16 +131,8 @@ public final class API {
     });
   }
   
-  public static void lang(String route, LangResponse cb) {
-    Request r = new Request();
-    r.setMethod(HttpMethod.GET);
-    
-    try {
-      r.setRoute(route);
-    } catch(URISyntaxException e) { }
-    
-    r.addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
-    r.dispatch(resp -> {
+  public static void lang(Route route, LangResponse cb) {
+    dispatch(route, resp -> {
       try {
         if(resp.succeeded()) {
           JSONObject j = new JSONObject(resp.content());
@@ -187,5 +178,90 @@ public final class API {
   public interface LangResponse {
     public void success(Map<String, String> lang);
     public void error(Response r);
+  }
+  
+  public static class Route {
+    public final String route;
+    public final HttpMethod method;
+    
+    private Route(String route, HttpMethod method) {
+      this.route  = route;
+      this.method = method;
+    }
+    
+    public static class Lang {
+      public static final App  App  = new App();
+      public static final Menu Menu = new Menu();
+      
+      private Lang() { }
+      
+      public static class App extends Route {
+        private App() {
+          super("/lang/app", HttpMethod.GET); //$NON-NLS-1$
+        }
+      }
+      
+      public static class Menu extends Route {
+        private Menu() {
+          super("/lang/menu", HttpMethod.GET); //$NON-NLS-1$
+        }
+      }
+    }
+    
+    public static class Auth {
+      public static final Check    Check    = new Check();
+      public static final Register Register = new Register();
+      public static final Login    Login    = new Login();
+      public static final Logout   Logout   = new Logout();
+      public static final Security Security = new Security(HttpMethod.GET);
+      public static final Security Unlock   = new Security(HttpMethod.POST);
+      
+      private Auth() { }
+      
+      public static class Check extends Route {
+        private Check() {
+          super("/auth/check", HttpMethod.GET); //$NON-NLS-1$
+        }
+      }
+      
+      public static class Register extends Route {
+        private Register() {
+          super("/auth/register", HttpMethod.PUT); //$NON-NLS-1$
+        }
+      }
+      
+      public static class Login extends Route {
+        private Login() {
+          super("/auth/login", HttpMethod.POST); //$NON-NLS-1$
+        }
+      }
+      
+      public static class Logout extends Route {
+        private Logout() {
+          super("/auth/logout", HttpMethod.POST); //$NON-NLS-1$
+        }
+      }
+      
+      public static class Security extends Route {
+        private Security(HttpMethod method) {
+          super("/auth/security", method); //$NON-NLS-1$
+        }
+      }
+    }
+    
+    public static class Storage {
+      private Storage() { }
+      
+      public static class Characters extends Route {
+        public static final Characters All    = new Characters(HttpMethod.GET);
+        public static final Characters Create = new Characters(HttpMethod.PUT);
+        public static final Characters Delete = new Characters(HttpMethod.DELETE);
+        public static final Characters Choose = new Characters(HttpMethod.POST);
+        
+        private Characters(HttpMethod method) {
+          super("/storage/characters", method); //$NON-NLS-1$
+        }
+      }
+    }
   }
 }

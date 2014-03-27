@@ -11,6 +11,8 @@ import java.util.Map;
 public class TextureBuilder {
   private static TextureBuilder _instance = new TextureBuilder();
   public static TextureBuilder getInstance() { return _instance; }
+  
+  private static final String TEXTURES_DIR = "gfx/textures/"; //$NON-NLS-1$
 
   private Map<String, Texture> _textures = new HashMap<>();
   private int _lock;
@@ -28,7 +30,7 @@ public class TextureBuilder {
     _textures.put(name, texture);
     _lock--;
 
-    System.out.println("Texture \"" + name + "\" (" + w + "x" + h +") loaded. (" + (Time.get() - t) + ")");
+    System.out.println("Texture \"" + name + "\" (" + w + 'x' + h + ") loaded. (" + (Time.get() - t) + ')'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     return texture;
   }
@@ -42,14 +44,14 @@ public class TextureBuilder {
     }
 
     _lock++;
-    System.out.println("Texture \"" + file + "\" loading to memory...");
+    System.out.println("Texture \"" + file + "\" loading to memory..."); //$NON-NLS-1$ //$NON-NLS-2$
 
     ByteBuffer data = null;
 
     int w, h;
 
     try {
-      File f = new File("gfx/textures/" + file);
+      File f = new File(TEXTURES_DIR + file);
 
       try(InputStream in = new FileInputStream(f)) {
         PNGDecoder png = new PNGDecoder(in);
@@ -62,7 +64,7 @@ public class TextureBuilder {
         data.flip();
       }
     } catch(FileNotFoundException e) {
-      System.err.println("Couldn't find texture \"" + file + '\"');
+      System.err.println("Couldn't find texture \"" + file + '\"'); //$NON-NLS-1$
       _lock--;
       return null;
     } catch(IOException e) {
@@ -76,7 +78,7 @@ public class TextureBuilder {
 
     _lock--;
 
-    System.out.println("Texture \"" + file + "\" (" + w + 'x' + h +") loaded. (" + (Time.get() - t) + ')');
+    System.out.println("Texture \"" + file + "\" (" + w + 'x' + h +") loaded. (" + (Time.get() - t) + ')'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     return texture;
   }

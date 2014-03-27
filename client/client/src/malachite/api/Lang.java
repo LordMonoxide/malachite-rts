@@ -11,7 +11,7 @@ public class Lang<T> {
   public static void load() {
     System.out.println("Getting lang..."); //$NON-NLS-1$
     
-    API.lang("/lang/app", new API.LangResponse() {
+    API.lang(API.Route.Lang.App, new API.LangResponse() {
       @Override public void success(Map<String, String> lang) {
         App._lang = lang;
       }
@@ -21,7 +21,7 @@ public class Lang<T> {
       }
     });
     
-    API.lang("/lang/menu", new API.LangResponse() {
+    API.lang(API.Route.Lang.Menu, new API.LangResponse() {
       @Override public void success(Map<String, String> lang) {
         Menu._lang = lang;
       }
