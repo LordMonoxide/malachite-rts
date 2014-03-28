@@ -42,7 +42,7 @@ public class List<T> extends AbstractControl<ControlEvents> {
   protected void resize() {
     _inner.setWH(_w, _h);
     
-    AbstractControl<?> c = _inner.controls().first();
+    AbstractControl<? extends ControlEvents> c = _inner.controls().first();
     while(c != null) {
       c.setW(_w);
       c = c.controlPrev();
@@ -69,6 +69,8 @@ public class List<T> extends AbstractControl<ControlEvents> {
     
     private Item(String text, T data) {
       super(
+          InitFlags.REGISTER,
+          InitFlags.ACCEPTS_FOCUS,
           InitFlags.WITH_BORDER,
           InitFlags.WITH_DEFAULT_EVENTS
       );
