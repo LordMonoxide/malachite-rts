@@ -209,10 +209,22 @@ public abstract class AbstractControl<T extends ControlEvents> {
   }
 
   public void show() {
+    if(_events != null) {
+      if(_events.raiseVisibilityShow()) {
+        return;
+      }
+    }
+    
     _visible = true;
   }
 
   public void hide() {
+    if(_events != null) {
+      if(_events.raiseVisibilityHide()) {
+        return;
+      }
+    }
+    
     if(!_visible) { return; }
     _visible = false;
     setFocus(false);

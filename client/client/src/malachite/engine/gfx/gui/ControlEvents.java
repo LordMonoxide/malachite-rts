@@ -4,23 +4,25 @@ import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class ControlEvents {
-  private Deque<Draw>   _draw   = new ConcurrentLinkedDeque<>();
-  private Deque<Mouse>  _mouse  = new ConcurrentLinkedDeque<>();
-  private Deque<Key>    _key    = new ConcurrentLinkedDeque<>();
-  private Deque<Click>  _click  = new ConcurrentLinkedDeque<>();
-  private Deque<Scroll> _scroll = new ConcurrentLinkedDeque<>();
-  private Deque<Hover>  _hover  = new ConcurrentLinkedDeque<>();
-  private Deque<Focus>  _focus  = new ConcurrentLinkedDeque<>();
-  private Deque<Resize> _resize = new ConcurrentLinkedDeque<>();
+  private Deque<Draw>       _draw       = new ConcurrentLinkedDeque<>();
+  private Deque<Mouse>      _mouse      = new ConcurrentLinkedDeque<>();
+  private Deque<Key>        _key        = new ConcurrentLinkedDeque<>();
+  private Deque<Click>      _click      = new ConcurrentLinkedDeque<>();
+  private Deque<Scroll>     _scroll     = new ConcurrentLinkedDeque<>();
+  private Deque<Hover>      _hover      = new ConcurrentLinkedDeque<>();
+  private Deque<Focus>      _focus      = new ConcurrentLinkedDeque<>();
+  private Deque<Resize>     _resize     = new ConcurrentLinkedDeque<>();
+  private Deque<Visibility> _visibility = new ConcurrentLinkedDeque<>();
 
-  public void addDrawHandler  (Draw   e) { _draw  .add(e); }
-  public void addMouseHandler (Mouse  e) { _mouse .add(e); }
-  public void addKeyHandler   (Key    e) { _key   .add(e); }
-  public void addClickHandler (Click  e) { _click .add(e); }
-  public void addScrollHandler(Scroll e) { _scroll.add(e); }
-  public void addHoverHandler (Hover  e) { _hover .add(e); }
-  public void addFocusHandler (Focus  e) { _focus .add(e); }
-  public void addResizeHandler(Resize e) { _resize.add(e); }
+  public void addDrawHandler      (Draw   e)     { _draw  .add(e); }
+  public void addMouseHandler     (Mouse  e)     { _mouse .add(e); }
+  public void addKeyHandler       (Key    e)     { _key   .add(e); }
+  public void addClickHandler     (Click  e)     { _click .add(e); }
+  public void addScrollHandler    (Scroll e)     { _scroll.add(e); }
+  public void addHoverHandler     (Hover  e)     { _hover .add(e); }
+  public void addFocusHandler     (Focus  e)     { _focus .add(e); }
+  public void addResizeHandler    (Resize e)     { _resize.add(e); }
+  public void addVisibilityHandler(Visibility e) { _visibility.add(e); }
 
   protected AbstractControl<? extends ControlEvents> _control;
 
@@ -133,6 +135,28 @@ public class ControlEvents {
     }
   }
 
+  public boolean raiseVisibilityShow() {
+    for(Visibility e : _visibility) {
+      e._control = _control;
+      if(e.show()) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
+  public boolean raiseVisibilityHide() {
+    for(Visibility e : _visibility) {
+      e._control = _control;
+      if(e.hide()) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
   public static class Event {
     protected AbstractControl<? extends ControlEvents> _control;
     public AbstractControl<? extends ControlEvents> control() { return _control; }
@@ -175,5 +199,10 @@ public class ControlEvents {
 
   public static abstract class Resize extends Event {
     public abstract void resize();
+  }
+  
+  public static abstract class Visibility extends Event {
+    public abstract boolean show();
+    public abstract boolean hide();
   }
 }
