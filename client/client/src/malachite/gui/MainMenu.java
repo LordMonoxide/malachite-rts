@@ -6,6 +6,7 @@ import malachite.api.API;
 import malachite.api.Lang;
 import malachite.api.Lang.MenuKeys;
 import malachite.api.models.Character;
+import malachite.api.models.Race;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.builtin.Message;
@@ -30,10 +31,13 @@ public class MainMenu extends AbstractGUI {
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
   
   private Window _wndChars;
-  private List<?> _lstChars;
+  private List<Character> _lstChars;
   private Button _btnCharUse;
   private Button _btnCharNew;
   private Button _btnCharDel;
+  
+  private Window _wndNewChar;
+  private Textbox _txtNewCharName;
 
   @Override
   protected void load() {
@@ -158,18 +162,55 @@ public class MainMenu extends AbstractGUI {
     _btnCharDel = new Button();
     _btnCharDel.setWH(50, 20);
     _btnCharDel.setText(Lang.Menu.get(MenuKeys.CHARS_DEL));
+    _btnCharDel.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        deleteCharacter(_lstChars.selected().getData());
+      }
+    });
     
     _btnCharNew = new Button();
     _btnCharNew.setWH(50, 20);
     _btnCharNew.setText(Lang.Menu.get(MenuKeys.CHARS_NEW));
+    _btnCharNew.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        _wndChars.hide();
+        showCreateCharacter();
+      }
+    });
     
     _btnCharUse = new Button();
     _btnCharUse.setWH(50, 20);
     _btnCharUse.setText(Lang.Menu.get(MenuKeys.CHARS_USE));
+    _btnCharUse.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        useCharacter(_lstChars.selected().getData());
+      }
+    });
+    
+    _wndNewChar = new Window();
+    _wndNewChar.setText(Lang.Menu.get(MenuKeys.NEWCHAR_TITLE));
+    _wndNewChar.setWH(400, 300);
+    _wndNewChar.setXY((_context.getW() - _wndNewChar.getW()) / 2, (_context.getH() - _wndNewChar.getH()) / 2);
+    _wndNewChar.hide();
+    _wndNewChar.events().addResizeHandler(new ControlEvents.Resize() {
+      @Override
+      public void resize() {
+        _txtNewCharName.setW(_wndNewChar.getContentW() - _txtNewCharName.getX() * 2);
+      }
+    });
+    
+    _txtNewCharName = new Textbox();
+    _txtNewCharName.setXY(4, 4);
+    _txtNewCharName.setH(20);
+    _txtNewCharName.setTextPlaceholder(Lang.Menu.get(MenuKeys.NEWCHAR_NAME));
     
     controls().add(_wndLogin);
     controls().add(_wndRegister);
     controls().add(_wndChars);
+    controls().add(_wndNewChar);
 
     _wndLogin.controls().add(_txtEmail);
     _wndLogin.controls().add(_txtPass);
@@ -186,6 +227,8 @@ public class MainMenu extends AbstractGUI {
     _wndChars.controls().add(_btnCharDel);
     _wndChars.controls().add(_btnCharNew);
     _wndChars.controls().add(_btnCharUse);
+    
+    _wndNewChar.controls().add(_txtNewCharName);
     
     checkLogin();
   }
@@ -214,7 +257,7 @@ public class MainMenu extends AbstractGUI {
     Message connecting = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_CONNECTING));
     connecting.push();
     
-    API.check(new API.CheckResponse() {
+    API.Auth.check(new API.CheckResponse() {
       @Override public void loggedIn() {
         showCharacters();
         connecting.pop();
@@ -243,7 +286,7 @@ public class MainMenu extends AbstractGUI {
     
     _wndLogin.disable();
     
-    API.login(_txtEmail.getText(), _txtPass.getText(), new API.LoginResponse() {
+    API.Auth.login(_txtEmail.getText(), _txtPass.getText(), new API.LoginResponse() {
       @Override public void success() {
         wait.pop();
         _wndLogin.hide();
@@ -286,14 +329,13 @@ public class MainMenu extends AbstractGUI {
     Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_GETTINGCHARS));
     wait.push();
     
-    API.characters(new API.CharacterResponse() {
+    API.Storage.Characters.all(new API.CharactersAllResponse() {
       @Override public void success(Character[] characters) {
         wait.pop();
         _wndChars.show();
         
         for(Character c : characters) {
-          //_lstChars.add(c.name + ", a " + c.sex + ' ' + c.race, null);
-          _lstChars.add(Lang.Menu.get(MenuKeys.CHARS_LIST, c.name, c.sex, c.race), null);
+          _lstChars.add(Lang.Menu.get(MenuKeys.CHARS_LIST, c.name, c.sex, c.race), c);
         }
       }
       
@@ -312,5 +354,48 @@ public class MainMenu extends AbstractGUI {
         System.out.println(r.content());
       }
     });
+  }
+  
+  private void showCreateCharacter() {
+    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_GETTINGRACES));
+    wait.push();
+    
+    API.Storage.Races.all(new API.RacesAllResponse() {
+      @Override public void success(Race[] races) {
+        wait.pop();
+        _wndNewChar.show();
+        
+        for(Race r : races) {
+          System.out.println(r.name);
+        }
+      }
+      
+      @Override public void loginRequired() {
+        wait.pop();
+        showLogin();
+      }
+      
+      @Override public void securityRequired() {
+        wait.pop();
+        showSecurity();
+      }
+      
+      @Override public void error(Response r) {
+        wait.pop();
+        System.out.println(r.content());
+      }
+    });
+  }
+  
+  private void deleteCharacter(Character character) {
+    
+  }
+  
+  private void createCharacter(Character character) {
+    
+  }
+  
+  private void useCharacter(Character character) {
+    
   }
 }

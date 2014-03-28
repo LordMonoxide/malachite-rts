@@ -72,6 +72,7 @@ public class Lang<T> {
     STATUS_CONNECTING  ("status.connecting"),   //$NON-NLS-1$
     STATUS_LOGGINGIN   ("status.loggingin"),    //$NON-NLS-1$
     STATUS_GETTINGCHARS("status.gettingchars"), //$NON-NLS-1$
+    STATUS_GETTINGRACES("status.gettingraces"), //$NON-NLS-1$
     
     LOGIN_TITLE   ("login.title"),    //$NON-NLS-1$
     LOGIN_EMAIL   ("login.email"),    //$NON-NLS-1$

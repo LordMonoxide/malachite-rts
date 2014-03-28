@@ -6,6 +6,7 @@ return [
   'status.connecting'   => 'Connecting...',
   'status.loggingin'    => 'Logging in...',
   'status.gettingchars' => 'Getting characters...',
+  'status.gettingraces' => 'Getting races...',
   
   // Login menu
   'login.title'    => 'Login',

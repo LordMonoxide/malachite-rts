@@ -1,6 +1,7 @@
 package malachite.api;
 
 import malachite.api.models.Character;
+import malachite.api.models.Race;
 import malachite.api.models.User;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
@@ -109,7 +110,7 @@ public final class API {
     public static final class Characters {
       private Characters() { }
       
-      public static void all(CharacterResponse cb) {
+      public static void all(CharactersAllResponse cb) {
         dispatch(Route.Storage.Characters.All, resp -> {
           try {
             if(resp.succeeded()) {
@@ -123,6 +124,42 @@ public final class API {
               }
               
               cb.success(characters);
+            } else {
+              if(resp.response().getStatus().code() == 401) {
+                JSONObject j = new JSONObject(resp.content());
+                switch(j.getString(NOT_AUTHED_SHOW)) {
+                  case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
+                  case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
+                  default:         cb.error(resp);
+                }
+              } else {
+                cb.error(resp);
+              }
+            }
+          } catch(JSONException e) {
+            cb.error(resp);
+          }
+        });
+      }
+    }
+    
+    public static final class Races {
+      private Races() { }
+      
+      public static void all(RacesAllResponse cb) {
+        dispatch(Route.Storage.Races.All, resp -> {
+          try {
+            if(resp.succeeded()) {
+              JSONArray j = new JSONArray(resp.content());
+              
+              Race[] races = new Race[j.length()];
+              
+              for(int i = 0; i < j.length(); i++) {
+                JSONObject r = j.getJSONObject(i);
+                races[i] = new Race(r.getString(Race.NAME));
+              }
+              
+              cb.success(races);
             } else {
               if(resp.response().getStatus().code() == 401) {
                 JSONObject j = new JSONObject(resp.content());
@@ -180,8 +217,15 @@ public final class API {
     public void error(Response r);
   }
   
-  public interface CharacterResponse {
+  public interface CharactersAllResponse {
     public void success(Character[] characters);
+    public void loginRequired();
+    public void securityRequired();
+    public void error(Response r);
+  }
+  
+  public interface RacesAllResponse {
+    public void success(Race[] races);
     public void loginRequired();
     public void securityRequired();
     public void error(Response r);
@@ -272,6 +316,14 @@ public final class API {
         
         private Characters(HttpMethod method) {
           super("/storage/characters", method); //$NON-NLS-1$
+        }
+      }
+      
+      public static class Races extends Route {
+        public static final Races All = new Races(HttpMethod.GET);
+        
+        private Races(HttpMethod method) {
+          super("/storage/races", method); //$NON-NLS-1$
         }
       }
     }
