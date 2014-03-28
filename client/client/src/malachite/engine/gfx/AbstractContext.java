@@ -281,13 +281,13 @@ public abstract class AbstractContext {
   public int[] getNextSelectColour() {
     int[] colour = {_selectColour[0], _selectColour[1], _selectColour[2], _selectColour[3]};
 
-    _selectColour[0]+=10;
+    _selectColour[0]++;
     if(_selectColour[0] == 255) {
       _selectColour[0] = 0;
-      _selectColour[1]+=10;
+      _selectColour[1]++;
       if(_selectColour[1] == 255) {
         _selectColour[1] = 0;
-        _selectColour[2]+=10;
+        _selectColour[2]++;
       }
     }
 
