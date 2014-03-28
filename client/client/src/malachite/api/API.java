@@ -41,94 +41,106 @@ public final class API {
     r.dispatch(resp);
   }
   
-  public static void check(CheckResponse cb) {
-    dispatch(Route.Auth.Check, resp -> {
-      try {
-        if(resp.succeeded()) {
-          cb.loggedIn();
-        } else {
-          if(resp.response().getStatus().code() == 401) {
-            JSONObject j = new JSONObject(resp.content());
-            switch(j.getString(NOT_AUTHED_SHOW)) {
-              case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
-              case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
-              default:         cb.error(resp);
-            }
-          } else {
-            cb.error(resp);
-          }
-        }
-      } catch(JSONException e) {
-        cb.error(resp);
-      }
-    });
-  }
-
-  public static void login(String email, String password, LoginResponse cb) {
-    Map<String, String> data = new HashMap<>();
-    data.put(User.EMAIL,    email);
-    data.put(User.PASSWORD, password);
+  public static final class Auth {
+    private Auth() { }
     
-    dispatch(Route.Auth.Login, data, resp -> {
-      try {
-        if(resp.succeeded()) {
-          cb.success();
-        } else {
-          switch(resp.response().getStatus().code()) {
-            case 401:
+    public static void check(CheckResponse cb) {
+      dispatch(Route.Auth.Check, resp -> {
+        try {
+          if(resp.succeeded()) {
+            cb.loggedIn();
+          } else {
+            if(resp.response().getStatus().code() == 401) {
               JSONObject j = new JSONObject(resp.content());
               switch(j.getString(NOT_AUTHED_SHOW)) {
                 case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
                 case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
                 default:         cb.error(resp);
               }
-              
-              break;
-            
-            case 409:
-              cb.invalid(new JSONObject(resp.content()));
-              break;
-            
-            default:
+            } else {
               cb.error(resp);
+            }
           }
+        } catch(JSONException e) {
+          cb.error(resp);
         }
-      } catch(JSONException e) {
-        cb.error(resp);
-      }
-    });
+      });
+    }
+  
+    public static void login(String email, String password, LoginResponse cb) {
+      Map<String, String> data = new HashMap<>();
+      data.put(User.EMAIL,    email);
+      data.put(User.PASSWORD, password);
+      
+      dispatch(Route.Auth.Login, data, resp -> {
+        try {
+          if(resp.succeeded()) {
+            cb.success();
+          } else {
+            switch(resp.response().getStatus().code()) {
+              case 401:
+                JSONObject j = new JSONObject(resp.content());
+                switch(j.getString(NOT_AUTHED_SHOW)) {
+                  case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
+                  case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
+                  default:         cb.error(resp);
+                }
+                
+                break;
+              
+              case 409:
+                cb.invalid(new JSONObject(resp.content()));
+                break;
+              
+              default:
+                cb.error(resp);
+            }
+          }
+        } catch(JSONException e) {
+          cb.error(resp);
+        }
+      });
+    }
   }
   
-  public static void characters(CharacterResponse cb) {
-    dispatch(Route.Storage.Characters.All, resp -> {
-      try {
-        if(resp.succeeded()) {
-          JSONArray j = new JSONArray(resp.content());
-          
-          Character[] characters = new Character[j.length()];
-          
-          for(int i = 0; i < j.length(); i++) {
-            JSONObject c = j.getJSONObject(i);
-            characters[i] = new Character(c.getString(Character.NAME), c.getString(Character.RACE), c.getString(Character.SEX));
-          }
-          
-          cb.success(characters);
-        } else {
-          if(resp.response().getStatus().code() == 401) {
-            JSONObject j = new JSONObject(resp.content());
-            switch(j.getString(NOT_AUTHED_SHOW)) {
-              case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
-              case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
-              default:         cb.error(resp);
+  public static final class Storage {
+    private Storage() { }
+    
+    public static final class Characters {
+      private Characters() { }
+      
+      public static void all(CharacterResponse cb) {
+        dispatch(Route.Storage.Characters.All, resp -> {
+          try {
+            if(resp.succeeded()) {
+              JSONArray j = new JSONArray(resp.content());
+              
+              Character[] characters = new Character[j.length()];
+              
+              for(int i = 0; i < j.length(); i++) {
+                JSONObject c = j.getJSONObject(i);
+                characters[i] = new Character(c.getString(Character.NAME), c.getString(Character.RACE), c.getString(Character.SEX));
+              }
+              
+              cb.success(characters);
+            } else {
+              if(resp.response().getStatus().code() == 401) {
+                JSONObject j = new JSONObject(resp.content());
+                switch(j.getString(NOT_AUTHED_SHOW)) {
+                  case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
+                  case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
+                  default:         cb.error(resp);
+                }
+              } else {
+                cb.error(resp);
+              }
             }
-          } else {
+          } catch(JSONException e) {
             cb.error(resp);
           }
-        }
-      } catch(JSONException e) {
-        cb.error(resp);
+        });
       }
-    });
+    }
   }
   
   public static void lang(Route route, LangResponse cb) {
