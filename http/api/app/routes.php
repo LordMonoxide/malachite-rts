@@ -21,4 +21,8 @@ Route::group(['prefix' => 'storage'], function() {
     Route::delete('/', ['as' => 'storage.characters.delete', 'uses' => 'storage\CharacterController@delete']);
     Route::post  ('/', ['as' => 'storage.characters.choose', 'uses' => 'storage\CharacterController@choose']);
   });
+  
+  Route::group(['prefix' => 'races'], function() {
+    Route::get('/', ['as' => 'storage.races.all', 'uses' => 'storage\RaceController@all']);
+  });
 });
