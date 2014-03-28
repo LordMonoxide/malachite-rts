@@ -79,6 +79,12 @@ public abstract class AbstractControl<T extends ControlEvents> {
 
   protected void setGUI(AbstractGUI gui) {
     _gui = gui;
+    
+    AbstractControl<? extends ControlEvents> c = _controlList.first();
+    while(c != null) {
+      c.setGUI(gui);
+      c = c._controlPrev;
+    }
   }
 
   public ControlList controls() {
