@@ -26,5 +26,13 @@ return [
   'chars.new'   => 'New',
   'chars.del'   => 'Delete',
   'chars.use'   => 'Play',
-  'chars.list'  => ':name, a :sex :race'
+  'chars.list'  => ':name, a :sex :race',
+  
+  // New char menu
+  'newchar.title'  => 'New Character',
+  'newchar.name'   => 'Name',
+  'newchar.race'   => 'Race',
+  'newchar.sex'    => 'Sex',
+  'newchar.male'   => 'Male',
+  'newchar.female' => 'Female'
 ];

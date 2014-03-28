@@ -89,7 +89,14 @@ public class Lang<T> {
     CHARS_NEW  ("chars.new"),   //$NON-NLS-1$
     CHARS_DEL  ("chars.del"),   //$NON-NLS-1$
     CHARS_USE  ("chars.use"),   //$NON-NLS-1$
-    CHARS_LIST ("chars.list");  //$NON-NLS-1$
+    CHARS_LIST ("chars.list"),  //$NON-NLS-1$
+    
+    NEWCHAR_TITLE ("newchar.title"),  //$NON-NLS-1$
+    NEWCHAR_NAME  ("newchar.name"),   //$NON-NLS-1$
+    NEWCHAR_RACE  ("newchar.race"),   //$NON-NLS-1$
+    NEWCHAR_SEX   ("newchar.sex"),    //$NON-NLS-1$
+    NEWCHAR_MALE  ("newchar.male"),   //$NON-NLS-1$
+    NEWCHAR_FEMALE("newchar.female"); //$NON-NLS-1$
     
     String _text;
     
