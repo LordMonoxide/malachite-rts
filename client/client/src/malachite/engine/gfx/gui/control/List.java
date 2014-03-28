@@ -45,7 +45,7 @@ public class List<T> extends AbstractControl<ControlEvents> {
     AbstractControl<?> c = _inner.controls().first();
     while(c != null) {
       c.setW(_w);
-      c = c.controlNext();
+      c = c.controlPrev();
     }
   }
   
