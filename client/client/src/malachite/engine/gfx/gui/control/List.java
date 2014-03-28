@@ -15,6 +15,8 @@ public class List<T> extends AbstractControl<ControlEvents> {
   private float[] _normalBorder = {160f / 0xFF, 147f / 0xFF, 111f / 0xFF, 1};
   private float[] _hoverBorder  = { 11f / 0xFF, 126f / 0xFF,   0f / 0xFF, 1};
   
+  private Item _selected;
+  
   public List() {
     super(
         InitFlags.REGISTER,
@@ -36,6 +38,10 @@ public class List<T> extends AbstractControl<ControlEvents> {
     i.setWH(_w, 20);
     _inner.controls().add(i);
     return i;
+  }
+  
+  public Item selected() {
+    return _selected;
   }
   
   @Override
@@ -115,10 +121,12 @@ public class List<T> extends AbstractControl<ControlEvents> {
     }
     
     private class FocusHandler extends ControlEvents.Focus {
+      @SuppressWarnings("unchecked")
       @Override
       public void got() {
         _border.setColour(_hoverBorder);
         _border.createBorder();
+        _selected = (List<T>.Item)_control;
       }
 
       @Override
