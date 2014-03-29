@@ -394,6 +394,10 @@ public abstract class AbstractControl<T extends ControlEvents> {
 
   protected final void drawEnd() {
     if(_visible) {
+      if(_events != null) {
+        _events.raiseDraw();
+      }
+      
       _controlList.draw();
 
       if(_border != null) {
