@@ -38,6 +38,8 @@ public class MainMenu extends AbstractGUI {
   
   private Window _wndNewChar;
   private Textbox _txtNewCharName;
+  private Dropdown<Race> _drpNewCharRace;
+  private Dropdown<String> _drpNewCharSex;
 
   @Override
   protected void load() {
@@ -199,6 +201,8 @@ public class MainMenu extends AbstractGUI {
       @Override
       public void resize() {
         _txtNewCharName.setW(_wndNewChar.getContentW() - _txtNewCharName.getX() * 2);
+        _drpNewCharRace.setW(_wndNewChar.getContentW() - _drpNewCharRace.getX() * 2);
+        _drpNewCharSex .setW(_wndNewChar.getContentW() - _drpNewCharSex .getX() * 2);
       }
     });
     
@@ -206,6 +210,16 @@ public class MainMenu extends AbstractGUI {
     _txtNewCharName.setXY(4, 4);
     _txtNewCharName.setH(20);
     _txtNewCharName.setTextPlaceholder(Lang.Menu.get(MenuKeys.NEWCHAR_NAME));
+    
+    _drpNewCharRace = new Dropdown<>();
+    _drpNewCharRace.setXY(_txtNewCharName.getX(), _txtNewCharName.getY() + _txtNewCharName.getH() + 8);
+    _drpNewCharRace.setH(20);
+    
+    _drpNewCharSex = new Dropdown<>();
+    _drpNewCharSex.setXY(_drpNewCharRace.getX(), _drpNewCharRace.getY() + _drpNewCharRace.getH() + 8);
+    _drpNewCharSex.setH(20);
+    _drpNewCharSex.add("Male", "male");
+    _drpNewCharSex.add("Female", "female");
     
     controls().add(_wndLogin);
     controls().add(_wndRegister);
@@ -227,8 +241,10 @@ public class MainMenu extends AbstractGUI {
     _wndChars.controls().add(_btnCharDel);
     _wndChars.controls().add(_btnCharNew);
     _wndChars.controls().add(_btnCharUse);
-    
+
     _wndNewChar.controls().add(_txtNewCharName);
+    _wndNewChar.controls().add(_drpNewCharRace);
+    _wndNewChar.controls().add(_drpNewCharSex);
     
     checkLogin();
   }
@@ -366,7 +382,7 @@ public class MainMenu extends AbstractGUI {
         _wndNewChar.show();
         
         for(Race r : races) {
-          System.out.println(r.name);
+          _drpNewCharRace.add(r.name, r);
         }
       }
       
