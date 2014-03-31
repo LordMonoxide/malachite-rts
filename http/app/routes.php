@@ -28,3 +28,10 @@ Route::group(['prefix' => 'api'], function() {
     });
   });
 });
+
+Route::group(['prefix' => 'auth'], function() {
+  Route::post('login', ['as' => 'auth.login', 'uses' => 'auth\AuthController@login']);
+});
+
+Route::get ('/',      ['as' => 'home',  'uses' => 'RootController@home']);
+Route::get ('/login', ['as' => 'login', 'uses' => 'RootController@login']);
