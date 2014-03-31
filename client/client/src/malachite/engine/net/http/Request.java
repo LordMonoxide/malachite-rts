@@ -39,8 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Request {
-  private static final String URL = "api.malachite.monoxidedesign.com"; //$NON-NLS-1$
-  private static final String RoutePrefix = ""; //$NON-NLS-1$
+  private static final String URL = "malachite.monoxidedesign.com"; //$NON-NLS-1$
+  private static final String RoutePrefix = "/api"; //$NON-NLS-1$
   private static final String CookieDir = "cookies/"; //$NON-NLS-1$
 
   private static EventLoopGroup _group;
