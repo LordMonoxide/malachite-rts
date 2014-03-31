@@ -1,4 +1,4 @@
-<?php namespace storage;
+<?php namespace api\storage;
 
 use Controller;
 use Response;

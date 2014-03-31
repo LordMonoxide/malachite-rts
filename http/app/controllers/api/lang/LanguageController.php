@@ -1,4 +1,4 @@
-<?php namespace lang;
+<?php namespace api\lang;
 
 use Controller;
 use Lang;

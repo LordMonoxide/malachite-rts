@@ -1,4 +1,4 @@
-<?php namespace auth;
+<?php namespace api\auth;
 
 use Auth;
 use Controller;
