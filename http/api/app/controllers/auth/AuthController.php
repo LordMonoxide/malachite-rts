@@ -40,7 +40,7 @@ class AuthController extends Controller {
       
       Auth::login($user, $remember);
       
-      return Response::json({'id' => Auth::user()->id}, 200);
+      return Response::json(['id' => Auth::user()->id], 200);
     } else {
       return Response::json($validator->messages(), 409);
     }
@@ -73,7 +73,7 @@ class AuthController extends Controller {
         ], 401);
       }
       
-      return Response::json({'id' => Auth::user()->id}, 200);
+      return Response::json(['id' => Auth::user()->id], 200);
     } else {
       return Response::json($validator->messages(), 409);
     }
