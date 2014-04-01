@@ -14,11 +14,19 @@ class AuthController extends BaseController {
     $response = Route::dispatch($request);
     
     switch($response->getStatusCode()) {
-      case 200:
-        
+      case 401:
+        dd($response->getData());
+        break;
+      
+      case 409:
+        dd($response->getData());
+        break;
+      
+      default:
+        dd($response->getData());
         break;
     }
     
-    return Redirect::intended('home');
+    return Redirect::intended(URL::route('home'));
   }
 }
