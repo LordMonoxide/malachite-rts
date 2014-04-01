@@ -11,7 +11,7 @@
     {{ Form::label('email', Lang::get('menu.login.email')) }}
     {{ Form::email('email') }}
     {{ Form::label('password', Lang::get('menu.login.pass')) }}
-    {{ Form::email('password') }}
+    {{ Form::password('password') }}
     {{ Form::submit(Lang::get('menu.login.login')) }}
     {{ Form::close() }}
   </body>
