@@ -16,4 +16,30 @@ class ForumForum extends Eloquent {
   public function posts() {
     return $this->hasMany('ForumPost', 'forum_id');
   }
+  
+  public function getNameForUriAttribute() {
+    $name = strtolower($this->attributes['name']);
+    $name = str_replace(' ', '-', $name);
+    
+    if(strlen($name) > 20) {
+      $name = substr($name, 0, 20);
+    }
+    
+    return $name;
+  }
+  
+  public function getPathAttribute() {
+    if($this->attributes['parent_id'] != null) {
+      $path = $this->id . '-' . $this->getNameForUriAttribute();
+      $parent = ForumForum::where('id', '=', $this->attributes['parent_id'])->first();
+      while($parent != null) {
+        $path = $parent->id . '-' . $parent->getNameForUriAttribute() . '/' . $path;
+        $parent = $parent->parent;
+      }
+    } else {
+      $path = $this->id . '-' . $this->getNameForUriAttribute();
+    }
+    
+    return $path;
+  }
 }
