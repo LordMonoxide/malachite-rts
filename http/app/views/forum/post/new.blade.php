@@ -19,6 +19,7 @@
             @foreach($forums as $f)
               {{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }} >
             @endforeach
+              @lang('forum.newpost.title')
             </th>
           </tr>
         </thead>

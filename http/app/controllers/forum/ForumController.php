@@ -22,10 +22,16 @@ class ForumController extends BaseController {
     $pattern = '/(?:[0-9]+(?:-[-\w]+)?)+/';
     $forums = [];
     $lastForum = null;
+    $post = false;
     
     foreach($paths as $path) {
       if($path === 'new') {
-        return View::make('forum.newpost')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum);
+        return View::make('forum.post.new')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum);
+      }
+      
+      if($path === 'post') {
+        $post = true;
+        continue;
       }
       
       if(preg_match($pattern, $path) === 0) {
@@ -33,6 +39,16 @@ class ForumController extends BaseController {
       }
       
       $forum = explode('-', $path, 1)[0];
+      
+      if($post) {
+        $post = Post::where('id', '=', $forum)->where('forum_id', '=', $lastForum->id)->first();
+        
+        if($post === null) {
+          App::abort(404);
+        }
+        
+        return View::make('forum.post.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('post', $post);
+      }
       
       if($lastForum === null) {
         $forum = Forum::where('id', '=', $forum)->where('category_id', '=', $category->id)->first();

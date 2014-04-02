@@ -53,7 +53,7 @@
         <tbody>
           @foreach($forum->posts as $post)
           <tr>
-            <td>{{{ $post->title }}}</td>
+            <td>{{ HTML::linkAction('forum.view', $post->title, [$category->path, $forum->path . '/post/' . $post->id]) }}</td>
             <td>{{{ $post->creator->name_first }}} {{{ $post->creator->name_last }}}</td>
           </tr>
           @endforeach
