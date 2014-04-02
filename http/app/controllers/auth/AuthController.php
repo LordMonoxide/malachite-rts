@@ -29,4 +29,15 @@ class AuthController extends BaseController {
     
     return Redirect::intended(URL::route('home'));
   }
+  
+  public function logout() {
+    $request = Request::create(URL::route('api.auth.logout'), 'POST');
+    $response = Route::dispatch($request);
+    
+    if($response->getStatusCode() === 204) {
+      return Redirect::home();
+    }
+    
+    return 'Error logging out?';
+  }
 }

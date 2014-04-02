@@ -30,7 +30,8 @@ Route::group(['prefix' => 'api'], function() {
 });
 
 Route::group(['prefix' => 'auth'], function() {
-  Route::post('login', ['as' => 'auth.login', 'uses' => 'auth\AuthController@login']);
+  Route::post('login',  ['as' => 'auth.login',  'uses' => 'auth\AuthController@login']);
+  Route::get ('logout', ['as' => 'auth.logout', 'uses' => 'auth\AuthController@logout']);
 });
 
 Route::group(['prefix' => 'forum'], function() {
