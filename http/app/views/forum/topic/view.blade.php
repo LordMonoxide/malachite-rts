@@ -19,7 +19,7 @@
               @foreach($forums as $f)
               {{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }} >
               @endforeach
-              {{{ $post->title }}}
+              {{{ $topic->title }}}
             </th>
           </tr>
         </thead>
