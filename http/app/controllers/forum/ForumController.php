@@ -24,6 +24,10 @@ class ForumController extends BaseController {
     $lastForum = null;
     
     foreach($paths as $path) {
+      if($path === 'new') {
+        return View::make('forum.newpost')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum);
+      }
+      
       if(preg_match($pattern, $path) === 0) {
         App::abort(404);
       }

@@ -59,6 +59,8 @@
           @endforeach
         </tbody>
       </table>
+      
+      {{ HTML::linkAction('forum.view', Lang::get('forum.new'), [$category->path, $forum->path . '/new']) }}
     </section>
   </body>
 </html>
