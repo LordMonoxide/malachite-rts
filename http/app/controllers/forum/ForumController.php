@@ -43,6 +43,8 @@ class ForumController extends BaseController {
       $forums[] = $forum;
       $lastForum = $forum;
     }
+    
+    return View::make('forum.view')->with('forums', $forums)->with('forum', $lastForum);
   }
   
   public function category($category) {
