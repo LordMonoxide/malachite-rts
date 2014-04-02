@@ -15,9 +15,9 @@
         <thead>
           <tr>
             <th>
-            {{ HTML::linkAction('forum.category', $category->name, $category->id) }} >
+            {{ HTML::linkAction('forum.category', $category->name, $category->path) }} >
             @foreach($forums as $f)
-              {{ HTML::linkAction('forum.view', $f->name, [$category->id, $f->path]) }} >
+              {{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }} >
             @endforeach
             </th>
           </tr>
@@ -35,7 +35,7 @@
         <tbody>
           @foreach($forum->children as $child)
           <tr>
-            <td>{{ HTML::linkAction('forum.view', $child->name, [$category->id, $child->path]) }}</td>
+            <td>{{ HTML::linkAction('forum.view', $child->name, [$category->path, $child->path]) }}</td>
           </tr>
           @endforeach
         </tbody>

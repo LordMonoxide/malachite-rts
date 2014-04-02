@@ -15,7 +15,7 @@
       <table class="category pure-table pure-table-horizontal pure-table-striped">
         <thead>
           <tr>
-            <th>{{ HTML::linkAction('forum.category', $category->name, $category->id) }}</th>
+            <th>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</th>
           </tr>
         </thead>
         

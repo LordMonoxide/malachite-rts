@@ -14,14 +14,14 @@
       <table class="forum pure-table pure-table-horizontal pure-table-striped">
         <thead>
           <tr>
-            <th>{{ HTML::linkAction('forum.category', $category->name, $category->id) }}</th>
+            <th>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</th>
           </tr>
         </thead>
         
         <tbody>
         @foreach($category->forums as $forum)
           <tr>
-            <td>{{ HTML::linkAction('forum.view', $forum->name, [$category->id, $forum->path]) }}</td>
+            <td>{{ HTML::linkAction('forum.view', $forum->name, [$category->path, $forum->path]) }}</td>
           </tr>
         @endforeach
         </tbody>
