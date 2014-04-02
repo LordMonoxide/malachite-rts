@@ -33,5 +33,16 @@ Route::group(['prefix' => 'auth'], function() {
   Route::post('login', ['as' => 'auth.login', 'uses' => 'auth\AuthController@login']);
 });
 
+Route::group(['prefix' => 'forum'], function() {
+  Route::model('category', 'ForumCategory');
+  //Route::model('forum',    'ForumForum');
+  //Route::model('post',     'ForumPost');
+  
+  Route::get('/',                       ['as' => 'forum.index',    'uses' => 'forum\ForumController@index']);
+  Route::get('/view/{category}',        ['as' => 'forum.category', 'uses' => 'forum\ForumController@category'])->where('category', '^[0-9]+(-[-\w]+)?$');
+  Route::get('/view/{category}/{path}', ['as' => 'forum.view',     'uses' => 'forum\ForumController@view'])    ->where('category', '^[0-9]+(-[-\w]+)?$')->where('path', '.+');
+  //Route::get('/forum/{forum}',       ['as' => 'forum.forum',    'uses' => 'forum\ForumController@forum']);
+});
+
 Route::get ('/',      ['as' => 'home',  'uses' => 'RootController@home']);
 Route::get ('/login', ['as' => 'login', 'uses' => 'RootController@login']);
