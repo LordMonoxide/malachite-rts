@@ -37,6 +37,10 @@ Route::group(['prefix' => 'auth'], function() {
 Route::group(['prefix' => 'forum'], function() {
   Route::model('category', 'ForumCategory');
   
+  Route::group(['prefix' => 'topic'], function() {
+    Route::put('/', ['as' => 'forum.topic.new', 'uses' => 'forum\ForumController@newTopic']);
+  });
+  
   Route::get('/',                       ['as' => 'forum.index',    'uses' => 'forum\ForumController@index']);
   Route::get('/view/{category}',        ['as' => 'forum.category', 'uses' => 'forum\ForumController@category'])->where('category', '^[0-9]+(-[-\w]+)?$');
   Route::get('/view/{category}/{path}', ['as' => 'forum.view',     'uses' => 'forum\ForumController@view'])    ->where('category', '^[0-9]+(-[-\w]+)?$')->where('path', '.+');

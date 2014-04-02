@@ -1,11 +1,17 @@
 <?php namespace forum;
 
 use App;
+use Auth;
+use Input;
+use Redirect;
+use Session;
+use Validator;
 use View;
 
 use BaseController;
 use ForumCategory as Category;
 use ForumForum as Forum;
+use ForumTopic as Topic;
 use ForumPost as Post;
 
 class ForumController extends BaseController {
@@ -62,6 +68,8 @@ class ForumController extends BaseController {
       
       $forums[] = $forum;
       $lastForum = $forum;
+      
+      Session::flash('forum', $lastForum->id);
     }
     
     return View::make('forum.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum);
@@ -69,5 +77,30 @@ class ForumController extends BaseController {
   
   public function category($category) {
     return View::make('forum.category')->with('category', $category);
+  }
+  
+  public function newTopic() {
+    $validator = Validator::make(Input::all(), [
+      'title' => ['required', 'min:4', 'max:64', 'regex:/^[\S ]+$/'],
+      'body'  => ['required', 'min:8']
+    ]);
+    
+    if($validator->passes()) {
+      $topic = new Topic;
+      $topic->forum_id = Session::get('forum');
+      $topic->creator_id = Auth::user()->id;
+      $topic->title = Input::get('title');
+      $topic->save();
+      
+      $post = new Post;
+      $post->topic_id = $topic->id;
+      $post->author_id = Auth::user()->id;
+      $post->body = Input::get('body');
+      $post->save();
+      
+      return Redirect::back();
+    } else {
+      return Redirect::back()->withInput(Input::all())->withErrors($validator->messages());
+    }
   }
 }
