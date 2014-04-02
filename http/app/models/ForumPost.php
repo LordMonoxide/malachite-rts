@@ -1,11 +1,11 @@
 <?php
 
 class ForumPost extends Eloquent {
-  public function forum() {
-    return $this->belongsTo('ForumForum', 'forum_id');
+  public function topic() {
+    return $this->belongsTo('ForumTopic', 'topic_id');
   }
   
-  public function creator() {
-    return $this->belongsTo('User', 'creator_id');
+  public function author() {
+    return $this->belongsTo('User', 'auther_id');
   }
 }

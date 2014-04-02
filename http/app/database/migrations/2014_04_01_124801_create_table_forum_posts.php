@@ -7,17 +7,15 @@ class CreateTableForumPosts extends Migration {
 	public function up() {
     Schema::create('forum_posts', function($table) {
       $table->increments('id');
-      $table->integer('forum_id')->unsigned();
-      $table->integer('creator_id')->unsigned();
-      $table->boolean('pinned')->default(false);
-      $table->string('title', 64);
+      $table->integer('topic_id')->unsigned();
+      $table->integer('author_id')->unsigned();
       $table->longText('body');
       
-      $table->foreign('forum_id')
+      $table->foreign('topic_id')
             ->references('id')
-            ->on('forum_forums');
+            ->on('forum_topics');
       
-      $table->foreign('creator_id')
+      $table->foreign('author_id')
             ->references('id')
             ->on('users');
     });

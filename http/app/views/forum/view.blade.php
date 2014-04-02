@@ -51,10 +51,10 @@
         </thead>
         
         <tbody>
-          @foreach($forum->posts as $post)
+          @foreach($forum->topics as $topic)
           <tr>
-            <td>{{ HTML::linkAction('forum.view', $post->title, [$category->path, $forum->path . '/post/' . $post->id]) }}</td>
-            <td>{{{ $post->creator->name_first }}} {{{ $post->creator->name_last }}}</td>
+            <td>{{ HTML::linkAction('forum.view', $topic->title, [$category->path, $forum->path . '/topic/' . $topic->id]) }}</td>
+            <td>{{{ $topic->creator->name_first }}} {{{ $topic->creator->name_last }}}</td>
           </tr>
           @endforeach
         </tbody>

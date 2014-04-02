@@ -13,8 +13,8 @@ class ForumForum extends Eloquent {
     return $this->hasMany('ForumForum', 'parent_id');
   }
   
-  public function posts() {
-    return $this->hasMany('ForumPost', 'forum_id');
+  public function topics() {
+    return $this->hasMany('ForumTopic', 'forum_id');
   }
   
   public function getNameForUriAttribute() {

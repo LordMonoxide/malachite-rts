@@ -22,15 +22,15 @@ class ForumController extends BaseController {
     $pattern = '/(?:[0-9]+(?:-[-\w]+)?)+/';
     $forums = [];
     $lastForum = null;
-    $post = false;
+    $topic = false;
     
     foreach($paths as $path) {
       if($path === 'new') {
-        return View::make('forum.post.new')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum);
+        return View::make('forum.topic.new')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum);
       }
       
-      if($path === 'post') {
-        $post = true;
+      if($path === 'topic') {
+        $topic = true;
         continue;
       }
       
@@ -40,14 +40,14 @@ class ForumController extends BaseController {
       
       $forum = explode('-', $path, 1)[0];
       
-      if($post) {
-        $post = Post::where('id', '=', $forum)->where('forum_id', '=', $lastForum->id)->first();
+      if($topic) {
+        $topic = Topic::where('id', '=', $forum)->where('forum_id', '=', $lastForum->id)->first();
         
-        if($post === null) {
+        if($topic === null) {
           App::abort(404);
         }
         
-        return View::make('forum.post.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('post', $post);
+        return View::make('forum.topic.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('topic', $topic);
       }
       
       if($lastForum === null) {
@@ -70,8 +70,4 @@ class ForumController extends BaseController {
   public function category($category) {
     return View::make('forum.category')->with('category', $category);
   }
-  
-  /*public function forum($forum) {
-    return View::make('forum.forum')->with('forum', $forum);
-  }*/
 }

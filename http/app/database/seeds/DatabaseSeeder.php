@@ -56,6 +56,20 @@ class TableSeeder extends Seeder {
       'question' => 'The answer to this question is 3',
       'answer' => '3'
     ]);
+    
+    $cat = ForumCategory::create([
+      'name' => 'Test Category'
+    ]);
+    
+    $f[] = ForumForum::create([
+      'category_id' => $cat->id,
+      'name'        => 'Test Forum'
+    ]);
+    
+    $f[] = ForumForum::create([
+      'parent_id' => $f[0]->id,
+      'name'      => 'Subforum'
+    ]);
   }
 }
 
