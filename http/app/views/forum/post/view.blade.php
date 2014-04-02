@@ -15,10 +15,10 @@
         <thead>
           <tr>
             <th>
-            {{ HTML::linkAction('forum.category', $category->name, $category->path) }} >
-            @foreach($forums as $f)
+              {{ HTML::linkAction('forum.category', $category->name, $category->path) }} >
+              @foreach($forums as $f)
               {{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }} >
-            @endforeach
+              @endforeach
               {{{ $post->title }}}
             </th>
           </tr>
