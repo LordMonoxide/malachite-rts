@@ -19,7 +19,7 @@ class AuthController extends BaseController {
         break;
       
       case 409:
-        dd($response->getData());
+        return Redirect::back()->withInput(Input::only('email'))->withErrors($response->getData());
         break;
       
       default:
