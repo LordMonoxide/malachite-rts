@@ -1,0 +1,52 @@
+@import url(http://yui.yahooapis.com/pure/0.4.1/pure-min.css);
+
+.true-center-outer {
+  display: table;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.true-center-inner {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.true-center-content {
+  display: table;
+  margin: auto;
+}
+
+.popup {
+  background: #88b7d5;
+	border: 4px solid #c2e1f5;
+  position: absolute;
+  color: white;
+  font-size: 0.8em;
+  padding: 0.2em;
+}
+
+.popup:after, .popup:before {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.popup:after {
+	border-color: rgba(136, 183, 213, 0);
+	border-right-color: #88b7d5;
+	border-width: 6px;
+	margin-top: -6px;
+}
+
+.popup:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-right-color: #c2e1f5;
+	border-width: 12px;
+	margin-top: -12px;
+}
