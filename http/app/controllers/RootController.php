@@ -6,7 +6,7 @@ class RootController extends BaseController {
   }
   
   public function home() {
-    
+    return View::make('index');
   }
   
   public function login() {
