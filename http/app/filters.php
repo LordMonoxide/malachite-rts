@@ -37,6 +37,12 @@ Route::filter('auth', function() {
   }
 });
 
+Route::filter('nauth', function() {
+  if(Auth::check()) {
+    return Redirect::home();
+  }
+});
+
 Route::filter('nauth.409', function() {
   if(Auth::check()) {
     return Response::json(['error' => ['Already logged in.']], 409);
