@@ -11,6 +11,7 @@ class CreateTableTopics extends Migration {
       $table->integer('creator_id')->unsigned();
       $table->boolean('pinned')->default(false);
       $table->string('title', 64);
+      $table->timestamps();
       
       $table->foreign('forum_id')
             ->references('id')
