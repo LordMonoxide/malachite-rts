@@ -6,6 +6,6 @@ class ForumPost extends Eloquent {
   }
   
   public function author() {
-    return $this->belongsTo('User', 'auther_id');
+    return $this->belongsTo('User', 'author_id');
   }
 }
