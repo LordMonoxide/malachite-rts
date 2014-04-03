@@ -11,6 +11,15 @@
   
   <body>
     <section>
+      <div class="pure-menu pure-menu-open pure-menu-horizontal">
+        <ul>
+          <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
+          <li>></li>
+        </ul>
+      </div>
+    </section>
+    
+    <section>
       @foreach($categories as $category)
       <table class="category pure-table pure-table-horizontal pure-table-striped">
         <thead>

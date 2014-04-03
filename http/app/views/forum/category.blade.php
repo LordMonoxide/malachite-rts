@@ -13,6 +13,8 @@
     <section>
       <div class="pure-menu pure-menu-open pure-menu-horizontal">
         <ul>
+          <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
+          <li>></li>
           <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
           <li>></li>
         </ul>
