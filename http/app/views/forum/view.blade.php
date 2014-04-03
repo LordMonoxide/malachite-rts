@@ -43,17 +43,22 @@
           <tr>
             <th>@lang('forum.title')</th>
             <th>@lang('forum.replies')</th>
+            <th class="topic-newest-post">@lang('forum.newestpost')</th>
           </tr>
         </thead>
         
         <tbody>
           @foreach($forum->topics as $topic)
           <tr>
-            <td>
+            <td class="topic-name">
               <img style="float:right;" src="{{ $topic->creator->avatar }}?s=40" alt="Avatar" />
               @lang('forum.topic.link', ['title' => $topic->title, 'category' => $category->path, 'topic' => $topic->path, 'user' => $topic->creator->name, 'date' => $topic->created_at])
             </td>
-            <td>{{ $topic->posts->count() }}</td>
+            <td class="topic-post-count">{{ $topic->posts->count() }}</td>
+            <td class="topic-newest-post">
+              <?php $newest = $topic->posts()->newest()->first(); ?>
+              @lang('forum.topic.newestpost', ['user' => $newest->author->name, 'date' => $newest->created_at])
+            </td>
           </tr>
           @endforeach
         </tbody>
