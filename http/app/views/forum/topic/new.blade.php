@@ -11,19 +11,18 @@
   
   <body>
     <section>
-      <table class="forum pure-table pure-table-horizontal pure-table-striped">
-        <thead>
-          <tr>
-            <th>
-            {{ HTML::linkAction('forum.category', $category->name, $category->path) }} >
-            @foreach($forums as $f)
-              {{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }} >
-            @endforeach
-              @lang('forum.newpost.title')
-            </th>
-          </tr>
-        </thead>
-      </table>
+      <div class="pure-menu pure-menu-open pure-menu-horizontal">
+        <ul>
+          <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
+          <li>></li>
+          @foreach($forums as $f)
+          <li>{{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }}</li>
+          <li>></li>
+          @endforeach
+          <li>@lang('forum.newpost.title')</li>
+          <li>></li>
+        </ul>
+      </div>
       
       {{ Form::open(['route' => 'forum.topic.new', 'method' => 'PUT', 'class' => 'pure-form pure-form-stacked']) }}
       {{ Form::label('title', Lang::get('forum.newpost.title')) }}
@@ -41,7 +40,6 @@
       {{ Form::textarea('body', Input::old('title')) }}
       {{ Form::submit(Lang::get('forum.newpost.submit')) }}
       {{ Form::close() }}
-      
     </section>
   </body>
 </html>

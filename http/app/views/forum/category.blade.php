@@ -14,6 +14,7 @@
       <div class="pure-menu pure-menu-open pure-menu-horizontal">
         <ul>
           <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
+          <li>></li>
         </ul>
       </div>
       
