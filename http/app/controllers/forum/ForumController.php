@@ -29,6 +29,7 @@ class ForumController extends BaseController {
     $forums = [];
     $lastForum = null;
     $topic = false;
+    $i = 0;
     
     foreach($paths as $path) {
       if($path === 'new') {
@@ -37,6 +38,7 @@ class ForumController extends BaseController {
       
       if($path === 'topic') {
         $topic = true;
+        $i++;
         continue;
       }
       
@@ -53,7 +55,15 @@ class ForumController extends BaseController {
           App::abort(404);
         }
         
-        return View::make('forum.topic.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('topic', $topic);
+        if($i === count($paths) - 1) {
+          return View::make('forum.topic.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('topic', $topic);
+        } else {
+          if($paths[$i + 1] === 'reply') {
+            return View::make('forum.topic.reply')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('topic', $topic);
+          } else {
+            App::abort(404);
+          }
+        }
       }
       
       if($lastForum === null) {
@@ -70,6 +80,8 @@ class ForumController extends BaseController {
       $lastForum = $forum;
       
       Session::flash('forum', $lastForum->id);
+      
+      $i++;
     }
     
     return View::make('forum.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum);
