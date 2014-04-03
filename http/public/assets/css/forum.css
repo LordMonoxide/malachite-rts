@@ -1,6 +1,8 @@
+@media screen and (min-width: 840px) {
 section {
   width: 80%;
   margin: auto;
+}
 }
 
 table {
@@ -19,4 +21,22 @@ table {
 
 .post-citation {
   font-size: 80%;
+}
+
+.topic-name {
+  width: 100%;
+}
+
+.topic-post-count {
+  
+}
+
+.topic-newest-post {
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 680px) {
+.topic-newest-post {
+  display: none;
+}
 }
