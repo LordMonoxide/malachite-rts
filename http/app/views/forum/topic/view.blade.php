@@ -31,7 +31,10 @@
         <tbody>
           @foreach($topic->posts as $post)
           <tr>
-            <td>{{{ $post->author->name_first }}} {{{ $post->author->name_last }}}</td>
+            <td>
+              {{{ $post->author->name_first }}} {{{ $post->author->name_last }}}<br />
+              <img src="{{ $post->author->avatar }}" alt="{{ $post->author->name_first }}'s avatar" />
+            </td>
             <td>{{{ $post->body }}}</td>
           </tr>
           @endforeach

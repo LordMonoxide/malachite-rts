@@ -29,4 +29,8 @@ protected $hidden = ['password'];
   public function ips() {
     return $this->hasMany('UserIP');
   }
+  
+  public function getAvatarAttribute() {
+    return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email)));
+  }
 }
