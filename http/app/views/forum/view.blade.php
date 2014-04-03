@@ -11,18 +11,14 @@
   
   <body>
     <section>
-      <table class="forum pure-table pure-table-horizontal pure-table-striped">
-        <thead>
-          <tr>
-            <th>
-            {{ HTML::linkAction('forum.category', $category->name, $category->path) }} >
-            @foreach($forums as $f)
-              {{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }} >
-            @endforeach
-            </th>
-          </tr>
-        </thead>
-      </table>
+      <div class="pure-menu pure-menu-open pure-menu-horizontal">
+        <ul>
+          <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
+          @foreach($forums as $f)
+          <li>{{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }}</li>
+          @endforeach
+        </ul>
+      </div>
       
       @if($forum->children()->count() != 0)
       <table class="forum pure-table pure-table-horizontal pure-table-striped">
@@ -46,15 +42,18 @@
         <thead>
           <tr>
             <th>@lang('forum.title')</th>
-            <th>@lang('forum.user')</th>
+            <th>@lang('forum.replies')</th>
           </tr>
         </thead>
         
         <tbody>
           @foreach($forum->topics as $topic)
           <tr>
-            <td>{{ HTML::linkAction('forum.view', $topic->title, [$category->path, $topic->path]) }}</td>
-            <td>{{{ $topic->creator->name_first }}} {{{ $topic->creator->name_last }}}</td>
+            <td>
+              <img style="float:right;" src="{{ $topic->creator->avatar }}?s=40" alt="Avatar" />
+              @lang('forum.topic.link', ['title' => $topic->title, 'category' => $category->path, 'topic' => $topic->path, 'user' => $topic->creator->name, 'date' => $topic->created_at])
+            </td>
+            <td>{{ $topic->posts->count() }}</td>
           </tr>
           @endforeach
         </tbody>

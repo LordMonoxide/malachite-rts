@@ -11,19 +11,15 @@
   
   <body>
     <section>
-      <table class="forum pure-table pure-table-horizontal pure-table-striped">
-        <thead>
-          <tr>
-            <th>
-              {{ HTML::linkAction('forum.category', $category->name, $category->path) }} >
-              @foreach($forums as $f)
-              {{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }} >
-              @endforeach
-              {{{ $topic->title }}}
-            </th>
-          </tr>
-        </thead>
-      </table>
+      <div class="pure-menu pure-menu-open pure-menu-horizontal">
+        <ul>
+          <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
+          @foreach($forums as $f)
+          <li>{{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }}</li>
+          @endforeach
+          <li>{{ HTML::linkAction('forum.view', $topic->title, [$category->path, $topic->path]) }}</li>
+        </ul>
+      </div>
     </section>
     
     <section>
@@ -31,11 +27,11 @@
         <tbody>
           @foreach($topic->posts as $post)
           <tr>
-            <td>
-              {{{ $post->author->name_first }}} {{{ $post->author->name_last }}}<br />
+            <td class="post-id">
+              {{{ $post->author->name }}}<br />
               <img src="{{ $post->author->avatar . '?s=128' }}" alt="{{ $post->author->name_first }}'s avatar" />
             </td>
-            <td>{{{ $post->body }}}</td>
+            <td class="post-body">{{{ $post->body }}}</td>
           </tr>
           @endforeach
         </tbody>

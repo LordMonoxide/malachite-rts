@@ -7,3 +7,16 @@ table {
   margin: 8px 0px 8px;
   width: 100%;
 }
+
+.post-id {
+  text-align: center;
+  width: 128px;
+}
+
+.post-body {
+  vertical-align: top;
+}
+
+.post-citation {
+  font-size: 80%;
+}
