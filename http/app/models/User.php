@@ -30,6 +30,10 @@ protected $hidden = ['password'];
     return $this->hasMany('UserIP');
   }
   
+  public function getNameAttribute() {
+    return $this->name_first . ' ' . $this->name_last;
+  }
+  
   public function getAvatarAttribute() {
     return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email)));
   }
