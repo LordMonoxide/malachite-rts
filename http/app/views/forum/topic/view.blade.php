@@ -33,7 +33,7 @@
           <tr>
             <td>
               {{{ $post->author->name_first }}} {{{ $post->author->name_last }}}<br />
-              <img src="{{ $post->author->avatar }}" alt="{{ $post->author->name_first }}'s avatar" />
+              <img src="{{ $post->author->avatar . '?s=128' }}" alt="{{ $post->author->name_first }}'s avatar" />
             </td>
             <td>{{{ $post->body }}}</td>
           </tr>
