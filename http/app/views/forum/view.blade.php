@@ -48,6 +48,7 @@
         </thead>
         
         <tbody>
+          @if(count($forum->topics) != 0)
           @foreach($forum->topics as $topic)
           <tr>
             <td class="topic-name">
@@ -61,6 +62,13 @@
             </td>
           </tr>
           @endforeach
+          @else
+          <tr>
+            <td class="topic-name">@lang('forum.noposts')</td>
+            <td></td>
+            <td></td>
+          </tr>
+          @endif
         </tbody>
       </table>
       
