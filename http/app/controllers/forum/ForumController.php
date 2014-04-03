@@ -86,8 +86,10 @@ class ForumController extends BaseController {
     ]);
     
     if($validator->passes()) {
+      $forum = Forum::find(Session::get('forum'));
+      
       $topic = new Topic;
-      $topic->forum_id = Session::get('forum');
+      $topic->forum_id = $forum->id;
       $topic->creator_id = Auth::user()->id;
       $topic->title = Input::get('title');
       $topic->save();
@@ -98,7 +100,7 @@ class ForumController extends BaseController {
       $post->body = Input::get('body');
       $post->save();
       
-      return Redirect::back();
+      return Redirect::route('forum.view', [$forum->category->id, $topic->path]);
     } else {
       return Redirect::back()->withInput(Input::all())->withErrors($validator->messages());
     }
