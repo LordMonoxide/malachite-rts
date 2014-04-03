@@ -31,7 +31,11 @@
               {{{ $post->author->name }}}<br />
               <img src="{{ $post->author->avatar }}?s=128" alt="{{ $post->author->name_first }}'s avatar" />
             </td>
-            <td class="post-body">{{{ $post->body }}}</td>
+            <td class="post-body">
+              <cite class="post-citation">{{ $post->created_at }}</cite>
+              <hr />
+              {{{ $post->body }}}
+            </td>
           </tr>
           @endforeach
         </tbody>
