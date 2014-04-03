@@ -31,7 +31,7 @@
         <tbody>
         @foreach($category->forums as $forum)
           <tr>
-            <td>{{ HTML::linkAction('forum.view', $forum->name, [$forum->category->id, $forum->path]) }}</td>
+            <td>{{ HTML::linkAction('forum.view', $forum->name, [$forum->category->path, $forum->path]) }}</td>
           </tr>
         @endforeach
         </tbody>
