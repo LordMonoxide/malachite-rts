@@ -29,13 +29,15 @@
           <tr>
             <td class="post-id">
               {{{ $post->author->name }}}<br />
-              <img src="{{ $post->author->avatar }}'?s=128'" alt="{{ $post->author->name_first }}'s avatar" />
+              <img src="{{ $post->author->avatar }}?s=128" alt="{{ $post->author->name_first }}'s avatar" />
             </td>
             <td class="post-body">{{{ $post->body }}}</td>
           </tr>
           @endforeach
         </tbody>
       </table>
+      
+      {{ HTML::linkAction('forum.view', Lang::get('forum.reply'), [$category->path, $topic->path . '/reply']) }}
     </section>
   </body>
 </html>
