@@ -12,4 +12,19 @@ class ForumTopic extends Eloquent {
   public function posts() {
     return $this->hasMany('ForumPost', 'topic_id');
   }
+  
+  public function getNameForUriAttribute() {
+    $name = strtolower($this->title);
+    $name = str_replace(' ', '-', $name);
+    
+    if(strlen($name) > 20) {
+      $name = substr($name, 0, 20);
+    }
+    
+    return $name;
+  }
+  
+  public function getPathAttribute() {
+    return $this->forum->path . '/topic/' . $this->id . '-' . $this->getNameForUriAttribute();
+  }
 }
