@@ -11,35 +11,24 @@
   
   <body>
     <section>
-      <table class="forum pure-table pure-table-horizontal pure-table-striped">
-        <thead>
-          <tr>
-            <th>
-            {{ HTML::linkAction('forum.category', $category->name, $category->path) }} >
-            @foreach($forums as $f)
-              {{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }} >
-            @endforeach
-              @lang('forum.newpost.title')
-            </th>
-          </tr>
-        </thead>
-      </table>
+      <div class="pure-menu pure-menu-open pure-menu-horizontal">
+        <ul>
+          <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
+          @foreach($forums as $f)
+          <li>{{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }}</li>
+          @endforeach
+          <li>{{ HTML::linkAction('forum.view', $topic->title, [$category->path, $topic->path]) }}</li>
+          <li>@lang('forum.topic.reply')</li>
+        </ul>
+      </div>
       
-      {{ Form::open(['route' => 'forum.topic.new', 'method' => 'PUT', 'class' => 'pure-form pure-form-stacked']) }}
-      {{ Form::label('title', Lang::get('forum.newpost.title')) }}
-      
-      @if($errors->has('title'))
-      {{ var_dump($errors->get('title')) }}
-      @endif
-      
-      {{ Form::text('title', Input::old('title')) }}
-      {{ Form::label('body', Lang::get('forum.newpost.body')) }}
-
+      {{ Form::open(['route' => 'forum.topic.reply', 'method' => 'PUT', 'class' => 'pure-form pure-form-stacked']) }}
+      {{ Form::label('body', Lang::get('forum.topic.reply.body')) }}
       @if($errors->has('body'))
       {{ var_dump($errors->get('body')) }}
       @endif
       {{ Form::textarea('body', Input::old('title')) }}
-      {{ Form::submit(Lang::get('forum.newpost.submit')) }}
+      {{ Form::submit(Lang::get('forum.topic.reply.submit')) }}
       {{ Form::close() }}
       
     </section>

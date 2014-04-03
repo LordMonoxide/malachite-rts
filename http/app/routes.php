@@ -38,7 +38,8 @@ Route::group(['prefix' => 'forum'], function() {
   Route::model('category', 'ForumCategory');
   
   Route::group(['prefix' => 'topic'], function() {
-    Route::put('/', ['as' => 'forum.topic.new', 'uses' => 'forum\ForumController@newTopic']);
+    Route::put('/new',   ['as' => 'forum.topic.new',   'uses' => 'forum\ForumController@newTopic']);
+    Route::put('/reply', ['as' => 'forum.topic.reply', 'uses' => 'forum\ForumController@replyTopic']);
   });
   
   Route::get('/',                       ['as' => 'forum.index',    'uses' => 'forum\ForumController@index']);

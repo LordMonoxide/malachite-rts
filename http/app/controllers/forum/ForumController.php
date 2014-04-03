@@ -59,6 +59,7 @@ class ForumController extends BaseController {
           return View::make('forum.topic.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('topic', $topic);
         } else {
           if($paths[$i + 1] === 'reply') {
+            Session::flash('topic', $topic->id);
             return View::make('forum.topic.reply')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('topic', $topic);
           } else {
             App::abort(404);
@@ -113,6 +114,27 @@ class ForumController extends BaseController {
       $post->save();
       
       return Redirect::route('forum.view', [$forum->category->id, $topic->path]);
+    } else {
+      return Redirect::back()->withInput(Input::all())->withErrors($validator->messages());
+    }
+  }
+  
+  public function replyTopic() {
+    $validator = Validator::make(Input::all(), [
+      'body'  => ['required', 'min:8']
+    ]);
+    
+    if($validator->passes()) {
+      $topic = Topic::find(Session::get('topic'));
+      $topic->touch();
+      
+      $post = new Post;
+      $post->topic_id = $topic->id;
+      $post->author_id = Auth::user()->id;
+      $post->body = Input::get('body');
+      $post->save();
+      
+      return Redirect::route('forum.view', [$topic->forum->category->id, $topic->path]);
     } else {
       return Redirect::back()->withInput(Input::all())->withErrors($validator->messages());
     }
