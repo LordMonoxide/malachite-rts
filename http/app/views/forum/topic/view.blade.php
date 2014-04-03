@@ -25,5 +25,18 @@
         </thead>
       </table>
     </section>
+    
+    <section>
+      <table class="forum pure-table pure-table-horizontal pure-table-striped">
+        <tbody>
+          @foreach($topic->posts as $post)
+          <tr>
+            <td>{{{ $post->author->name_first }}} {{{ $post->author->name_last }}}</td>
+            <td>{{{ $post->body }}}</td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </section>
   </body>
 </html>
