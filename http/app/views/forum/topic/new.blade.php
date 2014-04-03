@@ -27,20 +27,20 @@
       </div>
       
       {{ Form::open(['route' => 'forum.topic.new', 'method' => 'PUT', 'class' => 'pure-form pure-form-stacked']) }}
-      {{ Form::label('title', Lang::get('forum.newpost.title')) }}
+      {{ Form::label('title', Lang::get('forum.newpost.post.title')) }}
       
       @if($errors->has('title'))
       {{ var_dump($errors->get('title')) }}
       @endif
       
       {{ Form::text('title', Input::old('title')) }}
-      {{ Form::label('body', Lang::get('forum.newpost.body')) }}
+      {{ Form::label('body', Lang::get('forum.newpost.post.body')) }}
 
       @if($errors->has('body'))
       {{ var_dump($errors->get('body')) }}
       @endif
       {{ Form::textarea('body', Input::old('title')) }}
-      {{ Form::submit(Lang::get('forum.newpost.submit')) }}
+      {{ Form::submit(Lang::get('forum.newpost.post.submit')) }}
       {{ Form::close() }}
     </section>
   </body>
