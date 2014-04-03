@@ -58,7 +58,7 @@ class AuthController extends Controller {
       if($remember === 'yes' || $remember === 'on')  { $remember = true; }
       if($remember === 'no'  || $remember === 'off') { $remember = false; }
       
-      if(!Auth::attempt(['email' => Input::get('email'), 'password' => Input::get('password')], $remember)) {
+      if(!Auth::attempt(Input::only(['email', 'password']), $remember)) {
         return Response::json(['password' => ['Invalid password']], 409);
       }
       
