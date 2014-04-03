@@ -11,6 +11,12 @@
   
   <body>
     <section>
+      <div class="pure-menu pure-menu-open pure-menu-horizontal">
+        <ul>
+          <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
+        </ul>
+      </div>
+      
       <table class="forum pure-table pure-table-horizontal pure-table-striped">
         <thead>
           <tr>
