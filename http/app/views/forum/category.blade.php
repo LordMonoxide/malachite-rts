@@ -1,25 +1,17 @@
-<!DOCTYPE html>
+@extends('forum.layout')
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>{{ Lang::get('app.title') }} - {{ Lang::get('forum.title') }}</title>
-    {{ HTML::style('assets/css/main.css') }}
-    {{ HTML::style('assets/css/forum.css') }}
-    {{ HTML::script('//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js') }}
-  </head>
-  
-  <body>
-    <section>
-      <div class="pure-menu pure-menu-open pure-menu-horizontal">
-        <ul>
+@section('title')
+@lang('forum.title')
+@stop
+
+@section('breadcrumbs')
           <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
           <li>></li>
           <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
           <li>></li>
-        </ul>
-      </div>
-      
+@stop
+
+@section('body')
       <table class="forum pure-table pure-table-horizontal pure-table-striped">
         <thead>
           <tr>
@@ -28,18 +20,16 @@
         </thead>
         
         <tbody>
-        @foreach($category->forums as $forum)
+  @foreach($category->forums as $forum)
           <tr>
             <td>{{ HTML::linkAction('forum.view', $forum->name, [$category->path, $forum->path]) }}</td>
           </tr>
-          @foreach($forum->children as $child)
+    @foreach($forum->children as $child)
           <tr>
             <td style="padding-left:2em">{{ HTML::linkAction('forum.view', $child->name, [$forum->category->path, $child->path]) }}</td>
           </tr>
-          @endforeach
-        @endforeach
+    @endforeach
+  @endforeach
         </tbody>
       </table>
-    </section>
-  </body>
-</html>
+@stop

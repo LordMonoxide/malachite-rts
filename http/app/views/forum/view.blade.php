@@ -1,30 +1,22 @@
-<!DOCTYPE html>
+@extends('forum.layout')
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>{{ Lang::get('app.title') }} - {{ Lang::get('forum.title') }}</title>
-    {{ HTML::style('assets/css/main.css') }}
-    {{ HTML::style('assets/css/forum.css') }}
-    {{ HTML::script('//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js') }}
-  </head>
-  
-  <body>
-    <section>
-      <div class="pure-menu pure-menu-open pure-menu-horizontal">
-        <ul>
+@section('title')
+@lang('forum.title')
+@stop
+
+@section('breadcrumbs')
           <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
           <li>></li>
           <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
           <li>></li>
-          @foreach($forums as $f)
+  @foreach($forums as $f)
           <li>{{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }}</li>
           <li>></li>
-          @endforeach
-        </ul>
-      </div>
-      
-      @if($forum->children()->count() != 0)
+  @endforeach
+@stop
+
+@section('body')
+  @if($forum->children()->count() != 0)
       <table class="forum pure-table pure-table-horizontal pure-table-striped">
         <thead>
           <tr>
@@ -33,14 +25,14 @@
         </thead>
         
         <tbody>
-          @foreach($forum->children as $child)
+    @foreach($forum->children as $child)
           <tr>
             <td>{{ HTML::linkAction('forum.view', $child->name, [$category->path, $child->path]) }}</td>
           </tr>
-          @endforeach
+    @endforeach
         </tbody>
       </table>
-      @endif
+  @endif
       
       <table class="forum pure-table pure-table-horizontal pure-table-striped">
         <thead>
@@ -52,8 +44,8 @@
         </thead>
         
         <tbody>
-          @if(count($forum->topics) != 0)
-          @foreach($forum->topics as $topic)
+  @if(count($forum->topics) != 0)
+    @foreach($forum->topics as $topic)
           <tr>
             <td class="topic-name">
               <img style="float:right;" src="{{ $topic->creator->avatar }}?s=40" alt="Avatar" />
@@ -65,18 +57,16 @@
               @lang('forum.topic.newestpost', ['user' => $newest->author->name, 'date' => $newest->created_at])
             </td>
           </tr>
-          @endforeach
-          @else
+    @endforeach
+  @else
           <tr>
             <td class="topic-name">@lang('forum.noposts')</td>
             <td></td>
             <td></td>
           </tr>
-          @endif
+  @endif
         </tbody>
       </table>
       
       {{ HTML::linkAction('forum.view', Lang::get('forum.new'), [$category->path, $forum->path . '/new']) }}
-    </section>
-  </body>
-</html>
+@stop
