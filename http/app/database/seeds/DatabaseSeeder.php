@@ -32,43 +32,82 @@ class TableSeeder extends Seeder {
       'abbv' => 'INT'
     ]);
     
-    $user = User::create([
+    $user[] = User::create([
       'email'      => 'corey@narwhunderful.com',
       'password'   => Hash::make('monoxide'),
       'name_first' => 'Corey',
       'name_last'  => 'Frenette'
     ]);
     
+    $user[] = User::create([
+      'email'      => 'c-desmet@hotmail.com',
+      'password'   => Hash::make('meowmix239'),
+      'name_first' => 'Corina',
+      'name_last'  => 'De Smet'
+    ]);
+    
     UserSecurityQuestion::create([
-      'user_id' => $user->id,
+      'user_id' => $user[0]->id,
       'question' => 'The answer to this question is 1',
       'answer' => '1'
     ]);
     
     UserSecurityQuestion::create([
-      'user_id' => $user->id,
+      'user_id' => $user[0]->id,
       'question' => 'The answer to this question is 2',
       'answer' => '2'
     ]);
     
     UserSecurityQuestion::create([
-      'user_id' => $user->id,
+      'user_id' => $user[0]->id,
       'question' => 'The answer to this question is 3',
       'answer' => '3'
     ]);
     
-    $cat = ForumCategory::create([
+    UserSecurityQuestion::create([
+      'user_id' => $user[1]->id,
+      'question' => 'The answer to this question is 1',
+      'answer' => '1'
+    ]);
+    
+    UserSecurityQuestion::create([
+      'user_id' => $user[1]->id,
+      'question' => 'The answer to this question is 2',
+      'answer' => '2'
+    ]);
+    
+    UserSecurityQuestion::create([
+      'user_id' => $user[1]->id,
+      'question' => 'The answer to this question is 3',
+      'answer' => '3'
+    ]);
+    
+    $cat[] = ForumCategory::create([
       'name' => 'Test Category'
     ]);
     
+    $cat[] = ForumCategory::create([
+      'name' => 'Cat 2'
+    ]);
+    
     $f[] = ForumForum::create([
-      'category_id' => $cat->id,
+      'category_id' => $cat[0]->id,
       'name'        => 'Test Forum'
     ]);
     
     $f[] = ForumForum::create([
       'parent_id' => $f[0]->id,
       'name'      => 'Subforum'
+    ]);
+    
+    $f[] = ForumForum::create([
+      'category_id' => $cat[0]->id,
+      'name'        => 'Another Forum'
+    ]);
+    
+    $f[] = ForumForum::create([
+      'category_id' => $cat[1]->id,
+      'name'        => 'Sweet Forum'
     ]);
   }
 }
