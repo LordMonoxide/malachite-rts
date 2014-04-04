@@ -32,6 +32,11 @@
           <tr>
             <td>{{ HTML::linkAction('forum.view', $forum->name, [$category->path, $forum->path]) }}</td>
           </tr>
+          @foreach($forum->children as $child)
+          <tr>
+            <td style="padding-left:2em">{{ HTML::linkAction('forum.view', $child->name, [$forum->category->path, $child->path]) }}</td>
+          </tr>
+          @endforeach
         @endforeach
         </tbody>
       </table>
