@@ -2,10 +2,13 @@
 
 use Auth;
 use Controller;
+use Hash;
 use Input;
 use Request;
 use Response;
 use Validator;
+
+use User;
 
 class AuthController extends Controller {
   public function __construct() {
