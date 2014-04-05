@@ -21,10 +21,6 @@ class ForumTopic extends Eloquent {
       $name = substr($name, 0, 20);
     }
     
-    return $name;
-  }
-  
-  public function getPathAttribute() {
-    return $this->forum->path . '/topic/' . $this->id . '-' . $this->getNameForUriAttribute();
+    return $name . '-';
   }
 }

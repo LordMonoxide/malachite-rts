@@ -1,23 +1,24 @@
 @extends('forum.layout')
 
+<?php function renderForum($forums, $nest = 12) {
+  if($forums === null) { return; }
+  
+  foreach($forums as $f) {
+    echo '          <tr>
+            <td style="padding-left:' . $nest . 'px">' . HTML::linkAction('forum.forum', $f->name, $f->id) . '</td>
+          </tr>
+';
+    renderForum($f->children, $nest + 12);
+  }
+} ?>
+
 @section('title')
 @lang('forum.title')
 @stop
 
-@section('breadcrumbs')
-          <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
-          <li>></li>
-          <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
-          <li>></li>
-  @foreach($forums as $f)
-          <li>{{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }}</li>
-          <li>></li>
-  @endforeach
-@stop
-
 @section('body')
-  @if($forum->children()->count() != 0)
-      <table class="forum pure-table pure-table-horizontal pure-table-striped">
+  @unless(count($forum->children) === 0)
+      <table class="forums pure-table pure-table-horizontal pure-table-striped">
         <thead>
           <tr>
             <th>@lang('forum.name')</th>
@@ -25,16 +26,12 @@
         </thead>
         
         <tbody>
-    @foreach($forum->children as $child)
-          <tr>
-            <td>{{ HTML::linkAction('forum.view', $child->name, [$category->path, $child->path]) }}</td>
-          </tr>
-    @endforeach
+<?php renderForum($forum->children); ?>
         </tbody>
       </table>
-  @endif
+  @endunless
       
-      <table class="forum pure-table pure-table-horizontal pure-table-striped">
+      <table class="topics pure-table pure-table-horizontal pure-table-striped">
         <thead>
           <tr>
             <th>@lang('forum.title')</th>
@@ -49,7 +46,7 @@
           <tr>
             <td class="topic-name">
               <img style="float:right;" src="{{ $topic->creator->avatar }}?s=40" alt="Avatar" />
-              @lang('forum.topic.link', ['title' => $topic->title, 'category' => $category->path, 'topic' => $topic->path, 'user' => $topic->creator->name, 'date' => $topic->created_at])
+              @lang('forum.topic.view.link', ['title' => $topic->title, 'forum' => $forum->id, 'name' => $topic->nameForUri, 'topic' => $topic->id, 'user' => $topic->creator->name, 'date' => $topic->created_at])
             </td>
             <td class="topic-post-count">{{ $topic->posts->count() }}</td>
             <td class="topic-newest-post">
@@ -68,5 +65,5 @@
         </tbody>
       </table>
       
-      {{ HTML::linkAction('forum.view', Lang::get('forum.new'), [$category->path, $forum->path . '/new']) }}
+      {{ HTML::linkAction('forum.topic.new', Lang::get('forum.topic.new'), $forum->id) }}
 @stop

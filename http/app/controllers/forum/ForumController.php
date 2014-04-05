@@ -1,15 +1,12 @@
 <?php namespace forum;
 
-use App;
 use Auth;
 use Input;
 use Redirect;
-use Session;
 use Validator;
 use View;
 
 use BaseController;
-use ForumCategory as Category;
 use ForumForum as Forum;
 use ForumTopic as Topic;
 use ForumPost as Post;
@@ -20,87 +17,54 @@ class ForumController extends BaseController {
   }
   
   public function index() {
-    return View::make('forum.index')->with('categories', Category::all());
+    return View::make('forum.index')->with('forums', Forum::root()->get());
   }
   
-  public function view($category, $path) {
-    $paths = explode('/', $path);
-    $pattern = '/(?:[0-9]+(?:-[-\w]+)?)+/';
-    $forums = [];
-    $lastForum = null;
-    $topic = false;
-    $i = 0;
+  public function forum($forum) {
+    return View::make('forum.forum')->with('forum', $forum);
+  }
+  
+  public function viewtopic($forum, $name, $topic = null) {
+    if($topic === null) { $topic = $name; }
+    return View::make('forum.topic.view')->with('forum', $forum)->with('topic', $topic);
+  }
+  
+  public function replytopic($forum, $name, $topic = null) {
+    if($topic === null) { $topic = $name; }
+    return View::make('forum.topic.reply')->with('forum', $forum)->with('topic', $topic);
+  }
+  
+  public function submitreply($forum, $topic) {
+    $validator = Validator::make(Input::all(), [
+      'body'  => ['required', 'min:8']
+    ]);
     
-    foreach($paths as $path) {
-      if($path === 'new') {
-        return View::make('forum.topic.new')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum);
-      }
+    if($validator->passes()) {
+      $topic->touch();
       
-      if($path === 'topic') {
-        $topic = true;
-        $i++;
-        continue;
-      }
+      $post = new Post;
+      $post->topic_id = $topic->id;
+      $post->author_id = Auth::user()->id;
+      $post->body = Input::get('body');
+      $post->save();
       
-      if(preg_match($pattern, $path) === 0) {
-        App::abort(404);
-      }
-      
-      $forum = explode('-', $path, 1)[0];
-      
-      if($topic) {
-        $topic = Topic::where('id', '=', $forum)->where('forum_id', '=', $lastForum->id)->first();
-        
-        if($topic === null) {
-          App::abort(404);
-        }
-        
-        if($i === count($paths) - 1) {
-          return View::make('forum.topic.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('topic', $topic);
-        } else {
-          if($paths[$i + 1] === 'reply') {
-            Session::flash('topic', $topic->id);
-            return View::make('forum.topic.reply')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum)->with('topic', $topic);
-          } else {
-            App::abort(404);
-          }
-        }
-      }
-      
-      if($lastForum === null) {
-        $forum = Forum::where('id', '=', $forum)->where('category_id', '=', $category->id)->first();
-      } else {
-        $forum = Forum::where('id', '=', $forum)->where('parent_id', '=', $lastForum->id)->first();
-      }
-      
-      if($forum === null) {
-        App::abort(404);
-      }
-      
-      $forums[] = $forum;
-      $lastForum = $forum;
-      
-      Session::flash('forum', $lastForum->id);
-      
-      $i++;
+      return Redirect::route('forum.topic.view2', [$forum->id, $topic->nameForUri, $topic->id]);
+    } else {
+      return Redirect::back()->withInput(Input::all())->withErrors($validator->messages());
     }
-    
-    return View::make('forum.view')->with('category', $forums[0]->category)->with('forums', $forums)->with('forum', $lastForum);
   }
   
-  public function category($category) {
-    return View::make('forum.category')->with('category', $category);
+  public function newtopic($forum) {
+    return View::make('forum.topic.new')->with('forum', $forum);
   }
   
-  public function newTopic() {
+  public function submittopic($forum) {
     $validator = Validator::make(Input::all(), [
       'title' => ['required', 'min:4', 'max:64', 'regex:/^[\S ]+$/'],
       'body'  => ['required', 'min:8']
     ]);
     
     if($validator->passes()) {
-      $forum = Forum::find(Session::get('forum'));
-      
       $topic = new Topic;
       $topic->forum_id = $forum->id;
       $topic->creator_id = Auth::user()->id;
@@ -113,28 +77,7 @@ class ForumController extends BaseController {
       $post->body = Input::get('body');
       $post->save();
       
-      return Redirect::route('forum.view', [$forum->category->id, $topic->path]);
-    } else {
-      return Redirect::back()->withInput(Input::all())->withErrors($validator->messages());
-    }
-  }
-  
-  public function replyTopic() {
-    $validator = Validator::make(Input::all(), [
-      'body'  => ['required', 'min:8']
-    ]);
-    
-    if($validator->passes()) {
-      $topic = Topic::find(Session::get('topic'));
-      $topic->touch();
-      
-      $post = new Post;
-      $post->topic_id = $topic->id;
-      $post->author_id = Auth::user()->id;
-      $post->body = Input::get('body');
-      $post->save();
-      
-      return Redirect::route('forum.view', [$topic->forum->category->id, $topic->path]);
+      return Redirect::route('forum.topic.view2', [$forum->id, $topic->nameForUri, $topic->id]);
     } else {
       return Redirect::back()->withInput(Input::all())->withErrors($validator->messages());
     }

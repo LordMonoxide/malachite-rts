@@ -35,16 +35,18 @@ Route::group(['prefix' => 'auth'], function() {
 });
 
 Route::group(['prefix' => 'forum'], function() {
-  Route::model('category', 'ForumCategory');
+  Route::model('forum', 'ForumForum');
+  Route::model('topic', 'ForumTopic');
   
-  Route::group(['prefix' => 'topic'], function() {
-    Route::put('/new',   ['as' => 'forum.topic.new',   'uses' => 'forum\ForumController@newTopic']);
-    Route::put('/reply', ['as' => 'forum.topic.reply', 'uses' => 'forum\ForumController@replyTopic']);
-  });
-  
-  Route::get('/',                       ['as' => 'forum.index',    'uses' => 'forum\ForumController@index']);
-  Route::get('/view/{category}',        ['as' => 'forum.category', 'uses' => 'forum\ForumController@category'])->where('category', '^[0-9]+(-[-\w]+)?$');
-  Route::get('/view/{category}/{path}', ['as' => 'forum.view',     'uses' => 'forum\ForumController@view'])    ->where('category', '^[0-9]+(-[-\w]+)?$')->where('path', '.+');
+  Route::get('/',                             ['as' => 'forum.index',               'uses' => 'forum\ForumController@index']);
+  Route::get('/f{forum}',                     ['as' => 'forum.forum',               'uses' => 'forum\ForumController@forum']);
+  Route::get('/f{forum}/newtopic',            ['as' => 'forum.topic.new',           'uses' => 'forum\ForumController@newtopic']);
+  Route::put('/f{forum}/newtopic',            ['as' => 'forum.topic.submit',        'uses' => 'forum\ForumController@submittopic']);
+  Route::get('/f{forum}/{name}{topic}/reply', ['as' => 'forum.topic.reply2',        'uses' => 'forum\ForumController@replytopic']);
+  Route::get('/f{forum}/{topic}/reply',       ['as' => 'forum.topic.reply',         'uses' => 'forum\ForumController@replytopic']);
+  Route::put('/f{forum}/{topic}/reply',       ['as' => 'forum.topic.reply.submit',  'uses' => 'forum\ForumController@submitreply']);
+  Route::get('/f{forum}/{name}{topic}',       ['as' => 'forum.topic.view2',         'uses' => 'forum\ForumController@viewtopic'])->where('name', '^[a-z\d-]+-$');
+  Route::get('/f{forum}/{topic}',             ['as' => 'forum.topic.view',          'uses' => 'forum\ForumController@viewtopic']);
 });
 
 Route::get ('/',      ['as' => 'home',  'uses' => 'RootController@home']);

@@ -82,32 +82,22 @@ class TableSeeder extends Seeder {
       'answer' => '3'
     ]);
     
-    $cat[] = ForumCategory::create([
-      'name' => 'Test Category'
-    ]);
-    
-    $cat[] = ForumCategory::create([
-      'name' => 'Cat 2'
+    $f[] = ForumForum::create([
+      'name' => 'Malachite'
     ]);
     
     $f[] = ForumForum::create([
-      'category_id' => $cat[0]->id,
-      'name'        => 'Test Forum'
+      'name' => 'Other'
     ]);
     
     $f[] = ForumForum::create([
       'parent_id' => $f[0]->id,
-      'name'      => 'Subforum'
+      'name'      => 'Announcements'
     ]);
     
     $f[] = ForumForum::create([
-      'category_id' => $cat[0]->id,
-      'name'        => 'Another Forum'
-    ]);
-    
-    $f[] = ForumForum::create([
-      'category_id' => $cat[1]->id,
-      'name'        => 'Sweet Forum'
+      'parent_id' => $f[1]->id,
+      'name'      => 'Off-Topic'
     ]);
   }
 }

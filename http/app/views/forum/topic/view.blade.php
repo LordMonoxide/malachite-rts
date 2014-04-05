@@ -1,19 +1,11 @@
 @extends('forum.layout')
 
 @section('title')
-@lang('forum.title')
+@lang('forum.topic.view.title')
 @stop
 
 @section('breadcrumbs')
-          <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
-          <li>></li>
-          <li>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</li>
-          <li>></li>
-  @foreach($forums as $f)
-          <li>{{ HTML::linkAction('forum.view', $f->name, [$category->path, $f->path]) }}</li>
-          <li>></li>
-  @endforeach
-          <li>{{ HTML::linkAction('forum.view', $topic->title, [$category->path, $topic->path]) }}</li>
+          <li>{{ HTML::linkAction('forum.topic.view2', $topic->title, [$forum->id, $topic->nameForUri, $topic->id]) }}</li>
           <li>></li>
 @stop
 
@@ -36,5 +28,5 @@
         </tbody>
       </table>
       
-      {{ HTML::linkAction('forum.view', Lang::get('forum.reply'), [$category->path, $topic->path . '/reply']) }}
+      {{ HTML::linkAction('forum.topic.reply2', Lang::get('forum.topic.reply'), [$forum->id, $topic->nameForUri, $topic->id]) }}
 @stop

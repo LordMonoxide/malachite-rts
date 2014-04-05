@@ -13,6 +13,26 @@
     <section>
       <div class="pure-menu pure-menu-open pure-menu-horizontal">
         <ul>
+          <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
+          <li>></li>
+
+<?php
+  if(isset($forum)) {
+    $f = $forum;
+    $fs = [];
+    
+    while($f != null) {
+      array_unshift($fs, $f);
+      $f = $f->parent;
+    }
+    
+    foreach($fs as $f) {
+      echo '          <li>' . HTML::linkAction('forum.forum', $f->name, $f->id) . '</li>
+          <li>></li>';
+    }
+  }
+?>
+
 @yield('breadcrumbs')
         </ul>
         

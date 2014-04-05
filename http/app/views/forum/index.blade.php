@@ -1,35 +1,25 @@
 @extends('forum.layout')
 
+<?php function renderForum($forums, $nest = 12) {
+  if($forums === null) { return; }
+  
+  foreach($forums as $forum) {
+    echo '          <tr>
+            <td style="padding-left:' . $nest . 'px">' . HTML::linkAction('forum.forum', $forum->name, $forum->id) . '</td>
+          </tr>
+';
+    renderForum($forum->children, $nest + 12);
+  }
+} ?>
+
 @section('title')
 @lang('forum.title')
 @stop
 
-@section('breadcrumbs')
-          <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
-          <li>></li>
-@stop
-
 @section('body')
-  @foreach($categories as $category)
-      <table class="category pure-table pure-table-horizontal pure-table-striped">
-        <thead>
-          <tr>
-            <th>{{ HTML::linkAction('forum.category', $category->name, $category->path) }}</th>
-          </tr>
-        </thead>
-        
+      <table class="forums pure-table pure-table-horizontal pure-table-striped">
         <tbody>
-    @foreach($category->forums as $forum)
-          <tr>
-            <td>{{ HTML::linkAction('forum.view', $forum->name, [$forum->category->path, $forum->path]) }}</td>
-          </tr>
-      @foreach($forum->children as $child)
-          <tr>
-            <td style="padding-left:2em">{{ HTML::linkAction('forum.view', $child->name, [$forum->category->path, $child->path]) }}</td>
-          </tr>
-      @endforeach
-    @endforeach
+<?php renderForum($forums); ?>
         </tbody>
       </table>
-  @endforeach
 @stop
