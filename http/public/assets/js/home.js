@@ -71,7 +71,6 @@ function enhance() {
 
 function register() {
   disableForm();
-  console.log(route_register);
   
   $.ajax({
     url:  route_register,
@@ -98,6 +97,7 @@ function register() {
         console.log(textStatus);
         console.log(errorThrown);
         console.log(jqXHR.responseJSON);
+        console.log(jqXHR.response);
     }
     
     enableForm();

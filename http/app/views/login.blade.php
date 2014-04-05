@@ -39,6 +39,7 @@
               <fieldset class="register">
                 <legend>@lang('app.register.details')</legend>
                 {{ Form::text('name_first', Input::old('name_first'), ['placeholder' => Lang::get('auth.name_first'), 'required' => 'required']) }}
+                {{ Form::text('name_last',  Input::old('name_last'),  ['placeholder' => Lang::get('auth.name_last')]) }}
               </fieldset>
             </div>
           </div>
