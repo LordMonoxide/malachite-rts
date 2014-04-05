@@ -13,6 +13,10 @@ class ForumTopic extends Eloquent {
     return $this->hasMany('ForumPost', 'topic_id');
   }
   
+  public function scopeNewest($query) {
+    return $query->orderBy('updated_at', 'DESC');
+  }
+  
   public function getNameForUriAttribute() {
     $name = strtolower($this->title);
     $name = str_replace(' ', '-', $name);

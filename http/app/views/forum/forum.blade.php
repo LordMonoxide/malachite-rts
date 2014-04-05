@@ -42,7 +42,7 @@
         
         <tbody>
   @if(count($forum->topics) != 0)
-    @foreach($forum->topics as $topic)
+    @foreach($forum->topics()->newest()->get() as $topic)
           <tr>
             <td class="topic-name">
               <img style="float:right;" src="{{ $topic->creator->avatar }}?s=40" alt="Avatar" />
