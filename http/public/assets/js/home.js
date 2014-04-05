@@ -5,6 +5,10 @@ $(function() {
 });
 
 function enhance() {
+  logins    = $('.login');
+  registers = $('.register');
+  login_legend = $('legend.login');
+  
   div      = $('#login-div');
   form     = $('#login-form');
   email    = $('input[name=email]');
@@ -21,6 +25,8 @@ function enhance() {
   // Remove hack to centre div using table style
   div.unwrap();
   div.unwrap();
+  
+  registers.hide();
   
   $(window).resize(function(ev) {
     div.offset({left: ($(window).width() - div.width()) / 2, top: ($(window).height() - div.height()) / 2});
@@ -65,21 +71,20 @@ function enhance() {
 
 function register() {
   disableForm();
+  console.log(route_register);
   
   $.ajax({
     url:  route_register,
-    type: form[0].method,
+    type: 'PUT',
     data: form.serialize()
   }).done(function(data, textStatus, jqXHR) {
-    if(jqXHR.status === 200) {
-      
-      return;
-    }
-    
-    console.log('This shouldn\'t happen:');
-    console.log(jqXHR.responseJSON);
+    window.location.replace(route_dest);
   }).fail(function(jqXHR, textStatus, errorThrown) {
     switch(jqXHR.status) {
+      case 401:
+        
+        break;
+      
       case 409:
         var errors = jqXHR.responseJSON;
         for(var error in errors) {
@@ -147,16 +152,22 @@ function enableForm() {
 
 function disableRegister() {
   _method.prop('disabled', true);
-  password_confirmation.hide();
-  password_confirmation.prop('disabled', true);
+  //password_confirmation.hide();
+  //password_confirmation.prop('disabled', true);
+  registers.hide();
+  registers.prop('disabled', true);
+  login_legend.show();
   
   $(window).resize();
 }
 
 function enableRegister() {
   _method.prop('disabled', false);
-  password_confirmation.show();
-  password_confirmation.prop('disabled', false);
+  //password_confirmation.show();
+  //password_confirmation.prop('disabled', false);
+  registers.show();
+  registers.prop('disabled', false);
+  login_legend.hide();
   
   $(window).resize();
 }

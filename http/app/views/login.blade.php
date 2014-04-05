@@ -18,16 +18,30 @@
           {{ Form::hidden('route_register', URL::route('api.auth.register')) }}
           
           {{ Form::open(['route' => 'auth.login', 'method' => 'POST', 'id' => 'login-form', 'class' => 'pure-form pure-form-stacked']) }}
-          <legend>@lang('app.title')</legend>
           
-          {{ Form::email('email', Input::old('email'), ['placeholder' => Lang::get('auth.email'),            'required' => 'required', 'autofocus' => 'autofocus']) }}
-          {{ Form::password('password',                ['placeholder' => Lang::get('auth.password'),         'required' => 'required']) }}
-          {{ Form::password('password_confirmation',   ['placeholder' => Lang::get('auth.password_confirm'), 'required' => 'required', 'disabled' => 'disabled', 'style' => 'display: none;']) }}
-          
-          <label>
-            {{ Form::checkbox('newaccount', null, false) }}
-            @lang('auth.newaccount')
-          </label>
+          <div class="pure-g">
+            <div class="pure-u-1-2 l-box">
+              <fieldset>
+                <legend class="login">@lang('app.login')</legend>
+                <legend class="register">@lang('app.register')</legend>
+                {{ Form::email('email', Input::old('email'), ['placeholder' => Lang::get('auth.email'),            'required' => 'required', 'autofocus' => 'autofocus']) }}
+                {{ Form::password('password',                ['placeholder' => Lang::get('auth.password'),         'required' => 'required']) }}
+                {{ Form::password('password_confirmation',   ['placeholder' => Lang::get('auth.password_confirm'), 'required' => 'required', 'disabled' => 'disabled', 'style' => 'display: none;', 'class' => 'register']) }}
+                
+                <label>
+                  {{ Form::checkbox('newaccount', null, false) }}
+                  @lang('auth.newaccount')
+                </label>
+              </fieldset>
+            </div>
+            
+            <div class="pure-u-1-2 l-box">
+              <fieldset class="register">
+                <legend>@lang('app.register.details')</legend>
+                {{ Form::text('name_first', Input::old('name_first'), ['placeholder' => Lang::get('auth.name_first'), 'required' => 'required']) }}
+              </fieldset>
+            </div>
+          </div>
           
           {{ Form::submit(Lang::get('auth.submit'), ['id' => 'login', 'class' => 'pure-button pure-button-primary']) }}
           {{ Form::close() }}
