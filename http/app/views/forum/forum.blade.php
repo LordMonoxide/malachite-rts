@@ -43,8 +43,8 @@
   @endunless
         
   @if(count($forum->topics) !== 0)
-    @foreach($forum->topics()->newest()->get() as $topic)
         <tbody>
+    @foreach($forum->topics()->newest()->get() as $topic)
           <tr>
             <td class="topic-name">
               <img style="float:right;" src="{{ $topic->creator->avatar }}?s=40" alt="Avatar" />
@@ -56,8 +56,8 @@
               @lang('forum.topic.newestpost', ['user' => $newest->author->name, 'date' => $newest->created_at])
             </td>
           </tr>
-        </tbody>
     @endforeach
+        </tbody>
   @elseif($forum->parent !== null)
         <tbody>
           <tr>
