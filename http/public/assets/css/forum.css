@@ -10,6 +10,10 @@ table {
   width: 100%;
 }
 
+.breadcrumbs ul li:nth-last-of-type(2) {
+  font-weight: bold;
+}
+
 .post-id {
   text-align: center;
   width: 128px;

@@ -11,7 +11,7 @@
   
   <body>
     <section>
-      <div class="pure-menu pure-menu-open pure-menu-horizontal">
+      <div class="breadcrumbs pure-menu pure-menu-open pure-menu-horizontal">
         <ul>
           <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
           <li>></li>
