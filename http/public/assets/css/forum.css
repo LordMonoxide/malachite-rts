@@ -16,7 +16,7 @@ table {
 
 .post-id {
   text-align: center;
-  width: 128px;
+  width: 140px;
 }
 
 .post-body {
@@ -43,4 +43,23 @@ table {
 .topic-newest-post {
   display: none;
 }
+}
+
+.user-title {
+  font-size: 80%;
+}
+
+.user-info {
+  font-size: 80%;
+}
+
+.user-info .user-data {
+  display: block;
+  float: left;
+  text-align: left;
+}
+
+.user-info .user-data:nth-of-type(odd) {
+  clear: both;
+  width: 45%;
 }

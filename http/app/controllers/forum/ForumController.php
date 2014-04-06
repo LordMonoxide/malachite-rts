@@ -48,6 +48,10 @@ class ForumController extends BaseController {
       $post->body = Input::get('body');
       $post->save();
       
+      $info = Auth::user()->forumInfo()->first();
+      $info->post_count++;
+      $info->save();
+      
       return Redirect::route('forum.topic.view2', [$forum->id, $topic->nameForUri, $topic->id]);
     } else {
       return Redirect::back()->withInput(Input::all())->withErrors($validator->messages());

@@ -23,7 +23,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
   }
   
   public function forumInfo() {
-    return $this->hasOne('UserForumInfo', 'user_id');
+    return $this->hasOne('UserForumInfo', 'user_id', 'id');
   }
   
   public function securityQuestions() {
