@@ -4,7 +4,7 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
-protected $hidden = ['password'];
+  protected $hidden = ['password'];
   
   public function getAuthIdentifier() {
     return $this->getKey();
@@ -20,6 +20,10 @@ protected $hidden = ['password'];
   
   public function characters() {
     return $this->hasMany('Character');
+  }
+  
+  public function forumInfo() {
+    return $this->hasOne('UserForumInfo', 'user_id');
   }
   
   public function securityQuestions() {

@@ -37,6 +37,10 @@ class AuthController extends Controller {
       $user->name_last  = Input::get('name_last');
       $user->save();
       
+      $userInfo = new UserForumInfo;
+      $userInfo->user_id = $user->id;
+      $userInfo->save();
+      
       $remember = Input::get('remember', false);
       if($remember === 'yes' || $remember === 'on')  { $remember = true; }
       if($remember === 'no'  || $remember === 'off') { $remember = false; }

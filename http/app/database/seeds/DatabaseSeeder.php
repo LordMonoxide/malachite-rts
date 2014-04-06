@@ -46,6 +46,14 @@ class TableSeeder extends Seeder {
       'name_last'  => 'De Smet'
     ]);
     
+    UserForumInfo::create([
+      'user_id' => $user[0]->id
+    ]);
+    
+    UserForumInfo::create([
+      'user_id' => $user[1]->id
+    ]);
+    
     UserSecurityQuestion::create([
       'user_id' => $user[0]->id,
       'question' => 'The answer to this question is 1',
