@@ -32,6 +32,7 @@
   @endunless
       
       <table class="topics pure-table pure-table-horizontal pure-table-striped">
+  @unless($forum->parent === null)
         <thead>
           <tr>
             <th>@lang('forum.title')</th>
@@ -39,10 +40,11 @@
             <th class="topic-newest-post">@lang('forum.newestpost')</th>
           </tr>
         </thead>
+  @endunless
         
-        <tbody>
-  @if(count($forum->topics) != 0)
+  @if(count($forum->topics) !== 0)
     @foreach($forum->topics()->newest()->get() as $topic)
+        <tbody>
           <tr>
             <td class="topic-name">
               <img style="float:right;" src="{{ $topic->creator->avatar }}?s=40" alt="Avatar" />
@@ -54,16 +56,20 @@
               @lang('forum.topic.newestpost', ['user' => $newest->author->name, 'date' => $newest->created_at])
             </td>
           </tr>
+        </tbody>
     @endforeach
-  @else
+  @elseif($forum->parent !== null)
+        <tbody>
           <tr>
             <td class="topic-name">@lang('forum.noposts')</td>
             <td></td>
             <td></td>
           </tr>
-  @endif
         </tbody>
+  @endif
       </table>
       
+  @unless($forum->parent === null)
       {{ HTML::linkAction('forum.topic.new', Lang::get('forum.topic.new'), $forum->id) }}
+  @endunless
 @stop
