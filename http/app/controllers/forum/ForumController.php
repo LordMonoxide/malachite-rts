@@ -90,12 +90,4 @@ class ForumController extends BaseController {
       return Redirect::back()->withInput(Input::all())->withErrors($validator->messages());
     }
   }
-  
-  public function topicreppos($forum, $topic) {
-    
-  }
-  
-  public function topicrepneg($forum, $topic) {
-    
-  }
 }

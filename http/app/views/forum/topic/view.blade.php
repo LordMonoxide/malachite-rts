@@ -42,11 +42,11 @@
           <td class="post-body">
             <cite class="post-citation">{{ $post->created_at }}</cite>
             
-            {{ Form::open(['route' => ['forum.topic.rep.pos', $forum->id, $topic->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
+            {{ Form::open(['route' => ['forum.post.rep.pos', $forum->id, $topic->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
             {{ Form::submit(Lang::get('forum.topic.rep.pos')) }}
             {{ Form::close() }}
             
-            {{ Form::open(['route' => ['forum.topic.rep.neg', $forum->id, $topic->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
+            {{ Form::open(['route' => ['forum.post.rep.neg', $forum->id, $topic->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
             {{ Form::submit(Lang::get('forum.topic.rep.neg')) }}
             {{ Form::close() }}
             

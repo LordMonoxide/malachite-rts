@@ -9,6 +9,10 @@ class ForumPost extends Eloquent {
     return $this->belongsTo('User', 'author_id');
   }
   
+  public function reps() {
+    return $this->hasMany('ForumUserPostRep', 'post_id');
+  }
+  
   public function scopeNewest($query) {
     return $query->orderBy('created_at', 'DESC');
   }
