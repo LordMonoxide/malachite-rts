@@ -38,15 +38,17 @@ Route::group(['prefix' => 'forum'], function() {
   Route::model('forum', 'ForumForum');
   Route::model('topic', 'ForumTopic');
   
-  Route::get('/',                             ['as' => 'forum.index',               'uses' => 'forum\ForumController@index']);
-  Route::get('/f{forum}',                     ['as' => 'forum.forum',               'uses' => 'forum\ForumController@forum']);
-  Route::get('/f{forum}/newtopic',            ['as' => 'forum.topic.new',           'uses' => 'forum\ForumController@newtopic']);
-  Route::put('/f{forum}/newtopic',            ['as' => 'forum.topic.submit',        'uses' => 'forum\ForumController@submittopic']);
-  Route::get('/f{forum}/{name}{topic}/reply', ['as' => 'forum.topic.reply2',        'uses' => 'forum\ForumController@replytopic']);
-  Route::get('/f{forum}/{topic}/reply',       ['as' => 'forum.topic.reply',         'uses' => 'forum\ForumController@replytopic']);
-  Route::put('/f{forum}/{topic}/reply',       ['as' => 'forum.topic.reply.submit',  'uses' => 'forum\ForumController@submitreply']);
-  Route::get('/f{forum}/{name}{topic}',       ['as' => 'forum.topic.view2',         'uses' => 'forum\ForumController@viewtopic'])->where('name', '^[a-z\d-]+-$');
-  Route::get('/f{forum}/{topic}',             ['as' => 'forum.topic.view',          'uses' => 'forum\ForumController@viewtopic']);
+  Route::get('/',                             ['as' => 'forum.index',              'uses' => 'forum\ForumController@index']);
+  Route::get('/f{forum}',                     ['as' => 'forum.forum',              'uses' => 'forum\ForumController@forum']);
+  Route::get('/f{forum}/newtopic',            ['as' => 'forum.topic.new',          'uses' => 'forum\ForumController@newtopic']);
+  Route::put('/f{forum}/newtopic',            ['as' => 'forum.topic.submit',       'uses' => 'forum\ForumController@submittopic']);
+  Route::get('/f{forum}/{name}{topic}/reply', ['as' => 'forum.topic.reply2',       'uses' => 'forum\ForumController@replytopic']);
+  Route::get('/f{forum}/{topic}/reply',       ['as' => 'forum.topic.reply',        'uses' => 'forum\ForumController@replytopic']);
+  Route::put('/f{forum}/{topic}/reply',       ['as' => 'forum.topic.reply.submit', 'uses' => 'forum\ForumController@submitreply']);
+  Route::put('/f{forum}/{topic}/rep/pos',     ['as' => 'forum.topic.rep.pos',      'uses' => 'forum\ForumController@topicreppos']);
+  Route::put('/f{forum}/{topic}/rep/neg',     ['as' => 'forum.topic.rep.neg',      'uses' => 'forum\ForumController@topicrepneg']);
+  Route::get('/f{forum}/{name}{topic}',       ['as' => 'forum.topic.view2',        'uses' => 'forum\ForumController@viewtopic'])->where('name', '^[a-z\d-]+-$');
+  Route::get('/f{forum}/{topic}',             ['as' => 'forum.topic.view',         'uses' => 'forum\ForumController@viewtopic']);
 });
 
 Route::get ('/',      ['as' => 'home',  'uses' => 'RootController@home']);

@@ -17,5 +17,8 @@ return [
   'newpost.post.submit' => 'Create',
   'topic.reply' => 'Reply',
   'topic.reply.body' => 'Body',
-  'topic.reply.submit' => 'Reply'
+  'topic.reply.submit' => 'Reply',
+  'topic.rep' => 'Was this post helpful?',
+  'topic.rep.pos' => '+',
+  'topic.rep.neg' => '-'
 ];

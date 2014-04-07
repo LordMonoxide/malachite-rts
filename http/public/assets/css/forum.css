@@ -63,3 +63,7 @@ table {
   clear: both;
   width: 45%;
 }
+
+.post-rep-form {
+  float: right;
+}
