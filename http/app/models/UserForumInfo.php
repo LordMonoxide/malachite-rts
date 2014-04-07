@@ -11,7 +11,6 @@ class UserForumInfo extends Eloquent {
   public function getRepAttribute() {
     $rep = $this->rep_pos - $this->rep_neg;
     if($rep > 0) { $rep = '+' . $rep; }
-    if($rep < 0) { $rep = '-' . $rep; }
     return $rep;
   }
 }
