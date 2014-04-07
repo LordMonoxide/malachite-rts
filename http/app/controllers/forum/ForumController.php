@@ -50,6 +50,7 @@ class ForumController extends BaseController {
       
       $info = Auth::user()->forumInfo()->first();
       $info->post_count++;
+      $info->rep_pos++;
       $info->save();
       
       return Redirect::route('forum.topic.view2', [$forum->id, $topic->nameForUri, $topic->id]);
@@ -83,6 +84,7 @@ class ForumController extends BaseController {
       
       $info = Auth::user()->forumInfo()->first();
       $info->post_count++;
+      $info->rep_pos++;
       $info->save();
       
       return Redirect::route('forum.topic.view2', [$forum->id, $topic->nameForUri, $topic->id]);
