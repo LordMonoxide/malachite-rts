@@ -10,6 +10,8 @@ class CreateTableForumPosts extends Migration {
       $table->integer('topic_id')->unsigned();
       $table->integer('author_id')->unsigned();
       $table->longText('body');
+      $table->int('rep_pos')->unsigned()->default(0);
+      $table->int('rep_neg')->unsigned()->default(0);
       $table->timestamps();
       
       $table->foreign('topic_id')

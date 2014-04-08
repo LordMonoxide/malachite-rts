@@ -19,6 +19,6 @@ return [
   'topic.reply.body' => 'Body',
   'topic.reply.submit' => 'Reply',
   'topic.rep' => 'Was this post helpful?',
-  'topic.rep.pos' => '+',
-  'topic.rep.neg' => '-'
+  'topic.rep.pos' => '+:rep',
+  'topic.rep.neg' => ':rep'
 ];
