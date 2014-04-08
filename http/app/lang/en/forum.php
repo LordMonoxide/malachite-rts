@@ -20,5 +20,6 @@ return [
   'topic.reply.submit' => 'Reply',
   'topic.rep' => 'Was this post helpful?',
   'topic.rep.pos' => '+:rep',
-  'topic.rep.neg' => ':rep'
+  'topic.rep.neg' => '-:rep',
+  'topic.rep.vote' => '[-Inf,-1]You down-voted this post.|[1,Inf]You up-voted this post.'
 ];

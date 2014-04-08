@@ -22,6 +22,9 @@ class PostController extends BaseController {
     $info->rep_pos += 10;
     $info->save();
     
+    $post->rep_pos += 1;
+    $post->save();
+    
     return Redirect::back();
   }
   
@@ -35,6 +38,9 @@ class PostController extends BaseController {
     $info = $post->author->forumInfo;
     $info->rep_neg += 10;
     $info->save();
+    
+    $post->rep_neg += 1;
+    $post->save();
     
     return Redirect::back();
   }

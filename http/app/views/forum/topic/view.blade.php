@@ -42,16 +42,20 @@
           <td class="post-body">
             <cite class="post-citation">{{ $post->created_at }}</cite>
             
-            @if($post->reps()->count() === 0)
+            @if($post->reps()->mine()->count() === 0)
               {{ Form::open(['route' => ['forum.post.rep.pos', $post->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
-              {{ Form::submit(Lang::get('forum.topic.rep.pos')) }}
+              {{ Form::submit(Lang::get('forum.topic.rep.pos', ['rep' => $post->rep_pos])) }}
               {{ Form::close() }}
               
               {{ Form::open(['route' => ['forum.post.rep.neg', $post->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
-              {{ Form::submit(Lang::get('forum.topic.rep.neg')) }}
+              {{ Form::submit(Lang::get('forum.topic.rep.neg', ['rep' => $post->rep_neg])) }}
               {{ Form::close() }}
               
               <span class="post-rep-form">@lang('forum.topic.rep')</span>
+            @else
+              {{ Form::button(Lang::get('forum.topic.rep.pos', ['rep' => $post->rep_pos]), ['class' => 'post-rep-form']) }}
+              {{ Form::button(Lang::get('forum.topic.rep.neg', ['rep' => $post->rep_neg]), ['class' => 'post-rep-form']) }}
+              @choice('forum.topic.rep.vote', $post->reps()->mine()->first()->rep)
             @endif
             
             <hr />
