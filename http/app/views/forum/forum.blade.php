@@ -13,7 +13,7 @@
 } ?>
 
 @section('title')
-@lang('forum.title')
+{{ $forum->name }}
 @stop
 
 @section('body')
@@ -48,13 +48,13 @@
           <tr>
             <td class="topic-name">
               <img style="float:right;" src="{{ $topic->creator->avatar }}?s=40" alt="Avatar" />
-              @lang('forum.topic.view.link', ['title' => $topic->title, 'forum' => $forum->id, 'name' => $topic->nameForUri, 'topic' => $topic->id, 'user' => $topic->creator->name, 'date' => $topic->created_at])
+              @lang('forum.topic.view.link', ['title' => $topic->title, 'forum' => $forum->id, 'name' => $topic->nameForUri, 'topic' => $topic->id, 'user' => $topic->creator->name, 'date' => $topic->created_at->diffForHumans(), 'fulldate' => $topic->created_at])
             </td>
             <td class="topic-post-count">{{ $topic->posts->count() }}</td>
             <td class="topic-newest-post">
               <?php $newest = $topic->posts()->newest()->first(); ?>
               @unless($newest === null)
-                @lang('forum.topic.newestpost', ['user' => $newest->author->name, 'date' => $newest->created_at])
+                @lang('forum.topic.newestpost', ['user' => $newest->author->name, 'date' => $newest->created_at->diffForHumans(), 'fulldate' => $newest->created_at])
               @endif
             </td>
           </tr>
@@ -72,6 +72,6 @@
       </table>
       
   @unless($forum->parent === null)
-      {{ HTML::linkAction('forum.topic.new', Lang::get('forum.topic.new'), $forum->id) }}
+      {{ HTML::linkAction('forum.topic.new', Lang::get('forum.topic.new'), $forum->id, ['class' => 'pure-button']) }}
   @endunless
 @stop

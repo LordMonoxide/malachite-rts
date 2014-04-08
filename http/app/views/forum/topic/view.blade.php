@@ -1,7 +1,7 @@
 @extends('forum.layout')
 
 @section('title')
-@lang('forum.topic.view.title')
+{{ $topic->title }}
 @stop
 
 @section('breadcrumbs')
@@ -40,7 +40,7 @@
             </div>
           </td>
           <td class="post-body">
-            <cite class="post-citation">{{ $post->created_at }}</cite>
+            <cite class="post-citation">{{ $post->created_at->diffForHumans() }} - {{ $post->created_at }}</cite>
             
             @if($post->reps()->mine()->count() === 0)
               {{ Form::open(['route' => ['forum.post.rep.pos', $post->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
@@ -66,5 +66,5 @@
     </tbody>
   </table>
       
-  {{ HTML::linkAction('forum.topic.reply2', Lang::get('forum.topic.reply'), [$forum->id, $topic->nameForUri, $topic->id]) }}
+  {{ HTML::linkAction('forum.topic.reply2', Lang::get('forum.topic.reply'), [$forum->id, $topic->nameForUri, $topic->id], ['class' => 'pure-button']) }}
 @stop
