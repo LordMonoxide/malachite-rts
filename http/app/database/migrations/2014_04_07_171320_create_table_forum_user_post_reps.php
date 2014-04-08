@@ -11,6 +11,14 @@ class CreateTableForumUserPostReps extends Migration {
       $table->integer('post_id')->unsigned();
       $table->integer('rep');
       $table->timestamps();
+      
+      $table->foreign('user_id')
+            ->references('id')
+            ->on('users');
+      
+      $table->foreign('post_id')
+            ->references('id')
+            ->on('forum_posts');
     });
   }
   
