@@ -128,30 +128,6 @@ public abstract class AbstractGUI {
     return null;
   }
 
-  protected final int getAllX(AbstractControl<? extends ControlEvents> control) {
-    int x = control.getX();
-    
-    AbstractControl<? extends ControlEvents> c = control._controlParent;
-    while(c != null) {
-      x += c.getX();
-      c = c._controlParent;
-    }
-    
-    return x;
-  }
-
-  protected final int getAllY(AbstractControl<? extends ControlEvents> control) {
-    int y = control.getY();
-    
-    AbstractControl<? extends ControlEvents> c = control._controlParent;
-    while(c != null) {
-      y += c.getY();
-      c = c._controlParent;
-    }
-    
-    return y;
-  }
-
   protected final boolean mouseDown(int x, int y, int button) {
     boolean handled = false;
     
@@ -169,7 +145,7 @@ public abstract class AbstractGUI {
           _selectControl.setFocus(true);
         }
 
-        _selectControl.handleMouseDown(x - getAllX(_selectControl), y - getAllY(_selectControl), button);
+        _selectControl.handleMouseDown(x - _selectControl.getAllX(), y - _selectControl.getAllY(), button);
         handled = true;
       } else {
         System.err.println("Found no controls of this colour"); //$NON-NLS-1$
@@ -185,7 +161,7 @@ public abstract class AbstractGUI {
     _selectButton = -1;
 
     if(_selectControl != null) {
-      _selectControl.handleMouseUp(x - getAllX(_selectControl), y - getAllY(_selectControl), button);
+      _selectControl.handleMouseUp(x - _selectControl.getAllX(), y - _selectControl.getAllY(), button);
       _selectControl = null;
       handled = true;
     }
@@ -200,7 +176,7 @@ public abstract class AbstractGUI {
     _mouseY = y;
 
     if(_selectControl != null) {
-      _selectControl.handleMouseMove(x - getAllX(_selectControl), y - getAllY(_selectControl), _selectButton);
+      _selectControl.handleMouseMove(x - _selectControl.getAllX(), y - _selectControl.getAllY(), _selectButton);
       
       handled = true;
     } else {
@@ -218,7 +194,7 @@ public abstract class AbstractGUI {
         }
 
         if(_selectControl != null) {
-          _selectControl.handleMouseMove(x - getAllX(_selectControl), y - getAllY(_selectControl), _selectButton);
+          _selectControl.handleMouseMove(x - _selectControl.getAllX(), y - _selectControl.getAllY(), _selectButton);
           _selectControl = null;
           
           handled = true;

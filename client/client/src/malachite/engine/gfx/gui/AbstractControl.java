@@ -109,6 +109,30 @@ public abstract class AbstractControl<T extends ControlEvents> {
   public int getW() { return _w; }
   public int getH() { return _h; }
 
+  protected final int getAllX() {
+    int x = _x;
+    
+    AbstractControl<? extends ControlEvents> c = _controlParent;
+    while(c != null) {
+      x += c.getX();
+      c = c._controlParent;
+    }
+    
+    return x;
+  }
+
+  protected final int getAllY() {
+    int y = _y;
+    
+    AbstractControl<? extends ControlEvents> c = _controlParent;
+    while(c != null) {
+      y += c.getY();
+      c = c._controlParent;
+    }
+    
+    return y;
+  }
+
   public void setBackground(AbstractDrawable d) {
     _background = d;
   }
