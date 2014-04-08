@@ -130,21 +130,25 @@ public abstract class AbstractGUI {
 
   protected final int getAllX(AbstractControl<? extends ControlEvents> control) {
     int x = control.getX();
-
-    if(control._controlParent != null) {
-      x += getAllX(control._controlParent);
+    
+    AbstractControl<? extends ControlEvents> c = control._controlParent;
+    while(c != null) {
+      x += c.getX();
+      c = c._controlParent;
     }
-
+    
     return x;
   }
 
   protected final int getAllY(AbstractControl<? extends ControlEvents> control) {
     int y = control.getY();
-
-    if(control._controlParent != null) {
-      y += getAllY(control._controlParent);
+    
+    AbstractControl<? extends ControlEvents> c = control._controlParent;
+    while(c != null) {
+      y += c.getY();
+      c = c._controlParent;
     }
-
+    
     return y;
   }
 
