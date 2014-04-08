@@ -42,15 +42,17 @@
           <td class="post-body">
             <cite class="post-citation">{{ $post->created_at }}</cite>
             
-            {{ Form::open(['route' => ['forum.post.rep.pos', $forum->id, $topic->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
-            {{ Form::submit(Lang::get('forum.topic.rep.pos')) }}
-            {{ Form::close() }}
-            
-            {{ Form::open(['route' => ['forum.post.rep.neg', $forum->id, $topic->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
-            {{ Form::submit(Lang::get('forum.topic.rep.neg')) }}
-            {{ Form::close() }}
-            
-            <span class="post-rep-form">@lang('forum.topic.rep')</span>
+            @if($post->reps()->count() === 0)
+              {{ Form::open(['route' => ['forum.post.rep.pos', $post->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
+              {{ Form::submit(Lang::get('forum.topic.rep.pos')) }}
+              {{ Form::close() }}
+              
+              {{ Form::open(['route' => ['forum.post.rep.neg', $post->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
+              {{ Form::submit(Lang::get('forum.topic.rep.neg')) }}
+              {{ Form::close() }}
+              
+              <span class="post-rep-form">@lang('forum.topic.rep')</span>
+            @endif
             
             <hr />
             {{{ $post->body }}}
