@@ -141,6 +141,37 @@ public final class API {
           }
         });
       }
+      
+      public static void create(CharactersCreateResponse cb) {
+        dispatch(Route.Storage.Characters.Create, resp -> {
+          try {
+            if(resp.succeeded()) {
+              cb.success();
+            } else {
+              switch(resp.response().getStatus().code()) {
+                case 401:
+                  JSONObject j = new JSONObject(resp.content());
+                  switch(j.getString(NOT_AUTHED_SHOW)) {
+                    case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
+                    case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
+                    default:         cb.error(resp);
+                  }
+                  
+                  break;
+                
+                case 409:
+                  cb.invalid(new JSONObject(resp.content()));
+                  break;
+                
+                default:
+                  cb.error(resp);
+              }
+            }
+          } catch(JSONException e) {
+            cb.error(resp);
+          }
+        });
+      }
     }
     
     public static final class Races {
@@ -219,6 +250,14 @@ public final class API {
   
   public interface CharactersAllResponse {
     public void success(Character[] characters);
+    public void loginRequired();
+    public void securityRequired();
+    public void error(Response r);
+  }
+  
+  public interface CharactersCreateResponse {
+    public void success();
+    public void invalid(JSONObject errors);
     public void loginRequired();
     public void securityRequired();
     public void error(Response r);
