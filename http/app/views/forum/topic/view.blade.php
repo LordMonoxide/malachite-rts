@@ -44,18 +44,18 @@
             
             @if($post->reps()->mine()->count() === 0)
               {{ Form::open(['route' => ['forum.post.rep.pos', $post->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
-              {{ Form::submit(Lang::get('forum.topic.rep.pos', ['rep' => $post->rep_pos])) }}
+              {{ Form::submit(Lang::get('forum.topic.rep.pos', ['rep' => $post->rep_pos]), ['class' => 'pure-button post-rep-button post-rep-positive']) }}
               {{ Form::close() }}
               
               {{ Form::open(['route' => ['forum.post.rep.neg', $post->id], 'method' => 'PUT', 'class' => 'post-rep-form']) }}
-              {{ Form::submit(Lang::get('forum.topic.rep.neg', ['rep' => $post->rep_neg])) }}
+              {{ Form::submit(Lang::get('forum.topic.rep.neg', ['rep' => $post->rep_neg]), ['class' => 'pure-button post-rep-button post-rep-negative']) }}
               {{ Form::close() }}
               
               <span class="post-rep-form">@lang('forum.topic.rep')</span>
             @else
-              {{ Form::button(Lang::get('forum.topic.rep.pos', ['rep' => $post->rep_pos]), ['class' => 'post-rep-form']) }}
-              {{ Form::button(Lang::get('forum.topic.rep.neg', ['rep' => $post->rep_neg]), ['class' => 'post-rep-form']) }}
-              @choice('forum.topic.rep.vote', $post->reps()->mine()->first()->rep)
+              {{ Form::button(Lang::get('forum.topic.rep.pos', ['rep' => $post->rep_pos]), ['class' => 'pure-button post-rep-form post-rep-button post-rep-positive']) }}
+              {{ Form::button(Lang::get('forum.topic.rep.neg', ['rep' => $post->rep_neg]), ['class' => 'pure-button post-rep-form post-rep-button post-rep-negative']) }}
+              <span class="post-rep-form">@choice('forum.topic.rep.vote', $post->reps()->mine()->first()->rep)</span>
             @endif
             
             <hr />

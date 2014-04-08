@@ -66,4 +66,20 @@ table {
 
 .post-rep-form {
   float: right;
+  margin-left: 4px;
+}
+
+.post-rep-button {
+  color: white;
+  border-radius: 4px;
+  font-size: 70%;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.post-rep-positive {
+  background-color: rgb(28, 184, 65);
+}
+
+.post-rep-negative {
+  background-color: rgb(202, 60, 60);
 }
