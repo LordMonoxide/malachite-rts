@@ -3,9 +3,9 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableForumPosts extends Migration {
+class CreateTablePosts extends Migration {
 	public function up() {
-    Schema::create('forum_posts', function($table) {
+    Schema::create('posts', function($table) {
       $table->increments('id');
       $table->integer('topic_id')->unsigned();
       $table->integer('author_id')->unsigned();
@@ -16,7 +16,7 @@ class CreateTableForumPosts extends Migration {
       
       $table->foreign('topic_id')
             ->references('id')
-            ->on('forum_topics');
+            ->on('topics');
       
       $table->foreign('author_id')
             ->references('id')
@@ -25,6 +25,6 @@ class CreateTableForumPosts extends Migration {
   }
   
   public function down() {
-    Schema::drop('forum_posts');
+    Schema::drop('posts');
   }
 }

@@ -1,8 +1,8 @@
 <?php
 
-class ForumPost extends Eloquent {
+class Post extends Eloquent {
   public function topic() {
-    return $this->belongsTo('ForumTopic', 'topic_id');
+    return $this->belongsTo('Topic');
   }
   
   public function author() {
@@ -10,7 +10,7 @@ class ForumPost extends Eloquent {
   }
   
   public function reps() {
-    return $this->hasMany('ForumUserPostRep', 'post_id');
+    return $this->hasMany('UserPostRep');
   }
   
   public function scopeNewest($query) {

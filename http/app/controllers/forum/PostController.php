@@ -4,7 +4,7 @@ use Auth;
 use Redirect;
 
 use BaseController;
-use ForumUserPostRep as UserPostRep;
+use UserPostRep;
 
 class PostController extends BaseController {
   public function __construct() {
@@ -18,7 +18,7 @@ class PostController extends BaseController {
     $rep->rep = 1;
     $rep->save();
     
-    $info = $post->author->forumInfo;
+    $info = $post->author->info;
     $info->rep_pos += 10;
     $info->save();
     
@@ -35,7 +35,7 @@ class PostController extends BaseController {
     $rep->rep = -1;
     $rep->save();
     
-    $info = $post->author->forumInfo;
+    $info = $post->author->info;
     $info->rep_neg += 10;
     $info->save();
     

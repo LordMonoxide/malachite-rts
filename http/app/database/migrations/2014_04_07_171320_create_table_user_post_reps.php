@@ -3,9 +3,9 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableForumUserPostReps extends Migration {
+class CreateTableUserPostReps extends Migration {
   public function up() {
-    Schema::create('forum_user_post_reps', function($table) {
+    Schema::create('user_post_reps', function($table) {
       $table->increments('id');
       $table->integer('user_id')->unsigned();
       $table->integer('post_id')->unsigned();
@@ -18,11 +18,11 @@ class CreateTableForumUserPostReps extends Migration {
       
       $table->foreign('post_id')
             ->references('id')
-            ->on('forum_posts');
+            ->on('posts');
     });
   }
   
   public function down() {
-    Schema::drop('forum_user_post_reps');
+    Schema::drop('user_post_reps');
   }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class UserForumInfo extends Eloquent {
+class UserInfo extends Eloquent {
   public $primaryKey = 'user_id';
   public $timestamps = false;
   

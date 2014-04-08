@@ -1,12 +1,12 @@
 <?php
 
-class ForumUserPostRep extends Eloquent {
+class UserPostRep extends Eloquent {
   public function user() {
     return $this->belongsTo('User');
   }
   
   public function post() {
-    return $this->belongsTo('ForumPost', 'post_id');
+    return $this->belongsTo('Post');
   }
   
   public function scopeMine($query) {

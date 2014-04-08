@@ -22,12 +22,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     return $this->hasMany('Character');
   }
   
-  public function forumInfo() {
-    return $this->hasOne('UserForumInfo', 'user_id', 'id');
+  public function info() {
+    return $this->hasOne('UserInfo');
   }
   
   public function reps() {
-    return $this->hasMany('ForumUserPostRep', 'user_id');
+    return $this->hasMany('UserPostRep');
   }
   
   public function securityQuestions() {

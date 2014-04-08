@@ -1,8 +1,8 @@
 <?php
 
-class ForumTopic extends Eloquent {
+class Topic extends Eloquent {
   public function forum() {
-    return $this->belongsTo('ForumForum', 'forum_id');
+    return $this->belongsTo('Forum');
   }
   
   public function creator() {
@@ -10,7 +10,7 @@ class ForumTopic extends Eloquent {
   }
   
   public function posts() {
-    return $this->hasMany('ForumPost', 'topic_id');
+    return $this->hasMany('Post');
   }
   
   public function scopeNewest($query) {

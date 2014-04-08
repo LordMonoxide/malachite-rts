@@ -46,11 +46,11 @@ class TableSeeder extends Seeder {
       'name_last'  => 'De Smet'
     ]);
     
-    UserForumInfo::create([
+    UserInfo::create([
       'user_id' => $user[0]->id
     ]);
     
-    UserForumInfo::create([
+    UserInfo::create([
       'user_id' => $user[1]->id
     ]);
     
@@ -90,20 +90,20 @@ class TableSeeder extends Seeder {
       'answer' => '3'
     ]);
     
-    $f[] = ForumForum::create([
+    $f[] = Forum::create([
       'name' => 'Malachite'
     ]);
     
-    $f[] = ForumForum::create([
+    $f[] = Forum::create([
       'name' => 'Other'
     ]);
     
-    $f[] = ForumForum::create([
+    $f[] = Forum::create([
       'parent_id' => $f[0]->id,
       'name'      => 'Announcements'
     ]);
     
-    $f[] = ForumForum::create([
+    $f[] = Forum::create([
       'parent_id' => $f[1]->id,
       'name'      => 'Off-Topic'
     ]);

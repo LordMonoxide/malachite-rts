@@ -17,8 +17,8 @@
           <td class="post-id">
             <span class="user-name">{{{ $post->author->name }}}</span><br />
             
-            @unless($post->author->forumInfo->title === null)
-              <span class="user-title">{{{ $post->author->forumInfo->title }}}</span><br />
+            @unless($post->author->info->title === null)
+              <span class="user-title">{{{ $post->author->info->title }}}</span><br />
             @endunless
             
             <img class="user-avatar" src="{{ $post->author->avatar }}?s=128" alt="{{ $post->author->name_first }}'s avatar" /><br />
@@ -27,16 +27,16 @@
               <span class="user-data">@lang('user.joined')</span>
               <span class="user-data">{{ $post->author->created_at->toFormattedDateString() }}</span>
               
-              @unless($post->author->forumInfo->location === null)
+              @unless($post->author->info->location === null)
                 <span class="user-data">@lang('user.location')</span>
-                <span class="user-data">{{{ $post->author->forumInfo->location }}}</span>
+                <span class="user-data">{{{ $post->author->info->location }}}</span>
               @endunless
               
               <span class="user-data">@lang('user.posts')</span>
-              <span class="user-data">{{ $post->author->forumInfo->post_count }}</span>
+              <span class="user-data">{{ $post->author->info->post_count }}</span>
               
               <span class="user-data">@lang('user.rep')</span>
-              <span class="user-data">{{ $post->author->forumInfo->rep }}</span>
+              <span class="user-data">{{ $post->author->info->rep }}</span>
             </div>
           </td>
           <td class="post-body">

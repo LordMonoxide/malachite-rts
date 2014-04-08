@@ -35,9 +35,9 @@ Route::group(['prefix' => 'auth'], function() {
 });
 
 Route::group(['prefix' => 'forum'], function() {
-  Route::model('forum', 'ForumForum');
-  Route::model('topic', 'ForumTopic');
-  Route::model('post',  'ForumPost');
+  Route::model('forum', 'Forum');
+  Route::model('topic', 'Topic');
+  Route::model('post',  'Post');
   
   Route::get('/',                             ['as' => 'forum.index',              'uses' => 'forum\ForumController@index']);
   Route::get('/f{forum}',                     ['as' => 'forum.forum',              'uses' => 'forum\ForumController@forum']);

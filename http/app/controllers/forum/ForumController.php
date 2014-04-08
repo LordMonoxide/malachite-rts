@@ -7,9 +7,9 @@ use Validator;
 use View;
 
 use BaseController;
-use ForumForum as Forum;
-use ForumTopic as Topic;
-use ForumPost as Post;
+use Forum;
+use Topic;
+use Post;
 
 class ForumController extends BaseController {
   public function __construct() {
@@ -48,7 +48,7 @@ class ForumController extends BaseController {
       $post->body = Input::get('body');
       $post->save();
       
-      $info = Auth::user()->forumInfo()->first();
+      $info = Auth::user()->info()->first();
       $info->post_count++;
       $info->rep_pos++;
       $info->save();
@@ -82,7 +82,7 @@ class ForumController extends BaseController {
       $post->body = Input::get('body');
       $post->save();
       
-      $info = Auth::user()->forumInfo()->first();
+      $info = Auth::user()->info()->first();
       $info->post_count++;
       $info->rep_pos++;
       $info->save();

@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateTableTopics extends Migration {
   public function up() {
-    Schema::create('forum_topics', function($table) {
+    Schema::create('topics', function($table) {
       $table->increments('id');
       $table->integer('forum_id')->unsigned();
       $table->integer('creator_id')->unsigned();
@@ -15,7 +15,7 @@ class CreateTableTopics extends Migration {
       
       $table->foreign('forum_id')
             ->references('id')
-            ->on('forum_forums');
+            ->on('forums');
       
       $table->foreign('creator_id')
             ->references('id')
@@ -24,6 +24,6 @@ class CreateTableTopics extends Migration {
   }
   
   public function down() {
-    Schema::drop('forum_topics');
+    Schema::drop('topics');
   }
 }

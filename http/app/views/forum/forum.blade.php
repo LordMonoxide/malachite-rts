@@ -53,7 +53,9 @@
             <td class="topic-post-count">{{ $topic->posts->count() }}</td>
             <td class="topic-newest-post">
               <?php $newest = $topic->posts()->newest()->first(); ?>
-              @lang('forum.topic.newestpost', ['user' => $newest->author->name, 'date' => $newest->created_at])
+              @unless($newest === null)
+                @lang('forum.topic.newestpost', ['user' => $newest->author->name, 'date' => $newest->created_at])
+              @endif
             </td>
           </tr>
     @endforeach

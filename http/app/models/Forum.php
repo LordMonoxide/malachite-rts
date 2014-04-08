@@ -1,16 +1,16 @@
 <?php
 
-class ForumForum extends Eloquent {
+class Forum extends Eloquent {
   public function parent() {
-    return $this->belongsTo('ForumForum', 'parent_id');
+    return $this->belongsTo('Forum', 'parent_id');
   }
   
   public function children() {
-    return $this->hasMany('ForumForum', 'parent_id');
+    return $this->hasMany('Forum', 'parent_id');
   }
   
   public function topics() {
-    return $this->hasMany('ForumTopic', 'forum_id');
+    return $this->hasMany('Topic');
   }
   
   public function scopeRoot($query) {
