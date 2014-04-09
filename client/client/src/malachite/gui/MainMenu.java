@@ -40,6 +40,7 @@ public class MainMenu extends AbstractGUI {
   private Textbox _txtNewCharName;
   private Dropdown<Race> _drpNewCharRace;
   private Dropdown<String> _drpNewCharSex;
+  private Button _btnNewCharCreate;
 
   @Override
   protected void load() {
@@ -203,6 +204,7 @@ public class MainMenu extends AbstractGUI {
         _txtNewCharName.setW(_wndNewChar.getContentW() - _txtNewCharName.getX() * 2);
         _drpNewCharRace.setW(_wndNewChar.getContentW() - _drpNewCharRace.getX() * 2);
         _drpNewCharSex .setW(_wndNewChar.getContentW() - _drpNewCharSex .getX() * 2);
+        _btnNewCharCreate.setX(_wndNewChar.getContentW() - _btnNewCharCreate.getW() - 4);
       }
     });
     
@@ -220,6 +222,18 @@ public class MainMenu extends AbstractGUI {
     _drpNewCharSex.setH(20);
     _drpNewCharSex.add("Male", "male");
     _drpNewCharSex.add("Female", "female");
+    
+    _btnNewCharCreate = new Button();
+    _btnNewCharCreate.setY(_drpNewCharSex.getY() + _drpNewCharSex.getH() + 8);
+    _btnNewCharCreate.setWH(50, 20);
+    _btnNewCharCreate.setText(Lang.Menu.get(MenuKeys.NEWCHAR_CREATE));
+    _btnNewCharCreate.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        _wndNewChar.hide();
+        createCharacter(new Character(_txtNewCharName.getText(), _drpNewCharRace.getData(), _drpNewCharSex.getData()));
+      }
+    });
     
     controls().add(_wndLogin);
     controls().add(_wndRegister);
@@ -245,6 +259,7 @@ public class MainMenu extends AbstractGUI {
     _wndNewChar.controls().add(_txtNewCharName);
     _wndNewChar.controls().add(_drpNewCharRace);
     _wndNewChar.controls().add(_drpNewCharSex);
+    _wndNewChar.controls().add(_btnNewCharCreate);
     
     checkLogin();
   }
@@ -351,7 +366,7 @@ public class MainMenu extends AbstractGUI {
         _wndChars.show();
         
         for(Character c : characters) {
-          _lstChars.add(Lang.Menu.get(MenuKeys.CHARS_LIST, c.name, c.sex, c.race), c);
+          _lstChars.add(Lang.Menu.get(MenuKeys.CHARS_LIST, c.name, c.sex, c.race.name), c);
         }
       }
       
@@ -408,7 +423,37 @@ public class MainMenu extends AbstractGUI {
   }
   
   private void createCharacter(Character character) {
+    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_CREATINGCHAR));
+    wait.push();
     
+    API.Storage.Characters.create(character, new API.CharactersCreateResponse() {
+      @Override
+      public void success() {
+        wait.pop();
+        showCharacters();
+      }
+      
+      @Override public void loginRequired() {
+        wait.pop();
+        showLogin();
+      }
+      
+      @Override public void securityRequired() {
+        wait.pop();
+        _wndLogin.hide();
+        showSecurity();
+      }
+      
+      @Override public void invalid(JSONObject errors) {
+        wait.pop();
+        System.out.println(errors);
+      }
+      
+      @Override public void error(Response r) {
+        wait.pop();
+        System.out.println(r.content());
+      }
+    });
   }
   
   private void useCharacter(Character character) {

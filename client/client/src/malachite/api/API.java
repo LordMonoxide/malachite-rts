@@ -120,7 +120,7 @@ public final class API {
               
               for(int i = 0; i < j.length(); i++) {
                 JSONObject c = j.getJSONObject(i);
-                characters[i] = new Character(c.getString(Character.NAME), c.getString(Character.RACE), c.getString(Character.SEX));
+                characters[i] = new Character(c.getString(Character.NAME), new Race(c.getString(Character.RACE)), c.getString(Character.SEX));
               }
               
               cb.success(characters);
@@ -142,8 +142,13 @@ public final class API {
         });
       }
       
-      public static void create(CharactersCreateResponse cb) {
-        dispatch(Route.Storage.Characters.Create, resp -> {
+      public static void create(Character character, CharactersCreateResponse cb) {
+        Map<String, String> data = new HashMap<>();
+        data.put(Character.NAME, character.name);
+        data.put(Character.RACE, Integer.toString(character.race.id));
+        data.put(Character.SEX , character.sex);
+        
+        dispatch(Route.Storage.Characters.Create, data, resp -> {
           try {
             if(resp.succeeded()) {
               cb.success();
@@ -187,7 +192,7 @@ public final class API {
               
               for(int i = 0; i < j.length(); i++) {
                 JSONObject r = j.getJSONObject(i);
-                races[i] = new Race(r.getString(Race.NAME));
+                races[i] = new Race(r.getInt(Race.ID), r.getString(Race.NAME));
               }
               
               cb.success(races);
