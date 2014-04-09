@@ -32,14 +32,16 @@ class CharacterController extends Controller {
   public function create() {
     $validator = Validator::make(Input::all(), [
       'name' => ['required', 'min:4', 'max:20', 'unique:characters,name'],
+      'race' => ['required', 'exists:races,id'],
       'sex'  => ['required', 'in:male,female']
     ]);
     
     if($validator->passes()) {
       $char = new Character;
       $char->user()->associate(Auth::user());
-      $char->name = Input::get('name');
-      $char->sex  = Input::get('sex');
+      $char->name    = Input::get('name');
+      $char->race_id = Input::get('race');
+      $char->sex     = Input::get('sex');
       $char->save();
       
       return Response::json(null, 201);
