@@ -147,8 +147,17 @@ public class Request {
         
         HttpRequest request = null;
         
-        if(_method == HttpMethod.GET || _data == null) {
-          request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
+        if(_method == HttpMethod.GET || _method == HttpMethod.DELETE) {
+          if(_data == null) {
+            request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
+          } else {
+            String uri = "?"; //$NON-NLS-1$
+            for(Map.Entry<String, String> e : _data.entrySet()) {
+              uri += e.getKey() + '=' + e.getValue() + '&';
+            }
+            
+            request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString() + uri.substring(0, uri.length() - 1));
+          }
         } else {
           request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, _method, RoutePrefix + _uri.toString());
         }
@@ -166,7 +175,7 @@ public class Request {
         }
         
         HttpPostRequestEncoder post = null;
-        if(_method != HttpMethod.GET && _data != null) {
+        if(_method != HttpMethod.GET && _method != HttpMethod.DELETE && _data == null) {
           try {
             post = new HttpPostRequestEncoder(new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE), request, false);
             
