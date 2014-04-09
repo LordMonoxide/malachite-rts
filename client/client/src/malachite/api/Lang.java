@@ -73,6 +73,7 @@ public class Lang<T> {
     STATUS_LOGGINGIN   ("status.loggingin"),    //$NON-NLS-1$
     STATUS_GETTINGCHARS("status.gettingchars"), //$NON-NLS-1$
     STATUS_GETTINGRACES("status.gettingraces"), //$NON-NLS-1$
+    STATUS_CREATINGCHAR("status.creatingchar"), //$NON-NLS-1$
     
     LOGIN_TITLE   ("login.title"),    //$NON-NLS-1$
     LOGIN_EMAIL   ("login.email"),    //$NON-NLS-1$
@@ -97,7 +98,8 @@ public class Lang<T> {
     NEWCHAR_RACE  ("newchar.race"),   //$NON-NLS-1$
     NEWCHAR_SEX   ("newchar.sex"),    //$NON-NLS-1$
     NEWCHAR_MALE  ("newchar.male"),   //$NON-NLS-1$
-    NEWCHAR_FEMALE("newchar.female"); //$NON-NLS-1$
+    NEWCHAR_FEMALE("newchar.female"), //$NON-NLS-1$
+    NEWCHAR_CREATE("newchar.create"); //$NON-NLS-1$
     
     String _text;
     

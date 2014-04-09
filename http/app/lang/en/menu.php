@@ -7,6 +7,7 @@ return [
   'status.loggingin'    => 'Logging in...',
   'status.gettingchars' => 'Getting characters...',
   'status.gettingraces' => 'Getting races...',
+  'status.creatingchar' => 'Creating character...',
   
   // Login menu
   'login.title'    => 'Login',
@@ -35,5 +36,6 @@ return [
   'newchar.race'   => 'Race',
   'newchar.sex'    => 'Sex',
   'newchar.male'   => 'Male',
-  'newchar.female' => 'Female'
+  'newchar.female' => 'Female',
+  'newchar.create' => 'Create'
 ];
