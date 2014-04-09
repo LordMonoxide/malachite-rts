@@ -1,5 +1,6 @@
 package malachite.gui;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import malachite.api.API;
@@ -168,6 +169,7 @@ public class MainMenu extends AbstractGUI {
     _btnCharDel.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
+        _wndChars.hide();
         deleteCharacter(_lstChars.selected().getData());
       }
     });
@@ -305,8 +307,12 @@ public class MainMenu extends AbstractGUI {
       }
       
       @Override public void error(Response r) {
-        System.out.println(r.content());
+        System.err.println("Error checking auth:\n" + r.content());
         connecting.pop();
+      }
+      
+      @Override public void jsonError(Response r, JSONException e) {
+        System.err.println("JSON encoding error checking auth:\n" + e + '\n' + r.content());
       }
     });
   }
@@ -337,12 +343,16 @@ public class MainMenu extends AbstractGUI {
       
       @Override public void invalid(JSONObject errors) {
         wait.pop();
-        System.out.println(errors);
+        System.err.println(errors);
       }
       
       @Override public void error(Response r) {
         wait.pop();
-        System.out.println(r.content());
+        System.err.println("Error logging in:\n" + r.content());
+      }
+      
+      @Override public void jsonError(Response r, JSONException e) {
+        System.err.println("JSON encoding error logging in:\n" + e + '\n' + r.content());
       }
     });
   }
@@ -384,7 +394,11 @@ public class MainMenu extends AbstractGUI {
       
       @Override public void error(Response r) {
         wait.pop();
-        System.out.println(r.content());
+        System.err.println("Error getting chars:\n" + r.content());
+      }
+      
+      @Override public void jsonError(Response r, JSONException e) {
+        System.err.println("JSON encoding error getting chars:\n" + e + '\n' + r.content());
       }
     });
   }
@@ -415,13 +429,51 @@ public class MainMenu extends AbstractGUI {
       
       @Override public void error(Response r) {
         wait.pop();
-        System.out.println(r.content());
+        System.err.println("Error getting races:\n" + r.content());
+      }
+      
+      @Override public void jsonError(Response r, JSONException e) {
+        System.err.println("JSON encoding error getting races:\n" + e + '\n' + r.content());
       }
     });
   }
   
   private void deleteCharacter(Character character) {
+    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_DELETINGCHAR));
+    wait.push();
     
+    API.Storage.Characters.delete(character, new API.CharactersDeleteResponse() {
+      @Override
+      public void success() {
+        wait.pop();
+        showCharacters();
+      }
+      
+      @Override public void loginRequired() {
+        wait.pop();
+        showLogin();
+      }
+      
+      @Override public void securityRequired() {
+        wait.pop();
+        _wndLogin.hide();
+        showSecurity();
+      }
+      
+      @Override public void invalid(JSONObject errors) {
+        wait.pop();
+        System.err.println(errors);
+      }
+      
+      @Override public void error(Response r) {
+        wait.pop();
+        System.err.println("Error deleting char:\n" + r.content());
+      }
+      
+      @Override public void jsonError(Response r, JSONException e) {
+        System.err.println("JSON encoding error deleting char:\n" + e + '\n' + r.content());
+      }
+    });
   }
   
   private void createCharacter(Character character) {
@@ -448,12 +500,16 @@ public class MainMenu extends AbstractGUI {
       
       @Override public void invalid(JSONObject errors) {
         wait.pop();
-        System.out.println(errors);
+        System.err.println(errors);
       }
       
       @Override public void error(Response r) {
         wait.pop();
-        System.out.println(r.content());
+        System.err.println("Error creating char:\n" + r.content());
+      }
+      
+      @Override public void jsonError(Response r, JSONException e) {
+        System.err.println("JSON encoding error creating char:\n" + e + '\n' + r.content());
       }
     });
   }

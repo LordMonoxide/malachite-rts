@@ -8,6 +8,7 @@ return [
   'status.gettingchars' => 'Getting characters...',
   'status.gettingraces' => 'Getting races...',
   'status.creatingchar' => 'Creating character...',
+  'status.deletingchar' => 'Deleting character...',
   
   // Login menu
   'login.title'    => 'Login',

@@ -42,6 +42,19 @@ public final class API {
     r.dispatch(resp);
   }
   
+  private static void checkGeneric(Response resp, GenericResponse cb) {
+    if(resp.response().getStatus().code() == 401) {
+      JSONObject j = new JSONObject(resp.content());
+      switch(j.getString(NOT_AUTHED_SHOW)) {
+        case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
+        case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
+        default:         cb.error(resp);
+      }
+    } else {
+      cb.error(resp);
+    }
+  }
+  
   public static final class Auth {
     private Auth() { }
     
@@ -51,19 +64,10 @@ public final class API {
           if(resp.succeeded()) {
             cb.loggedIn();
           } else {
-            if(resp.response().getStatus().code() == 401) {
-              JSONObject j = new JSONObject(resp.content());
-              switch(j.getString(NOT_AUTHED_SHOW)) {
-                case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
-                case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
-                default:         cb.error(resp);
-              }
-            } else {
-              cb.error(resp);
-            }
+            checkGeneric(resp, cb);
           }
         } catch(JSONException e) {
-          cb.error(resp);
+          cb.jsonError(resp, e);
         }
       });
     }
@@ -78,27 +82,14 @@ public final class API {
           if(resp.succeeded()) {
             cb.success();
           } else {
-            switch(resp.response().getStatus().code()) {
-              case 401:
-                JSONObject j = new JSONObject(resp.content());
-                switch(j.getString(NOT_AUTHED_SHOW)) {
-                  case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
-                  case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
-                  default:         cb.error(resp);
-                }
-                
-                break;
-              
-              case 409:
-                cb.invalid(new JSONObject(resp.content()));
-                break;
-              
-              default:
-                cb.error(resp);
+            if(resp.response().getStatus().code() == 409) {
+              cb.invalid(new JSONObject(resp.content()));
+            } else {
+              checkGeneric(resp, cb);
             }
           }
         } catch(JSONException e) {
-          cb.error(resp);
+          cb.jsonError(resp, e);
         }
       });
     }
@@ -120,24 +111,15 @@ public final class API {
               
               for(int i = 0; i < j.length(); i++) {
                 JSONObject c = j.getJSONObject(i);
-                characters[i] = new Character(c.getString(Character.NAME), new Race(c.getString(Character.RACE)), c.getString(Character.SEX));
+                characters[i] = new Character(c.getInt(Character.ID), c.getString(Character.NAME), new Race(c.getString(Character.RACE)), c.getString(Character.SEX));
               }
               
               cb.success(characters);
             } else {
-              if(resp.response().getStatus().code() == 401) {
-                JSONObject j = new JSONObject(resp.content());
-                switch(j.getString(NOT_AUTHED_SHOW)) {
-                  case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
-                  case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
-                  default:         cb.error(resp);
-                }
-              } else {
-                cb.error(resp);
-              }
+              checkGeneric(resp, cb);
             }
           } catch(JSONException e) {
-            cb.error(resp);
+            cb.jsonError(resp, e);
           }
         });
       }
@@ -153,27 +135,35 @@ public final class API {
             if(resp.succeeded()) {
               cb.success();
             } else {
-              switch(resp.response().getStatus().code()) {
-                case 401:
-                  JSONObject j = new JSONObject(resp.content());
-                  switch(j.getString(NOT_AUTHED_SHOW)) {
-                    case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
-                    case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
-                    default:         cb.error(resp);
-                  }
-                  
-                  break;
-                
-                case 409:
-                  cb.invalid(new JSONObject(resp.content()));
-                  break;
-                
-                default:
-                  cb.error(resp);
+              if(resp.response().getStatus().code() == 409) {
+                cb.invalid(new JSONObject(resp.content()));
+              } else {
+                checkGeneric(resp, cb);
               }
             }
           } catch(JSONException e) {
-            cb.error(resp);
+            cb.jsonError(resp, e);
+          }
+        });
+      }
+      
+      public static void delete(Character character, CharactersDeleteResponse cb) {
+        Map<String, String> data = new HashMap<>();
+        data.put(Character.ID, Integer.toString(character.id));
+        
+        dispatch(Route.Storage.Characters.Delete, data, resp -> {
+          try {
+            if(resp.succeeded()) {
+              cb.success();
+            } else {
+              if(resp.response().getStatus().code() == 409) {
+                cb.invalid(new JSONObject(resp.content()));
+              } else {
+                checkGeneric(resp, cb);
+              }
+            }
+          } catch(JSONException e) {
+            cb.jsonError(resp, e);
           }
         });
       }
@@ -197,19 +187,10 @@ public final class API {
               
               cb.success(races);
             } else {
-              if(resp.response().getStatus().code() == 401) {
-                JSONObject j = new JSONObject(resp.content());
-                switch(j.getString(NOT_AUTHED_SHOW)) {
-                  case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
-                  case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
-                  default:         cb.error(resp);
-                }
-              } else {
-                cb.error(resp);
-              }
+              checkGeneric(resp, cb);
             }
           } catch(JSONException e) {
-            cb.error(resp);
+            cb.jsonError(resp, e);
           }
         });
       }
@@ -233,51 +214,49 @@ public final class API {
           cb.error(resp);
         }
       } catch(JSONException e) {
-        cb.error(resp);
+        cb.jsonError(resp, e);
       }
     });
   }
   
-  public interface CheckResponse {
-    public void loggedIn();
-    public void loginRequired();
-    public void securityRequired();
-    public void error(Response r);
+  private static abstract class GenericResponse {
+    public abstract void loginRequired();
+    public abstract void securityRequired();
+    public abstract void error(Response r);
+    public abstract void jsonError(Response r, JSONException e);
   }
   
-  public interface LoginResponse {
-    public void success();
-    public void invalid(JSONObject errors);
-    public void loginRequired();
-    public void securityRequired();
-    public void error(Response r);
+  public static abstract class CheckResponse extends GenericResponse {
+    public abstract void loggedIn();
   }
   
-  public interface CharactersAllResponse {
-    public void success(Character[] characters);
-    public void loginRequired();
-    public void securityRequired();
-    public void error(Response r);
+  public static abstract class LoginResponse extends GenericResponse {
+    public abstract void success();
+    public abstract void invalid(JSONObject errors);
   }
   
-  public interface CharactersCreateResponse {
-    public void success();
-    public void invalid(JSONObject errors);
-    public void loginRequired();
-    public void securityRequired();
-    public void error(Response r);
+  public static abstract class CharactersAllResponse extends GenericResponse {
+    public abstract void success(Character[] characters);
   }
   
-  public interface RacesAllResponse {
-    public void success(Race[] races);
-    public void loginRequired();
-    public void securityRequired();
-    public void error(Response r);
+  public static abstract class CharactersCreateResponse extends GenericResponse {
+    public abstract void success();
+    public abstract void invalid(JSONObject errors);
   }
   
-  public interface LangResponse {
-    public void success(Map<String, String> lang);
-    public void error(Response r);
+  public static abstract class CharactersDeleteResponse extends GenericResponse {
+    public abstract void success();
+    public abstract void invalid(JSONObject errors);
+  }
+  
+  public static abstract class RacesAllResponse extends GenericResponse {
+    public abstract void success(Race[] races);
+  }
+  
+  public static abstract class LangResponse {
+    public abstract void success(Map<String, String> lang);
+    public abstract void error(Response r);
+    public abstract void jsonError(Response r, JSONException e);
   }
   
   public static class Route {

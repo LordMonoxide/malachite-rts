@@ -2,6 +2,8 @@ package malachite.api;
 
 import java.util.Map;
 
+import org.json.JSONException;
+
 import malachite.engine.net.http.Response;
 
 public class Lang<T> {
@@ -19,6 +21,10 @@ public class Lang<T> {
       @Override public void error(Response r) {
         System.err.println(r.content());
       }
+      
+      @Override public void jsonError(Response r, JSONException e) {
+        System.err.println("JSON encoding error getting app lang:\n" + e + '\n' + r.content()); //$NON-NLS-1$
+      }
     });
     
     API.lang(API.Route.Lang.Menu, new API.LangResponse() {
@@ -28,6 +34,10 @@ public class Lang<T> {
       
       @Override public void error(Response r) {
         System.err.println(r.content());
+      }
+      
+      @Override public void jsonError(Response r, JSONException e) {
+        System.err.println("JSON encoding error getting menu lang:\n" + e + '\n' + r.content()); //$NON-NLS-1$
       }
     });
     
@@ -74,6 +84,7 @@ public class Lang<T> {
     STATUS_GETTINGCHARS("status.gettingchars"), //$NON-NLS-1$
     STATUS_GETTINGRACES("status.gettingraces"), //$NON-NLS-1$
     STATUS_CREATINGCHAR("status.creatingchar"), //$NON-NLS-1$
+    STATUS_DELETINGCHAR("status.deletingchar"), //$NON-NLS-1$
     
     LOGIN_TITLE   ("login.title"),    //$NON-NLS-1$
     LOGIN_EMAIL   ("login.email"),    //$NON-NLS-1$

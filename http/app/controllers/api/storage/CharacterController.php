@@ -20,6 +20,7 @@ class CharacterController extends Controller {
     
     Auth::user()->characters()->get()->each(function($char) use(&$chars, &$i) {
       $chars[$i++] = [
+        'id'   => $char->id,
         'name' => $char->name,
         'race' => $char->race->name,
         'sex'  => $char->sex
