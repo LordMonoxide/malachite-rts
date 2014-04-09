@@ -32,6 +32,14 @@ public class List<T> extends AbstractControl<ControlEvents> {
     controls().add(_inner);
   }
   
+  public void clear() {
+    AbstractControl<? extends ControlEvents> c = _inner.controls().first();
+    while(c != null) {
+      _inner.controls().remove(c);
+      c = c.controlPrev();
+    }
+  }
+  
   public Item add(String name, T data) {
     Item i = new Item(name, data);
     i.setY(_inner.controls().size() * 20);

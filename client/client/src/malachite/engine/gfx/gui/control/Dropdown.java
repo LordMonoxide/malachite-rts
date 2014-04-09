@@ -75,6 +75,11 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
     
   }
   
+  public void clear() {
+    _selected = -1;
+    _items = new ArrayList<>();
+  }
+  
   public Item add(String text, T data) {
     Item item = new Item(text, data);
     _items.add(item);
