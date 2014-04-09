@@ -86,10 +86,30 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
     return item;
   }
   
+  public int getSelected() {
+    return _selected;
+  }
+
   public void setSelected(int index) {
     _selected = Math.max(0, Math.min(index, _items.size() - 1));
   }
-
+  
+  public String getText() {
+    if(_selected != -1) {
+      return _items.get(_selected)._text;
+    }
+    
+    return null;
+  }
+  
+  public T getData() {
+    if(_selected != -1) {
+      return _items.get(_selected)._data;
+    }
+    
+    return null;
+  }
+  
   @Override
   public void draw() {
     if(drawBegin()) {
