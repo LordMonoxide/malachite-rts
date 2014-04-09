@@ -360,6 +360,8 @@ public class MainMenu extends AbstractGUI {
     Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_GETTINGCHARS));
     wait.push();
     
+    _lstChars.clear();
+    
     API.Storage.Characters.all(new API.CharactersAllResponse() {
       @Override public void success(Character[] characters) {
         wait.pop();
