@@ -104,6 +104,8 @@ public class List<T> extends AbstractControl<ControlEvents> {
           11, 11, 1
       );
       
+      _border.setColour(_normalBorder);
+      
       _data = data;
       
       controls().add(_text);
