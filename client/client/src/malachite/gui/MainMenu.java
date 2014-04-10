@@ -155,9 +155,9 @@ public class MainMenu extends AbstractGUI {
     _wndChars.events().addResizeHandler(new ControlEvents.Resize() {
       @Override public void resize() {
         _lstChars.setWH(_wndChars.getContentW(), _wndChars.getContentH() - _btnCharUse.getH() - 8);
-        _btnCharDel.setXY(4, _lstChars.getH() + 6);
-        _btnCharNew.setXY(_btnCharDel.getX() + _btnCharDel.getW() + 4, _btnCharDel.getY());
-        _btnCharUse.setXY(_lstChars.getW() - _btnCharUse.getW() - 4, _btnCharDel.getY());
+        _btnCharUse.setXY(_lstChars.getW() - _btnCharUse.getW() - 4, _lstChars.getY() + _lstChars.getH() + 6);
+        _btnCharNew.setXY(_btnCharUse.getX() - _btnCharNew.getW() - 4, _btnCharUse.getY());
+        _btnCharDel.setXY(_btnCharNew.getX() - _btnCharDel.getW() + 1, _btnCharUse.getY());
       }
     });
     
@@ -166,6 +166,7 @@ public class MainMenu extends AbstractGUI {
     _btnCharDel = new Button();
     _btnCharDel.setWH(50, 20);
     _btnCharDel.setText(Lang.Menu.get(MenuKeys.CHARS_DEL));
+    _btnCharDel.setBackgroundColour(202 / 255f, 60 / 255f, 60 / 255f, 1);
     _btnCharDel.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {

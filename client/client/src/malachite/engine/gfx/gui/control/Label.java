@@ -28,7 +28,22 @@ public class Label extends AbstractControl<ControlEvents> {
   public String getText() {
     return _text;
   }
-
+  
+  public void setTextColour(float[] c) {
+    _textColour = c;
+  }
+  
+  public void setTextColour(float r, float g, float b, float a) {
+    _textColour[0] = r;
+    _textColour[1] = g;
+    _textColour[2] = b;
+    _textColour[3] = a;
+  }
+  
+  public float[] getTextColour() {
+    return _textColour;
+  }
+  
   @Override
   protected void resize() {
     switch(_hAlign) {

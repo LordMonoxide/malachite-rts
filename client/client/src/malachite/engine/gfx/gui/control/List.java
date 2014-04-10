@@ -90,6 +90,7 @@ public class List<T> extends AbstractControl<ControlEvents> {
       );
       
       _text = new Label();
+      _text.setTextColour(65f / 255, 52f / 255, 8f / 255, 1);
       _text.setText(text);
       _text.setX(4);
       

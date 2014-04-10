@@ -52,7 +52,7 @@ public class Button extends AbstractControl<ControlEvents> {
   @Override
   public void setBackground(AbstractDrawable d) {
     super.setBackground(d);
-    _normalColour  = d.getColour();
+    _normalColour = d.getColour();
     
     for(int i = 0; i < 2; i++) {
       _hoverColour[i]   = _normalColour[i] + _normalColour[i] * (1 - _normalColour[i]);
@@ -64,9 +64,14 @@ public class Button extends AbstractControl<ControlEvents> {
   }
   
   @Override
+  public void setBackgroundColour(float r, float g, float b, float a) {
+    setBackgroundColour(new float[] {r, g, b, a});
+  }
+  
+  @Override
   public void setBackgroundColour(float[] c) {
     super.setBackgroundColour(c);
-    _normalColour  = c;
+    _normalColour = c;
     
     for(int i = 0; i < 2; i++) {
       _hoverColour[i]   = _normalColour[i] + _normalColour[i] * (1 - _normalColour[i]);
