@@ -291,31 +291,16 @@ public class MainMenu extends AbstractGUI {
     Message connecting = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_CONNECTING));
     connecting.push();
     
-    API.Auth.check(new API.CheckResponse() {
+    class R extends GenericResponse implements API.CheckResponse {
+      R() { super(connecting, _wndLogin); }
+      
       @Override public void loggedIn() {
         showCharacters();
         connecting.pop();
       }
-      
-      @Override public void loginRequired() {
-        showLogin();
-        connecting.pop();
-      }
-      
-      @Override public void securityRequired() {
-        showSecurity();
-        connecting.pop();
-      }
-      
-      @Override public void error(Response r) {
-        System.err.println("Error checking auth:\n" + r.content());
-        connecting.pop();
-      }
-      
-      @Override public void jsonError(Response r, JSONException e) {
-        System.err.println("JSON encoding error checking auth:\n" + e + '\n' + r.content());
-      }
-    });
+    }
+    
+    API.Auth.check(new R());
   }
   
   private void attemptLogin() {
@@ -324,38 +309,22 @@ public class MainMenu extends AbstractGUI {
     
     _wndLogin.disable();
     
-    API.Auth.login(_txtEmail.getText(), _txtPass.getText(), new API.LoginResponse() {
+    class R extends GenericResponse implements API.LoginResponse {
+      R() { super(wait, _wndLogin); }
+      
       @Override public void success() {
         wait.pop();
         _wndLogin.hide();
         showCharacters();
       }
       
-      @Override public void loginRequired() {
-        wait.pop();
-        showLogin();
-      }
-      
-      @Override public void securityRequired() {
-        wait.pop();
-        _wndLogin.hide();
-        showSecurity();
-      }
-      
       @Override public void invalid(JSONObject errors) {
         wait.pop();
         System.err.println(errors);
       }
-      
-      @Override public void error(Response r) {
-        wait.pop();
-        System.err.println("Error logging in:\n" + r.content());
-      }
-      
-      @Override public void jsonError(Response r, JSONException e) {
-        System.err.println("JSON encoding error logging in:\n" + e + '\n' + r.content());
-      }
-    });
+    }
+    
+    API.Auth.login(_txtEmail.getText(), _txtPass.getText(), new R());
   }
   
   private void showLogin() {
@@ -373,7 +342,9 @@ public class MainMenu extends AbstractGUI {
     
     _lstChars.clear();
     
-    API.Storage.Characters.all(new API.CharactersAllResponse() {
+    class R extends GenericResponse implements API.CharactersAllResponse {
+      R() { super(wait, _wndChars); }
+      
       @Override public void success(Character[] characters) {
         wait.pop();
         _wndChars.show();
@@ -382,33 +353,18 @@ public class MainMenu extends AbstractGUI {
           _lstChars.add(Lang.Menu.get(MenuKeys.CHARS_LIST, c.name, c.sex, c.race.name), c);
         }
       }
-      
-      @Override public void loginRequired() {
-        wait.pop();
-        showLogin();
-      }
-      
-      @Override public void securityRequired() {
-        wait.pop();
-        showSecurity();
-      }
-      
-      @Override public void error(Response r) {
-        wait.pop();
-        System.err.println("Error getting chars:\n" + r.content());
-      }
-      
-      @Override public void jsonError(Response r, JSONException e) {
-        System.err.println("JSON encoding error getting chars:\n" + e + '\n' + r.content());
-      }
-    });
+    }
+    
+    API.Storage.Characters.all(new R());
   }
   
   private void showCreateCharacter() {
     Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_GETTINGRACES));
     wait.push();
     
-    API.Storage.Races.all(new API.RacesAllResponse() {
+    class R extends GenericResponse implements API.RacesAllResponse {
+      R() { super(wait, _wndNewChar); }
+      
       @Override public void success(Race[] races) {
         wait.pop();
         _wndNewChar.show();
@@ -417,105 +373,87 @@ public class MainMenu extends AbstractGUI {
           _drpNewCharRace.add(r.name, r);
         }
       }
-      
-      @Override public void loginRequired() {
-        wait.pop();
-        showLogin();
-      }
-      
-      @Override public void securityRequired() {
-        wait.pop();
-        showSecurity();
-      }
-      
-      @Override public void error(Response r) {
-        wait.pop();
-        System.err.println("Error getting races:\n" + r.content());
-      }
-      
-      @Override public void jsonError(Response r, JSONException e) {
-        System.err.println("JSON encoding error getting races:\n" + e + '\n' + r.content());
-      }
-    });
+    }
+    
+    API.Storage.Races.all(new R());
   }
   
   private void deleteCharacter(Character character) {
     Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_DELETINGCHAR));
     wait.push();
     
-    API.Storage.Characters.delete(character, new API.CharactersDeleteResponse() {
-      @Override
-      public void success() {
+    class R extends GenericResponse implements API.CharactersDeleteResponse {
+      R() { super(wait, _wndChars); }
+      
+      @Override public void success() {
         wait.pop();
         showCharacters();
-      }
-      
-      @Override public void loginRequired() {
-        wait.pop();
-        showLogin();
-      }
-      
-      @Override public void securityRequired() {
-        wait.pop();
-        _wndLogin.hide();
-        showSecurity();
       }
       
       @Override public void invalid(JSONObject errors) {
         wait.pop();
         System.err.println(errors);
       }
-      
-      @Override public void error(Response r) {
-        wait.pop();
-        System.err.println("Error deleting char:\n" + r.content());
-      }
-      
-      @Override public void jsonError(Response r, JSONException e) {
-        System.err.println("JSON encoding error deleting char:\n" + e + '\n' + r.content());
-      }
-    });
+    }
+    
+    API.Storage.Characters.delete(character, new R());
   }
   
   private void createCharacter(Character character) {
     Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_CREATINGCHAR));
     wait.push();
     
-    API.Storage.Characters.create(character, new API.CharactersCreateResponse() {
-      @Override
-      public void success() {
+    class R extends GenericResponse implements API.CharactersCreateResponse {
+      R() { super(wait, _wndNewChar); }
+      
+      @Override public void success() {
         wait.pop();
         showCharacters();
-      }
-      
-      @Override public void loginRequired() {
-        wait.pop();
-        showLogin();
-      }
-      
-      @Override public void securityRequired() {
-        wait.pop();
-        _wndLogin.hide();
-        showSecurity();
       }
       
       @Override public void invalid(JSONObject errors) {
         wait.pop();
         System.err.println(errors);
       }
-      
-      @Override public void error(Response r) {
-        wait.pop();
-        System.err.println("Error creating char:\n" + r.content());
-      }
-      
-      @Override public void jsonError(Response r, JSONException e) {
-        System.err.println("JSON encoding error creating char:\n" + e + '\n' + r.content());
-      }
-    });
+    }
+    
+    API.Storage.Characters.create(character, new R());
   }
   
   private void useCharacter(Character character) {
     
+  }
+  
+  private class GenericResponse implements API.GenericResponse {
+    private final Message _wait;
+    private final Window _window;
+    
+    private GenericResponse(Message wait, Window window) {
+      _wait   = wait;
+      _window = window;
+    }
+    
+    @Override
+    public void loginRequired() {
+      _wait.pop();
+      showLogin();
+    }
+    
+    @Override
+    public void securityRequired() {
+      _wait.pop();
+      _window.hide();
+      showSecurity();
+    }
+    
+    @Override
+    public void error(Response r) {
+      _wait.setText("Error:\n" + r.content());
+    }
+    
+    @Override
+    public void jsonError(Response r, JSONException e) {
+      _wait.setText("JSON encoding error:\n" + e + '\n' + r.content());
+    }
   }
 }
