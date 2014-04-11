@@ -175,7 +175,7 @@ public class Request {
         }
         
         HttpPostRequestEncoder post = null;
-        if(_method != HttpMethod.GET && _method != HttpMethod.DELETE && _data == null) {
+        if(_method != HttpMethod.GET && _method != HttpMethod.DELETE && _data != null) {
           try {
             post = new HttpPostRequestEncoder(new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE), request, false);
             
