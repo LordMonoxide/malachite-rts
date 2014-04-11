@@ -125,6 +125,10 @@ public class Window extends AbstractControl<Window.Events> {
       _h - _content.getY() * 2
     );
   }
+  
+  public String getText() {
+    return _text.getText();
+  }
 
   public void setText(String text) {
     _text.setText(text);

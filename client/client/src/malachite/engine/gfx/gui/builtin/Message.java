@@ -32,6 +32,22 @@ public class Message extends AbstractGUI {
     
     controls().add(_wndMessage);
   }
+  
+  public String getTitle() {
+    return _wndMessage.getText();
+  }
+  
+  public void setTitle(String title) {
+    _wndMessage.setText(title);
+  }
+  
+  public String getText() {
+    return _lblText.getText();
+  }
+  
+  public void setText(String text) {
+    _lblText.setText(text);
+  }
 
   @Override
   protected void destroy() {
