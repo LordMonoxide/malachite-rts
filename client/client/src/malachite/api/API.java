@@ -219,37 +219,37 @@ public final class API {
     });
   }
   
-  private static abstract class GenericResponse {
+  public interface GenericResponse {
     public abstract void loginRequired();
     public abstract void securityRequired();
     public abstract void error(Response r);
     public abstract void jsonError(Response r, JSONException e);
   }
   
-  public static abstract class CheckResponse extends GenericResponse {
+  public interface CheckResponse extends GenericResponse {
     public abstract void loggedIn();
   }
   
-  public static abstract class LoginResponse extends GenericResponse {
+  public interface LoginResponse extends GenericResponse {
     public abstract void success();
     public abstract void invalid(JSONObject errors);
   }
   
-  public static abstract class CharactersAllResponse extends GenericResponse {
+  public interface CharactersAllResponse extends GenericResponse {
     public abstract void success(Character[] characters);
   }
   
-  public static abstract class CharactersCreateResponse extends GenericResponse {
+  public interface CharactersCreateResponse extends GenericResponse {
     public abstract void success();
     public abstract void invalid(JSONObject errors);
   }
   
-  public static abstract class CharactersDeleteResponse extends GenericResponse {
+  public interface CharactersDeleteResponse extends GenericResponse {
     public abstract void success();
     public abstract void invalid(JSONObject errors);
   }
   
-  public static abstract class RacesAllResponse extends GenericResponse {
+  public interface RacesAllResponse extends GenericResponse {
     public abstract void success(Race[] races);
   }
   
