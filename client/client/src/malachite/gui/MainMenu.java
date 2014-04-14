@@ -372,6 +372,8 @@ public class MainMenu extends AbstractGUI {
         for(Race r : races) {
           _drpNewCharRace.add(r.name, r);
         }
+        
+        _txtNewCharName.setFocus(true);
       }
     }
     
