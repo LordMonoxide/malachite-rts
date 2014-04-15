@@ -175,17 +175,21 @@ public class Request {
         }
         
         HttpPostRequestEncoder post = null;
-        if(_method != HttpMethod.GET && _method != HttpMethod.DELETE && _data != null) {
-          try {
-            post = new HttpPostRequestEncoder(new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE), request, false);
-            
-            for(Map.Entry<String, String> e : _data.entrySet()) {
-              post.addBodyAttribute(e.getKey(), e.getValue());
+        if(_method != HttpMethod.GET && _method != HttpMethod.DELETE) {
+          if(_data != null) {
+            try {
+              post = new HttpPostRequestEncoder(new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE), request, false);
+              
+              for(Map.Entry<String, String> e : _data.entrySet()) {
+                post.addBodyAttribute(e.getKey(), e.getValue());
+              }
+              
+              request = post.finalizeRequest();
+            } catch(ErrorDataEncoderException e) {
+              e.printStackTrace();
             }
-            
-            request = post.finalizeRequest();
-          } catch(ErrorDataEncoderException e) {
-            e.printStackTrace();
+          } else {
+            request.headers().add(HttpHeaders.Names.CONTENT_LENGTH, new Integer(0));
           }
         }
         
