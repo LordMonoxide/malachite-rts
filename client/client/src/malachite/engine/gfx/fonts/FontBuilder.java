@@ -24,17 +24,29 @@ public class FontBuilder {
   private TextureBuilder _textures = TextureBuilder.getInstance();
   private Map<String, Font> _fonts = new HashMap<>();
 
-  private Font _default = getFont("Verdana", 11);
+  private Font _default = getFont("Verdana");
+  private Font _bold    = getFont("Verdana", java.awt.Font.BOLD,   11);
+  private Font _italic  = getFont("Verdana", java.awt.Font.ITALIC, 11);
   public Font getDefault() { return _default; }
+  public Font getBold   () { return _bold;    }
+  public Font getItalic () { return _italic;  }
 
   private FontBuilder() { }
-
+  
+  public Font getFont(String name) {
+    return getFont(name, 11);
+  }
+  
   public Font getFont(String name, int size) {
-    return getFont(name, size, 0x20, 0x3FF, 0x2022, 0x25B2, 0x25BA, 0x25BC, 0x25C4);
+    return getFont(name, java.awt.Font.PLAIN, size);
+  }
+  
+  public Font getFont(String name, int style, int size) {
+    return getFont(name, style, size, 0x20, 0x3FF, 0x2022, 0x25B2, 0x25BA, 0x25BC, 0x25C4);
     // Extra = Bullet, Triangle up, right, down, left
   }
 
-  public Font getFont(String name, int size, int startGlyph, int endGlyph, int... extraGlyphs) {
+  public Font getFont(String name, int style, int size, int startGlyph, int endGlyph, int... extraGlyphs) {
     String fullName = name + '.' + size;
     if(_fonts.containsKey(fullName)) {
       return _fonts.get(fullName);
@@ -42,7 +54,7 @@ public class FontBuilder {
 
     Font f = new Font();
 
-    java.awt.Font font = new java.awt.Font(name, 0, size);
+    java.awt.Font font = new java.awt.Font(name, style, size);
     FontRenderContext rendCont = new FontRenderContext(null, true, true);
     FontMetrics fm = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE).getGraphics().getFontMetrics(font);
     List<Metrics> metrics = new ArrayList<>();

@@ -57,31 +57,59 @@ public class Font {
   public int getH() {
     return _h;
   }
-
+  
   public void draw(int x, int y, String text, float[] c) {
-    draw(x, y, text, c, 0);
+    draw(x, y, 0, 0, text, c, 0);
   }
-
+  
   public void draw(int x, int y, String text, float[] c, int mask) {
+    draw(x, y, 0, 0, text, c, mask);
+  }
+  
+  public void draw(int x, int y, int w, int h, String text, float[] c) {
+    draw(x, y, w, h, text, c, 0);
+  }
+  
+  public void draw(int x, int y, int w, int h, String text, float[] c, int mask) {
     if(text == null)   { return; }
     if(_glyph == null) { return; }
-
+    
     _matrix.push();
     _matrix.translate(x, y);
-
+    _matrix.push();
+    
+    int xo = 0;
     for(int i = 0; i < text.length(); i++) {
       Glyph glyph = _glyph[mask == 0 ? text.codePointAt(i) : mask];
-
+      
       if(glyph != null) {
+        xo += glyph.w;
+        if(xo >= w && w != 0) {
+          _matrix.pop();
+          _matrix.push();
+        }
+        
         //TODO: This is just a hack to temporarily get font colour working
         glyph.setColour(c);
         glyph.draw();
         _matrix.translate(glyph.w, 0);
       } else {
-        _matrix.translate(4, 0);
+        xo += 4;
+        if(xo >= w && w != 0) {
+          _matrix.pop();
+          _matrix.push();
+        } else {
+          _matrix.translate(4, 0);
+        }
+      }
+      
+      if(xo >= w && w != 0) {
+        _matrix.pop();
+        _matrix.push();
       }
     }
-
+    
+    _matrix.pop();
     _matrix.pop();
   }
 
