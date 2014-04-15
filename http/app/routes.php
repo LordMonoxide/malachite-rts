@@ -26,6 +26,11 @@ Route::group(['prefix' => 'api'], function() {
     Route::group(['prefix' => 'races'], function() {
       Route::get('/', ['as' => 'api.storage.races.all', 'uses' => 'api\storage\RaceController@all']);
     });
+    
+    Route::group(['prefix' => 'news'], function() {
+      Route::get('/',       ['as' => 'api.storage.news.all',    'uses' => 'api\storage\NewsController@all']);
+      Route::get('/latest', ['as' => 'api.storage.news.latest', 'uses' => 'api\storage\NewsController@latest']);
+    });
   });
 });
 
