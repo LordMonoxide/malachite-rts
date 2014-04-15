@@ -36,6 +36,7 @@ public class MainMenu extends AbstractGUI {
   private Button _btnCharUse;
   private Button _btnCharNew;
   private Button _btnCharDel;
+  private Button _btnCharLogout;
   
   private Window _wndNewChar;
   private Textbox _txtNewCharName;
@@ -158,10 +159,23 @@ public class MainMenu extends AbstractGUI {
         _btnCharUse.setXY(_lstChars.getW() - _btnCharUse.getW() - 4, _lstChars.getY() + _lstChars.getH() + 6);
         _btnCharNew.setXY(_btnCharUse.getX() - _btnCharNew.getW() - 4, _btnCharUse.getY());
         _btnCharDel.setXY(_btnCharNew.getX() - _btnCharDel.getW() + 1, _btnCharUse.getY());
+        _btnCharLogout.setXY(4, _btnCharUse.getY());
       }
     });
     
     _lstChars = new List<>();
+    
+    _btnCharLogout = new Button();
+    _btnCharLogout.setWH(60, 20);
+    _btnCharLogout.setText(Lang.Menu.get(MenuKeys.CHARS_LOGOUT));
+    _btnCharLogout.setBackgroundColour(202 / 255f, 60 / 255f, 60 / 255f, 1);
+    _btnCharLogout.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        _wndChars.hide();
+        logout();
+      }
+    });
     
     _btnCharDel = new Button();
     _btnCharDel.setWH(50, 20);
@@ -255,6 +269,7 @@ public class MainMenu extends AbstractGUI {
     _wndRegister.controls().add(_txtRegisterPass[1]);
     
     _wndChars.controls().add(_lstChars);
+    _wndChars.controls().add(_btnCharLogout);
     _wndChars.controls().add(_btnCharDel);
     _wndChars.controls().add(_btnCharNew);
     _wndChars.controls().add(_btnCharUse);
@@ -285,6 +300,22 @@ public class MainMenu extends AbstractGUI {
   @Override
   protected boolean logic() {
     return false;
+  }
+  
+  private void logout() {
+    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_LOGGINGIN));
+    wait.push();
+    
+    class R extends GenericResponse implements API.LogoutResponse {
+      R() { super(wait, _wndLogin); }
+      
+      @Override public void success() {
+        wait.pop();
+        showLogin();
+      }
+    }
+    
+    API.Auth.logout(new R());
   }
   
   private void checkLogin() {
@@ -450,12 +481,13 @@ public class MainMenu extends AbstractGUI {
     
     @Override
     public void error(Response r) {
-      _wait.setText("Error:\n" + r.content());
+      _wait.setText("Error " + r.response().getStatus().code() + ": " + r.content());
+      System.err.println("Error " + r.response().getStatus().code() + ":\n" + r.content());
     }
     
     @Override
     public void jsonError(Response r, JSONException e) {
-      _wait.setText("JSON encoding error:\n" + e + '\n' + r.content());
+      _wait.setText("JSON encoding error: " + e + ' ' + r.content());
     }
   }
 }

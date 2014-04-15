@@ -93,6 +93,20 @@ public final class API {
         }
       });
     }
+    
+    public static void logout(LogoutResponse cb) {
+      dispatch(Route.Auth.Logout, resp -> {
+        try {
+          if(resp.succeeded()) {
+            cb.success();
+          } else {
+            checkGeneric(resp, cb);
+          }
+        } catch(JSONException e) {
+          cb.jsonError(resp, e);
+        }
+      });
+    }
   }
   
   public static final class Storage {
@@ -233,6 +247,10 @@ public final class API {
   public interface LoginResponse extends GenericResponse {
     public abstract void success();
     public abstract void invalid(JSONObject errors);
+  }
+  
+  public interface LogoutResponse extends GenericResponse {
+    public abstract void success();
   }
   
   public interface CharactersAllResponse extends GenericResponse {

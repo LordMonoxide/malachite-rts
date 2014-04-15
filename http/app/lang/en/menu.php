@@ -5,6 +5,7 @@ return [
   'status.loading'      => 'Loading...',
   'status.connecting'   => 'Connecting...',
   'status.loggingin'    => 'Logging in...',
+  'status.loggingout'   => 'Logging out...',
   'status.gettingchars' => 'Getting characters...',
   'status.gettingraces' => 'Getting races...',
   'status.creatingchar' => 'Creating character...',
@@ -25,11 +26,12 @@ return [
   'register.confirm' => 'Confirm Password',
   
   // Characters menu
-  'chars.title' => 'Characters',
-  'chars.new'   => 'New',
-  'chars.del'   => 'Delete',
-  'chars.use'   => 'Play',
-  'chars.list'  => ':name, a :sex :race',
+  'chars.title'  => 'Characters',
+  'chars.logout' => 'Log out',
+  'chars.new'    => 'New',
+  'chars.del'    => 'Delete',
+  'chars.use'    => 'Play',
+  'chars.list'   => ':name, a :sex :race',
   
   // New char menu
   'newchar.title'  => 'New Character',
