@@ -11,6 +11,7 @@ import malachite.api.models.News;
 import malachite.api.models.Race;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
+import malachite.engine.gfx.gui.VAlign;
 import malachite.engine.gfx.gui.builtin.Message;
 import malachite.engine.gfx.gui.control.*;
 import malachite.engine.gfx.textures.Texture;
@@ -122,7 +123,8 @@ public class MainMenu extends AbstractGUI {
     
     _lblInfo = new Label();
     _lblInfo.setXY(4, 4);
-
+    _lblInfo.setVAlign(VAlign.ALIGN_TOP);
+    
     _wndRegister = new Window();
     _wndRegister.setWH(400, 300);
     _wndRegister.setXY((_context.getW() - _wndRegister.getW()) / 2, (_context.getH() - _wndRegister.getH()) / 2);
