@@ -7,6 +7,7 @@ import malachite.api.API;
 import malachite.api.Lang;
 import malachite.api.Lang.MenuKeys;
 import malachite.api.models.Character;
+import malachite.api.models.News;
 import malachite.api.models.Race;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
@@ -24,6 +25,7 @@ public class MainMenu extends AbstractGUI {
   private Button _btnLogin;
   private Button _btnRegister;
   private Frame _fraInfo;
+  private Label _lblInfo;
 
   private Window _wndRegister;
   private Textbox _txtRegisterEmail;
@@ -73,6 +75,7 @@ public class MainMenu extends AbstractGUI {
         _btnRegister.setX(_btnLogin.getX() - _btnRegister.getW() - 4);
         _fraInfo.setY(_chkRemember.getY() + _btnLogin.getH() + 8);
         _fraInfo.setWH(_wndLogin.getContentW() - _fraInfo.getX() * 2, _wndLogin.getContentH() - _fraInfo.getY() - _fraInfo.getX());
+        _lblInfo.setWH(_fraInfo.getW() - _lblInfo.getX() * 2, _fraInfo.getH() - _lblInfo.getY() * 2);
       }
     });
 
@@ -116,6 +119,9 @@ public class MainMenu extends AbstractGUI {
 
     _fraInfo = new Frame();
     _fraInfo.setX(_chkRemember.getX());
+    
+    _lblInfo = new Label();
+    _lblInfo.setXY(4, 4);
 
     _wndRegister = new Window();
     _wndRegister.setWH(400, 300);
@@ -256,7 +262,9 @@ public class MainMenu extends AbstractGUI {
     controls().add(_wndRegister);
     controls().add(_wndChars);
     controls().add(_wndNewChar);
-
+    
+    _fraInfo.controls().add(_lblInfo);
+    
     _wndLogin.controls().add(_txtEmail);
     _wndLogin.controls().add(_txtPass);
     _wndLogin.controls().add(_chkRemember);
@@ -280,6 +288,7 @@ public class MainMenu extends AbstractGUI {
     _wndNewChar.controls().add(_btnNewCharCreate);
     
     checkLogin();
+    getNews();
   }
 
   @Override
@@ -300,6 +309,18 @@ public class MainMenu extends AbstractGUI {
   @Override
   protected boolean logic() {
     return false;
+  }
+  
+  private void getNews() {
+    class R extends GenericResponse implements API.NewsLatestResponse {
+      R() { super(null, null); }
+      @Override public void success(News news) {
+        System.out.println(news.title + '\n' + news.body);
+        _lblInfo.setText(news.body);
+      }
+    }
+    
+    API.Storage.News.latest(new R());
   }
   
   private void logout() {
@@ -481,13 +502,14 @@ public class MainMenu extends AbstractGUI {
     
     @Override
     public void error(Response r) {
+      System.err.println("Error " + r);
       _wait.setText("Error " + r.response().getStatus().code() + ": " + r.content());
-      System.err.println("Error " + r.response().getStatus().code() + ":\n" + r.content());
     }
     
     @Override
     public void jsonError(Response r, JSONException e) {
-      _wait.setText("JSON encoding error: " + e + ' ' + r.content());
+      System.err.println("Enconding error " + r);
+      _wait.setText("Encoding error: " + e + ' ' + r);
     }
   }
 }

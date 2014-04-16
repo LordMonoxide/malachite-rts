@@ -1,6 +1,7 @@
 package malachite.api;
 
 import malachite.api.models.Character;
+import malachite.api.models.News;
 import malachite.api.models.Race;
 import malachite.api.models.User;
 import malachite.engine.net.http.Request;
@@ -44,7 +45,7 @@ public final class API {
   
   private static void checkGeneric(Response resp, GenericResponse cb) {
     if(resp.response().getStatus().code() == 401) {
-      JSONObject j = new JSONObject(resp.content());
+      JSONObject j = resp.toJSON();
       switch(j.getString(NOT_AUTHED_SHOW)) {
         case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
         case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
@@ -83,7 +84,7 @@ public final class API {
             cb.success();
           } else {
             if(resp.response().getStatus().code() == 409) {
-              cb.invalid(new JSONObject(resp.content()));
+              cb.invalid(resp.toJSON());
             } else {
               checkGeneric(resp, cb);
             }
@@ -119,7 +120,7 @@ public final class API {
         dispatch(Route.Storage.Characters.All, resp -> {
           try {
             if(resp.succeeded()) {
-              JSONArray j = new JSONArray(resp.content());
+              JSONArray j = resp.toJSONArray();
               
               Character[] characters = new Character[j.length()];
               
@@ -150,7 +151,7 @@ public final class API {
               cb.success();
             } else {
               if(resp.response().getStatus().code() == 409) {
-                cb.invalid(new JSONObject(resp.content()));
+                cb.invalid(resp.toJSON());
               } else {
                 checkGeneric(resp, cb);
               }
@@ -171,7 +172,7 @@ public final class API {
               cb.success();
             } else {
               if(resp.response().getStatus().code() == 409) {
-                cb.invalid(new JSONObject(resp.content()));
+                cb.invalid(resp.toJSON());
               } else {
                 checkGeneric(resp, cb);
               }
@@ -190,7 +191,7 @@ public final class API {
         dispatch(Route.Storage.Races.All, resp -> {
           try {
             if(resp.succeeded()) {
-              JSONArray j = new JSONArray(resp.content());
+              JSONArray j = resp.toJSONArray();
               
               Race[] races = new Race[j.length()];
               
@@ -209,13 +210,55 @@ public final class API {
         });
       }
     }
+    
+    public static final class News {
+      private News() { }
+      
+      public static void all(NewsAllResponse cb) {
+        dispatch(Route.Storage.News.All, resp -> {
+          try {
+            if(resp.succeeded()) {
+              JSONArray j = resp.toJSONArray();
+              
+              malachite.api.models.News[] news = new malachite.api.models.News[j.length()];
+              
+              for(int i = 0; i < j.length(); i++) {
+                JSONObject r = j.getJSONObject(i);
+                news[i] = new malachite.api.models.News(r.getInt(malachite.api.models.News.ID), r.getString(malachite.api.models.News.TITLE), r.getString(malachite.api.models.News.BODY));
+              }
+              
+              cb.success(news);
+            } else {
+              checkGeneric(resp, cb);
+            }
+          } catch(JSONException e) {
+            cb.jsonError(resp, e);
+          }
+        });
+      }
+      
+      public static void latest(NewsLatestResponse cb) {
+        dispatch(Route.Storage.News.Latest, resp -> {
+          try {
+            if(resp.succeeded()) {
+              JSONObject r = resp.toJSON();
+              cb.success(new malachite.api.models.News(r.getInt(malachite.api.models.News.ID), r.getString(malachite.api.models.News.TITLE), r.getString(malachite.api.models.News.BODY)));
+            } else {
+              checkGeneric(resp, cb);
+            }
+          } catch(JSONException e) {
+            cb.jsonError(resp, e);
+          }
+        });
+      }
+    }
   }
   
   public static void lang(Route route, LangResponse cb) {
     dispatch(route, resp -> {
       try {
         if(resp.succeeded()) {
-          JSONObject j = new JSONObject(resp.content());
+          JSONObject j = resp.toJSON();
           
           Map<String, String> lang = new HashMap<>();
           
@@ -269,6 +312,14 @@ public final class API {
   
   public interface RacesAllResponse extends GenericResponse {
     public abstract void success(Race[] races);
+  }
+  
+  public interface NewsAllResponse extends GenericResponse {
+    public abstract void success(News[] news);
+  }
+  
+  public interface NewsLatestResponse extends GenericResponse {
+    public abstract void success(News news);
   }
   
   public static abstract class LangResponse {
@@ -365,6 +416,15 @@ public final class API {
         
         private Races(HttpMethod method) {
           super("/storage/races", method); //$NON-NLS-1$
+        }
+      }
+      
+      public static class News extends Route {
+        public static final News All    = new News("/");       //$NON-NLS-1$
+        public static final News Latest = new News("/latest"); //$NON-NLS-1$
+        
+        private News(String route) {
+          super("/storage/news" + route, HttpMethod.GET); //$NON-NLS-1$
         }
       }
     }

@@ -27,4 +27,9 @@ public class Response {
   public JSONArray toJSONArray() {
     return new JSONArray(_content);
   }
+  
+  @Override
+  public String toString() {
+    return _response.getStatus().code() + ' ' + _response.getStatus().reasonPhrase() + '\n' + _content;
+  }
 }
