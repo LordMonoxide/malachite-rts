@@ -62,7 +62,7 @@ public class Label extends AbstractControl<ControlEvents> {
   @Override
   public void draw() {
     if(drawBegin()) {
-      _font.draw(_textX, _textY, _w, _h, _text, _textColour);
+      _font.draw(_textX, _textY, _w - _padW * 2, _h - _padH * 2, _text, _textColour);
     }
 
     drawEnd();
