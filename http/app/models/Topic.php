@@ -13,6 +13,10 @@ class Topic extends Eloquent {
     return $this->hasMany('Post');
   }
   
+  public function news() {
+    return $this->hasOne('News');
+  }
+  
   public function scopeNewest($query) {
     return $query->orderBy('updated_at', 'DESC');
   }

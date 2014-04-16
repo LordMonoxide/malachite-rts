@@ -13,10 +13,6 @@ class Post extends Eloquent {
     return $this->hasMany('UserPostRep');
   }
   
-  public function news() {
-    return $this->hasOne('News');
-  }
-  
   public function scopeNewest($query) {
     return $query->orderBy('created_at', 'DESC');
   }

@@ -1,8 +1,8 @@
 <?php
 
 class News extends Eloquent {
-  public function post() {
-    return $this->belongsTo('Post');
+  public function topic() {
+    return $this->belongsTo('Topic');
   }
   
   public function scopeLatest($query) {
