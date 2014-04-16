@@ -87,6 +87,7 @@ public class Font {
           _matrix.pop();
           _matrix.translate(0, _h);
           _matrix.push();
+          xo = 0;
           break;
         
         case ' ':
