@@ -69,6 +69,9 @@ public class FontBuilder {
       int n = addGlyph(i, font, rendCont, metrics, highIndex);
       if(n > highIndex) { highIndex = n; }
     }
+    
+    metrics.add(new Metrics('\n'));
+    metrics.add(new Metrics(' '));
 
     int x = 0;
     int y = 0;
@@ -95,6 +98,7 @@ public class FontBuilder {
       }
 
       Font.Glyph g = new Font.Glyph();
+      g.code = m.code;
       g.w = fm.charWidth(m.code);
       g.h = m.h;
       g.tx = x;
@@ -150,8 +154,7 @@ public class FontBuilder {
       argbByte[n] = (byte)argb[n];
     }
 
-    Metrics m = new Metrics();
-    m.code = i;
+    Metrics m = new Metrics(i);
     m.w = w;
     m.h = h;
     m.w2 = Math.nextPowerOfTwo(m.w);
@@ -164,6 +167,7 @@ public class FontBuilder {
   }
 
   private static class Metrics {
+    private Metrics(int code) { this.code = code; }
     private int code;
     private int w, h;
     private int w2, h2;

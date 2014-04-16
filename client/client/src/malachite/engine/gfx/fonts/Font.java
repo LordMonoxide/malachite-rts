@@ -82,29 +82,39 @@ public class Font {
     for(int i = 0; i < text.length(); i++) {
       Glyph glyph = _glyph[mask == 0 ? text.codePointAt(i) : mask];
       
-      if(glyph != null) {
-        xo += glyph.w;
-        if(xo >= w && w != 0) {
+      switch(glyph.code) {
+        case '\n':
           _matrix.pop();
           _matrix.translate(0, _h);
           _matrix.push();
-          xo = 0;
-        }
+          break;
         
-        //TODO: This is just a hack to temporarily get font colour working
-        glyph.setColour(c);
-        glyph.draw();
-        _matrix.translate(glyph.w, 0);
-      } else {
-        xo += 4;
-        if(xo >= w && w != 0) {
-          _matrix.pop();
-          _matrix.translate(0, _h);
-          _matrix.push();
-          xo = 0;
-        } else {
-          _matrix.translate(4, 0);
-        }
+        case ' ':
+          xo += 4;
+          if(xo >= w && w != 0) {
+            _matrix.pop();
+            _matrix.translate(0, _h);
+            _matrix.push();
+            xo = 0;
+          } else {
+            _matrix.translate(4, 0);
+          }
+          
+          break;
+        
+        default:
+          xo += glyph.w;
+          if(xo >= w && w != 0) {
+            _matrix.pop();
+            _matrix.translate(0, _h);
+            _matrix.push();
+            xo = 0;
+          }
+          
+          //TODO: This is just a hack to temporarily get font colour working
+          glyph.setColour(c);
+          glyph.draw();
+          _matrix.translate(glyph.w, 0);
       }
       
       if(xo >= w && w != 0) {
@@ -119,6 +129,7 @@ public class Font {
 
   protected static class Glyph {
     protected AbstractDrawable sprite;
+    protected int code;
     protected int  w,  h;
     protected int tx, ty;
     protected int tw, th;
