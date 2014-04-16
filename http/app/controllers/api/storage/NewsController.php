@@ -7,10 +7,17 @@ use News;
 
 class NewsController extends Controller {
   public function all() {
-    return Response::json(News::all(), 200);
+    $posts = [];
+    News::all()->each(function($news) use(&$posts) {
+      $posts[] = ['id' => $news->id, 'title' => $news->topic->title, 'body' => $news->topic->posts->first()->body];
+    });
+    
+    return Response::json($posts, 200);
   }
   
   public function latest() {
-    return Response::json(News::latest(), 200);
+    $news = News::latest()->first();
+    $post = ['id' => $news->id, 'title' => $news->topic->title, 'body' => $news->topic->posts->first()->body];
+    return Response::json($post, 200);
   }
 }
