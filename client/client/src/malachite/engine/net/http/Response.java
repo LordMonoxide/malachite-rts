@@ -30,6 +30,6 @@ public class Response {
   
   @Override
   public String toString() {
-    return _response.getStatus().code() + ' ' + _response.getStatus().reasonPhrase() + '\n' + _content;
+    return _response.getStatus().code() + (' ' + _response.getStatus().reasonPhrase() + '\n' + _content);
   }
 }
