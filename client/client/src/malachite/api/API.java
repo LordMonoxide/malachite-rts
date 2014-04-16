@@ -229,7 +229,7 @@ public final class API {
               
               cb.success(news);
             } else {
-              checkGeneric(resp, cb);
+              cb.error(resp);
             }
           } catch(JSONException e) {
             cb.jsonError(resp, e);
@@ -244,7 +244,7 @@ public final class API {
               JSONObject r = resp.toJSON();
               cb.success(new malachite.api.models.News(r.getInt(malachite.api.models.News.ID), r.getString(malachite.api.models.News.TITLE), r.getString(malachite.api.models.News.BODY)));
             } else {
-              checkGeneric(resp, cb);
+              cb.error(resp);
             }
           } catch(JSONException e) {
             cb.jsonError(resp, e);
@@ -314,12 +314,16 @@ public final class API {
     public abstract void success(Race[] races);
   }
   
-  public interface NewsAllResponse extends GenericResponse {
+  public interface NewsAllResponse {
     public abstract void success(News[] news);
+    public abstract void error(Response r);
+    public abstract void jsonError(Response r, JSONException e);
   }
   
-  public interface NewsLatestResponse extends GenericResponse {
+  public interface NewsLatestResponse {
     public abstract void success(News news);
+    public abstract void error(Response r);
+    public abstract void jsonError(Response r, JSONException e);
   }
   
   public static abstract class LangResponse {

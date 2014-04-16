@@ -312,15 +312,20 @@ public class MainMenu extends AbstractGUI {
   }
   
   private void getNews() {
-    class R extends GenericResponse implements API.NewsLatestResponse {
-      R() { super(null, null); }
+    API.Storage.News.latest(new API.NewsLatestResponse() {
       @Override public void success(News news) {
         System.out.println(news.title + '\n' + news.body);
         _lblInfo.setText(news.body);
       }
-    }
-    
-    API.Storage.News.latest(new R());
+      
+      @Override public void jsonError(Response r, JSONException e) {
+        _lblInfo.setText("JSON error:\n" + r + '\n' + e);
+      }
+      
+      @Override public void error(Response r) {
+        _lblInfo.setText("Error:\n" + r);
+      }
+    });
   }
   
   private void logout() {
@@ -489,27 +494,34 @@ public class MainMenu extends AbstractGUI {
     
     @Override
     public void loginRequired() {
-      _wait.pop();
+      if(_wait != null) { _wait.pop(); }
       showLogin();
     }
     
     @Override
     public void securityRequired() {
-      _wait.pop();
-      _window.hide();
+      if(_wait   != null) { _wait.pop();    }
+      if(_window != null) { _window.hide(); }
+      
       showSecurity();
     }
     
     @Override
     public void error(Response r) {
       System.err.println("Error " + r);
-      _wait.setText("Error " + r.response().getStatus().code() + ": " + r.content());
+      
+      if(_wait != null) {
+        _wait.setText("Error " + r);
+      }
     }
     
     @Override
     public void jsonError(Response r, JSONException e) {
-      System.err.println("Enconding error " + r);
-      _wait.setText("Encoding error: " + e + ' ' + r);
+      System.err.println("Enconding error " + e + ' ' + r);
+      
+      if(_wait != null) {
+        _wait.setText("Encoding error: " + e + ' ' + r);
+      }
     }
   }
 }
