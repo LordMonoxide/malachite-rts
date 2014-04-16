@@ -86,7 +86,9 @@ public class Font {
         xo += glyph.w;
         if(xo >= w && w != 0) {
           _matrix.pop();
+          _matrix.translate(0, _h);
           _matrix.push();
+          xo = 0;
         }
         
         //TODO: This is just a hack to temporarily get font colour working
@@ -97,7 +99,9 @@ public class Font {
         xo += 4;
         if(xo >= w && w != 0) {
           _matrix.pop();
+          _matrix.translate(0, _h);
           _matrix.push();
+          xo = 0;
         } else {
           _matrix.translate(4, 0);
         }
