@@ -240,11 +240,18 @@ public final class API {
       public static void latest(NewsLatestResponse cb) {
         dispatch(Route.Storage.News.Latest, resp -> {
           try {
-            if(resp.succeeded()) {
-              JSONObject r = resp.toJSON();
-              cb.success(new malachite.api.models.News(r.getInt(malachite.api.models.News.ID), r.getString(malachite.api.models.News.TITLE), r.getString(malachite.api.models.News.BODY)));
-            } else {
-              cb.error(resp);
+            switch(resp.response().getStatus().code()) {
+              case 200:
+                JSONObject r = resp.toJSON();
+                cb.success(new malachite.api.models.News(r.getInt(malachite.api.models.News.ID), r.getString(malachite.api.models.News.TITLE), r.getString(malachite.api.models.News.BODY)));
+                break;
+                
+              case 204:
+                cb.success(null);
+                break;
+                
+              default:
+                cb.error(resp);
             }
           } catch(JSONException e) {
             cb.jsonError(resp, e);

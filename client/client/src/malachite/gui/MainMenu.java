@@ -316,8 +316,12 @@ public class MainMenu extends AbstractGUI {
   private void getNews() {
     API.Storage.News.latest(new API.NewsLatestResponse() {
       @Override public void success(News news) {
-        System.out.println(news.title + '\n' + news.body);
-        _lblInfo.setText(news.body);
+        if(news != null) {
+          System.out.println(news.title + '\n' + news.body);
+          _lblInfo.setText(news.body);
+        } else {
+          System.out.println("No news");
+        }
       }
       
       @Override public void jsonError(Response r, JSONException e) {

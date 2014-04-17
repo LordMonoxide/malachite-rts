@@ -17,7 +17,12 @@ class NewsController extends Controller {
   
   public function latest() {
     $news = News::latest()->first();
-    $post = ['id' => $news->id, 'title' => $news->topic->title, 'body' => $news->topic->posts->first()->body];
-    return Response::json($post, 200);
+    
+    if($news !== null) {
+      $post = ['id' => $news->id, 'title' => $news->topic->title, 'body' => $news->topic->posts->first()->body];
+      return Response::json($post, 200);
+    } else {
+      return Response::json(null, 204);
+    }
   }
 }
