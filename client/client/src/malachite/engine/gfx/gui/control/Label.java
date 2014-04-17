@@ -7,7 +7,7 @@ import malachite.engine.gfx.gui.*;
 public class Label extends AbstractControl<ControlEvents> {
   private Font _font = FontBuilder.getInstance().getDefault();
   private String _text;
-  private float[] _textColour = {1, 1, 1, 1};
+  private float[] _textColour = {65f / 255, 52f / 255, 8f / 255, 1};
   private int _textX, _textY;
   private int _textW, _textH;
 
