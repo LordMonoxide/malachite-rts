@@ -67,6 +67,7 @@ public class Window extends AbstractControl<Window.Events> {
 
     _text = new Label();
     _text.setX(4);
+    _text.setAutoSize(true);
     _title.controls().add(_text);
 
     _close = new Button();
