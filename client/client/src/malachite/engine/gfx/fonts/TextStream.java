@@ -46,7 +46,7 @@ public class TextStream implements Iterable<TextStreamable> {
           
           case ' ':
             state.x += 4;
-            if(state.x >= state.w && state.w != 0) {
+            if(state.x >= state.w && state.w > 0) {
               state.newLine();
             } else {
               state.matrix.translate(4, 0);
@@ -56,7 +56,7 @@ public class TextStream implements Iterable<TextStreamable> {
           
           default:
             state.x += glyph.w;
-            if(state.x >= state.w && state.w != 0) {
+            if(state.x >= state.w && state.w > 0) {
               state.newLine();
             }
             
