@@ -2,7 +2,6 @@ package malachite.engine.gfx.fonts;
 
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.Loader;
-import malachite.engine.gfx.textures.Texture;
 import malachite.engine.gfx.textures.TextureBuilder;
 import malachite.engine.util.Math;
 
