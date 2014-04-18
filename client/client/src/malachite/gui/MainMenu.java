@@ -370,14 +370,11 @@ public class MainMenu extends AbstractGUI {
     Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_LOGGINGIN));
     wait.push();
     
-    _wndLogin.disable();
-    
     class R extends GenericResponse implements API.LoginResponse {
       R() { super(wait, _wndLogin); }
       
       @Override public void success() {
         wait.pop();
-        _wndLogin.hide();
         showCharacters();
       }
       
