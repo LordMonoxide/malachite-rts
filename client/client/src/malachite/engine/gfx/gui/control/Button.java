@@ -5,6 +5,7 @@ import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.AbstractScalable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
+import malachite.engine.gfx.fonts.TextStream;
 import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
@@ -13,8 +14,9 @@ import malachite.engine.gfx.textures.TextureBuilder;
 
 public class Button extends AbstractControl<ControlEvents> {
   private Font _font = FontBuilder.getInstance().getDefault();
-  private String  _text;
-  private float[] _textColour = {1, 1, 1, 1};
+  private TextStream _textStream = new TextStream();
+  private TextStream.Text  _text = new TextStream.Text();
+  private TextStream.Colour _textColour = new TextStream.Colour(1, 1, 1, 1);
   private int     _textX, _textY;
   private int     _textW, _textH;
   
@@ -31,6 +33,9 @@ public class Button extends AbstractControl<ControlEvents> {
       InitFlags.ACCEPTS_FOCUS,
       InitFlags.REGISTER
     );
+    
+    _textStream.insert(_textColour);
+    _textStream.insert(_text);
     
     _events.addHoverHandler(new HoverHandler());
     _events.addMouseHandler(new MouseHandler());
@@ -90,25 +95,22 @@ public class Button extends AbstractControl<ControlEvents> {
   public void setText(String text) {
     _font.events().addLoadHandler(() -> {
       _needsUpdate = true;
-      _text = text;
-      _textW = _font.getW(_text);
+      _text.setText(text);
+      _textW = _font.getW(text);
       _textH = _font.getH();
     });
   }
 
   public String getText() {
-    return _text;
+    return _text.getText();
   }
 
   public void setTextColour(float r, float g, float b, float a) {
-    _textColour[0] = r;
-    _textColour[1] = g;
-    _textColour[2] = b;
-    _textColour[3] = a;
+    _textColour.setColour(r, g, b, a);
   }
 
   public float[] getTextColour() {
-    return _textColour;
+    return _textColour.getColour();
   }
 
   @Override
@@ -129,7 +131,7 @@ public class Button extends AbstractControl<ControlEvents> {
   @Override
   public void draw() {
     if(drawBegin()) {
-      _font.draw(_textX, _textY, _text, _textColour);
+      _font.draw(_textX, _textY, _textStream);
     }
 
     drawEnd();

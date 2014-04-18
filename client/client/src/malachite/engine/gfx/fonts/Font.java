@@ -3,12 +3,15 @@ package malachite.engine.gfx.fonts;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.AbstractMatrix;
+import malachite.engine.gfx.fonts.TextStream.Colour;
 import malachite.engine.gfx.textures.Texture;
 
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Font {
+  private static Colour white = new Colour(new float[] {1, 1, 1, 1});
+  
   private AbstractMatrix _matrix = AbstractContext.getMatrix();
   private Texture _texture;
 
@@ -58,72 +61,32 @@ public class Font {
     return _h;
   }
   
-  public void draw(int x, int y, String text, float[] c) {
-    draw(x, y, 0, 0, text, c, 0);
+  public void draw(int x, int y, TextStream text) {
+    draw(x, y, 0, 0, text, 0);
   }
   
-  public void draw(int x, int y, String text, float[] c, int mask) {
-    draw(x, y, 0, 0, text, c, mask);
+  public void draw(int x, int y, TextStream text, int mask) {
+    draw(x, y, 0, 0, text, mask);
   }
   
-  public void draw(int x, int y, int w, int h, String text, float[] c) {
-    draw(x, y, w, h, text, c, 0);
+  public void draw(int x, int y, int w, int h, TextStream text) {
+    draw(x, y, w, h, text, 0);
   }
   
-  public void draw(int x, int y, int w, int h, String text, float[] c, int mask) {
+  public void draw(int x, int y, int w, int h, TextStream text, int mask) {
     if(text == null)   { return; }
     if(_glyph == null) { return; }
     
     _matrix.push();
     _matrix.translate(x, y);
-    
-    FontRenderState state = new FontRenderState(this, 0, 0, w, h, mask, c, _matrix);
-    
     _matrix.push();
     
-    for(int i = 0; i < text.length(); i++) {
-      Glyph glyph = _glyph[state.mask == 0 ? text.codePointAt(i) : state.mask];
-      
-      switch(glyph.code) {
-        case '\n':
-          _matrix.pop();
-          _matrix.translate(0, _h);
-          _matrix.push();
-          xo = 0;
-          break;
-        
-        case ' ':
-          xo += 4;
-          if(xo >= w && w != 0) {
-            _matrix.pop();
-            _matrix.translate(0, _h);
-            _matrix.push();
-            xo = 0;
-          } else {
-            _matrix.translate(4, 0);
-          }
-          
-          break;
-        
-        default:
-          xo += glyph.w;
-          if(xo >= w && w != 0) {
-            _matrix.pop();
-            _matrix.translate(0, _h);
-            _matrix.push();
-            xo = 0;
-          }
-          
-          //TODO: This is just a hack to temporarily get font colour working
-          glyph.setColour(c);
-          glyph.draw();
-          _matrix.translate(glyph.w, 0);
-      }
-      
-      if(xo >= w && w != 0) {
-        _matrix.pop();
-        _matrix.push();
-      }
+    FontRenderState state = new FontRenderState(this, 0, 0, w, h, mask, _matrix);
+    
+    white.render(state);
+    
+    for(TextStreamable s : text) {
+      s.render(state);
     }
     
     _matrix.pop();

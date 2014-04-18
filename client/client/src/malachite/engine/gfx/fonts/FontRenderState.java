@@ -10,13 +10,13 @@ class FontRenderState {
   
   AbstractMatrix matrix;
 
-  FontRenderState(Font font, int x, int y, int w, int h, int mask, float[] c, AbstractMatrix matrix) {
+  FontRenderState(Font font, int x, int y, int w, int h, int mask, AbstractMatrix matrix) {
+    this.font = font;
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
     this.mask = mask;
-    this.c = c;
     this.matrix = matrix;
   }
   

@@ -7,6 +7,7 @@ import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.AbstractScalable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
+import malachite.engine.gfx.fonts.TextStream;
 import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
@@ -23,7 +24,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
   private float[] _normalBorder = {160f / 0xFF, 147f / 0xFF, 111f / 0xFF, 1};
   private float[] _hoverBorder  = { 11f / 0xFF, 126f / 0xFF,   0f / 0xFF, 1};
   
-  private float[] _textColour = {65f / 255, 52f / 255, 8f / 255, 1};
+  private TextStream.Colour _textColour = new TextStream.Colour(65f / 255, 52f / 255, 8f / 255, 1);
   
   private List<Item> _items = new ArrayList<>();
   private int _selected = -1;
@@ -101,7 +102,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
   
   public String getText() {
     if(_selected != -1) {
-      return _items.get(_selected)._text;
+      return _items.get(_selected)._text.getText();
     }
     
     return null;
@@ -119,7 +120,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
   public void draw() {
     if(drawBegin()) {
       if(_selected != -1) {
-        _font.draw(0, 0, _items.get(_selected)._text, _textColour);
+        _font.draw(0, 0, _items.get(_selected)._textStream);
       }
     }
 
@@ -127,18 +128,19 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
   }
   
   public class Item {
-    private String _text;
+    private TextStream _textStream = new TextStream();
+    private TextStream.Text _text = new TextStream.Text();
     private T      _data;
     
     private Item(String text, T data) {
-      _text = text;
+      _text.setText(text);
       _data = data;
     }
     
-    public String getText() { return _text; }
+    public String getText() { return _text.getText(); }
     public T      getData() { return _data; }
     
-    public void setText(String text) { _text = text; }
+    public void setText(String text) { _text.setText(text); }
     public void setData(T      data) { _data = data; }
   }
   
@@ -153,7 +155,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
           int y = 0;
           
           for(Item item : _items) {
-            _font.draw(0, y, item._text, _textColour);
+            _font.draw(0, y, item._textStream);
             y += _font.getH();
           }
         }

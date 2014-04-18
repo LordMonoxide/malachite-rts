@@ -4,6 +4,7 @@ import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
+import malachite.engine.gfx.fonts.TextStream;
 import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
@@ -15,8 +16,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Check extends AbstractControl<Check.Events> {
   private Font _font = FontBuilder.getInstance().getDefault();
-  private String _text;
-  private float[] _textColour = {65f / 255, 52f / 255, 8f / 255, 1};
+  private TextStream _textStream = new TextStream();
+  private TextStream.Text  _text = new TextStream.Text();
+  private TextStream.Colour _textColour = new TextStream.Colour(65f / 255, 52f / 255, 8f / 255, 1);
   private int _textX, _textY;
   private int _textW, _textH;
   
@@ -36,6 +38,9 @@ public class Check extends AbstractControl<Check.Events> {
         InitFlags.REGISTER,
         InitFlags.WITH_BORDER
     );
+    
+    _textStream.insert(_textColour);
+    _textStream.insert(_text);
 
     _events = new Events(this);
     _events.addFocusHandler(new FocusHandler());
@@ -114,14 +119,14 @@ public class Check extends AbstractControl<Check.Events> {
   public void setText(String text) {
     _font.events().addLoadHandler(() -> {
       _needsUpdate = true;
-      _text = text;
-      _textW = _font.getW(_text);
+      _text.setText(text);
+      _textW = _font.getW(text);
       _textH = _font.getH();
     });
   }
 
   public String getText() {
-    return _text;
+    return _text.getText();
   }
 
   @Override
@@ -158,7 +163,7 @@ public class Check extends AbstractControl<Check.Events> {
     if(drawBegin()) {
       _bg.draw();
       _check.draw();
-      _font.draw(_textX, _textY, _text, _textColour);
+      _font.draw(_textX, _textY, _textStream);
     }
 
     drawEnd();

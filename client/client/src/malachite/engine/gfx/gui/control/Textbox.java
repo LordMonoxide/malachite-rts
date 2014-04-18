@@ -5,6 +5,7 @@ import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.AbstractScalable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
+import malachite.engine.gfx.fonts.TextStream;
 import malachite.engine.gfx.gui.*;
 import malachite.engine.gfx.textures.Texture;
 import malachite.engine.gfx.textures.TextureBuilder;
@@ -17,11 +18,13 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Textbox extends AbstractControl<Textbox.Events> {
   private Font _font = FontBuilder.getInstance().getDefault();
-  private String _textPlaceholder;
+  private TextStream _textPlaceholderStream = new TextStream();
+  private TextStream.Text _textPlaceholder = new TextStream.Text();
+  private TextStream.Colour _textPlaceholderColour = new TextStream.Colour(65f / 255, 52f / 255, 8f / 255, 0.5f);
   private String[] _text = new String[3];
-  private String _textFull;
-  private float[] _textColour = {65f / 255, 52f / 255, 8f / 255, 1};
-  private float[] _textPlaceHolderColour = {_textColour[0], _textColour[1], _textColour[2], 0.5f};
+  private TextStream _textStream = new TextStream();
+  private TextStream.Text _textFull = new TextStream.Text();
+  private TextStream.Colour _textColour = new TextStream.Colour(65f / 255, 52f / 255, 8f / 255, 1);
   private int _mask;
   private int _textX, _textY;
   private int[] _textW = new int[3];
@@ -43,14 +46,19 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       InitFlags.REGISTER,
       InitFlags.WITH_BORDER
     );
-
+    
+    _textPlaceholderStream.insert(_textPlaceholderColour);
+    _textPlaceholderStream.insert(_textPlaceholder);
+    _textStream.insert(_textColour);
+    _textStream.insert(_textFull);
+    
     _events = new Events(this);
     _events.addKeyHandler(new KeyHandler());
     _events.addFocusHandler(new FocusHandler());
     _events.addHoverHandler(new HoverHandler());
 
     _caret = AbstractContext.newDrawable();
-    _caret.setColour(new float[] {_textColour[0], _textColour[1], _textColour[2], 1});
+    _caret.setColour(new float[] {_textColour.getColour()[0], _textColour.getColour()[1], _textColour.getColour()[2], 1});
 
     _font.events().addLoadHandler(() -> {
       _caret.setWH(1, _font.getH());
@@ -95,15 +103,15 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   }
 
   public String getText() {
-    return _textFull;
+    return _textFull.getText();
   }
 
   public void setTextPlaceholder(String text) {
-    _textPlaceholder = text;
+    _textPlaceholder.setText(text);
   }
 
   public String getTextPlaceholder() {
-    return _textPlaceholder;
+    return _textPlaceholder.getText();
   }
 
   public void setMasked(boolean masked) {
@@ -116,12 +124,14 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   @Override
   protected void resize() {
-    _textFull = "";
+    String temp = ""; //$NON-NLS-1$
     for(int i = 0; i < _text.length; i++) {
       if(_text[i] != null) {
-        _textFull += _text[i];
+        temp += _text[i];
       }
     }
+    
+    _textFull.setText(temp);
 
     _textW[0] = _font.getW(_text[0], _mask);
     _textW[1] = _font.getW(_text[1], _mask);
@@ -151,11 +161,11 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       _matrix.push();
       _matrix.translate(_textX, _textY);
 
-      if(!_textFull.isEmpty()) {
-        _font.draw(0, 0, _textFull, _textColour, _mask);
+      if(!_textFull.getText().isEmpty()) {
+        _font.draw(0, 0, _textStream, _mask);
       } else {
-        if(!_textPlaceholder.isEmpty()) {
-          _font.draw(0, 0, _textPlaceholder, _textPlaceHolderColour);
+        if(!_textPlaceholder.getText().isEmpty()) {
+          _font.draw(0, 0, _textPlaceholderStream);
         }
       }
 

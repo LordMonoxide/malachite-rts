@@ -2,26 +2,33 @@ package malachite.engine.gfx.gui.control;
 
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
+import malachite.engine.gfx.fonts.TextStream;
 import malachite.engine.gfx.gui.*;
 
 public class Label extends AbstractControl<ControlEvents> {
   private Font _font = FontBuilder.getInstance().getDefault();
-  private String _text;
-  private float[] _textColour = {65f / 255, 52f / 255, 8f / 255, 1};
+  private TextStream _textStream = new TextStream();
+  private TextStream.Text _text = new TextStream.Text();
+  private TextStream.Colour _textColour = new TextStream.Colour(65f / 255, 52f / 255, 8f / 255, 1);
   private int _textX, _textY;
   private int _textW, _textH;
   private boolean _autoSize;
-
+  
+  public Label() {
+    _textStream.insert(_textColour);
+    _textStream.insert(_text);
+  }
+  
   @Override
   protected void setGUI(AbstractGUI gui) {
     super.setGUI(gui);
   }
-
+  
   public void setText(String text) {
     _font.events().addLoadHandler(() -> {
       _needsUpdate = true;
-      _text = text;
-      _textW = _font.getW(_text);
+      _text.setText(text);
+      _textW = _font.getW(text);
       _textH = _font.getH();
       
       if(_autoSize) {
@@ -31,22 +38,19 @@ public class Label extends AbstractControl<ControlEvents> {
   }
 
   public String getText() {
-    return _text;
+    return _text.getText();
   }
   
   public void setTextColour(float[] c) {
-    _textColour = c;
+    _textColour.setColour(c);
   }
   
   public void setTextColour(float r, float g, float b, float a) {
-    _textColour[0] = r;
-    _textColour[1] = g;
-    _textColour[2] = b;
-    _textColour[3] = a;
+    _textColour.setColour(r, g, b, a);
   }
   
   public float[] getTextColour() {
-    return _textColour;
+    return _textColour.getColour();
   }
   
   public boolean getAutoSize() {
@@ -75,7 +79,7 @@ public class Label extends AbstractControl<ControlEvents> {
   @Override
   public void draw() {
     if(drawBegin()) {
-      _font.draw(_textX, _textY, _w - _padW * 2, _h - _padH * 2, _text, _textColour);
+      _font.draw(_textX, _textY, _w - _padW * 2, _h - _padH * 2, _textStream);
     }
 
     drawEnd();

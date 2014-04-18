@@ -1,14 +1,15 @@
 package malachite.engine.gfx.fonts;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import malachite.engine.gfx.fonts.Font.Glyph;
 
-public class TextStream {
-  private ArrayList<Object> _stream = new ArrayList<>();
+public class TextStream implements Iterable<TextStreamable> {
+  private ArrayList<TextStreamable> _stream = new ArrayList<>();
   
   public void insert(String data) {
-    _stream.add(data);
+    insert(new Text(data));
   }
   
   public void insert(TextStreamable data) {
@@ -16,12 +17,27 @@ public class TextStream {
   }
   
   public static class Text implements TextStreamable {
-    String text;
+    String _text;
+    
+    public Text() { }
+    
+    public Text(String text) {
+      _text = text;
+    }
+    
+    public String getText() {
+      return _text;
+    }
+    
+    public void setText(String text) {
+      _text = text;
+    }
     
     @Override
     public void render(FontRenderState state) {
-      for(int i = 0; i < text.length(); i++) {
-        Glyph glyph = state.font._glyph[state.mask == 0 ? text.codePointAt(i) : state.mask];
+      if(_text == null) { return; }
+      for(int i = 0; i < _text.length(); i++) {
+        Glyph glyph = state.font._glyph[state.mask == 0 ? _text.codePointAt(i) : state.mask];
         
         switch(glyph.code) {
           case '\n':
@@ -60,9 +76,39 @@ public class TextStream {
   }
   
   public static class Colour implements TextStreamable {
+    private float[] _c = new float[] {1, 1, 1, 1};
+    
+    public Colour(float[] c) {
+      setColour(c);
+    }
+    
+    public Colour(float r, float g, float b, float a) {
+      setColour(r, g, b, a);
+    }
+    
+    public float[] getColour() {
+      return _c;
+    }
+    
+    public void setColour(float[] c) {
+      _c = c;
+    }
+    
+    public void setColour(float r, float g, float b, float a) {
+      _c[0] = r;
+      _c[1] = g;
+      _c[2] = b;
+      _c[3] = a;
+    }
+    
     @Override
     public void render(FontRenderState state) {
-      
+      state.c = _c;
     }
+  }
+  
+  @Override
+  public Iterator<TextStreamable> iterator() {
+    return _stream.iterator();
   }
 }
