@@ -7,6 +7,7 @@ import malachite.engine.gfx.textures.TextureBuilder;
 import malachite.engine.util.Math;
 
 import java.awt.FontMetrics;
+import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.Graphics2D;
@@ -148,7 +149,7 @@ public class FontBuilder {
     BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
     Graphics2D g = (Graphics2D)bi.getGraphics();
-    //g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setFont(font);
     g.drawString(new String(character), 0, (int)(bounds.getHeight() - bounds.getMaxY()));
 
