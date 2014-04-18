@@ -9,6 +9,7 @@ import malachite.api.Lang.MenuKeys;
 import malachite.api.models.Character;
 import malachite.api.models.News;
 import malachite.api.models.Race;
+import malachite.engine.gfx.fonts.TextStream;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.VAlign;
@@ -318,7 +319,13 @@ public class MainMenu extends AbstractGUI {
       @Override public void success(News news) {
         if(news != null) {
           System.out.println(news.title + '\n' + news.body);
-          _lblInfo.setText(news.body);
+          
+          TextStream ts = new TextStream();
+          ts.insert(ts.colour(_lblInfo.getTextColour()));
+          ts.insert(news.title);
+          ts.insert(ts.newLine());
+          ts.insert(news.body);
+          _lblInfo.setTextStream(ts);
         } else {
           System.out.println("No news");
         }
