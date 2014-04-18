@@ -1,6 +1,7 @@
 package malachite.engine.gfx.gui.builtin;
 
 import malachite.engine.gfx.gui.AbstractGUI;
+import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.VAlign;
 import malachite.engine.gfx.gui.control.Label;
 import malachite.engine.gfx.gui.control.Window;
@@ -29,6 +30,11 @@ public class Message extends AbstractGUI {
     _wndMessage.setXY((_context.getW() - _wndMessage.getW()) / 2, (_context.getH() - _wndMessage.getH()) / 2);
     _wndMessage.setText(_initTitle);
     _wndMessage.controls().add(_lblText);
+    _wndMessage.events().addResizeHandler(new ControlEvents.Resize() {
+      @Override public void resize() {
+        _lblText.setWH(_wndMessage.getContentW() - _lblText.getX() * 2, _wndMessage.getContentH() - _lblText.getY() * 2);
+      }
+    });
     
     controls().add(_wndMessage);
   }
