@@ -17,7 +17,7 @@ public class Font {
 
   private int _h;
 
-  private Glyph[] _glyph;
+  Glyph[] _glyph;
 
   Font() { }
 
@@ -76,11 +76,13 @@ public class Font {
     
     _matrix.push();
     _matrix.translate(x, y);
+    
+    FontRenderState state = new FontRenderState(this, 0, 0, w, h, mask, c, _matrix);
+    
     _matrix.push();
     
-    int xo = 0;
     for(int i = 0; i < text.length(); i++) {
-      Glyph glyph = _glyph[mask == 0 ? text.codePointAt(i) : mask];
+      Glyph glyph = _glyph[state.mask == 0 ? text.codePointAt(i) : state.mask];
       
       switch(glyph.code) {
         case '\n':
@@ -145,6 +147,11 @@ public class Font {
 
     protected void setColour(float[] c) {
       sprite.setColour(c);
+      sprite.createQuad();
+    }
+    
+    protected void setColour(float r, float g, float b, float a) {
+      sprite.setColour(r, g, b, a);
       sprite.createQuad();
     }
 
