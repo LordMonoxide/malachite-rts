@@ -133,6 +133,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
     private T      _data;
     
     private Item(String text, T data) {
+      _textStream.insert(_textColour, _text);
       _text.setText(text);
       _data = data;
     }
