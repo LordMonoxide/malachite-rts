@@ -24,6 +24,10 @@ public class Label extends AbstractControl<ControlEvents> {
     super.setGUI(gui);
   }
   
+  public void setTextStream(TextStream ts) {
+    _textStream = ts;
+  }
+  
   public void setText(String text) {
     _font.events().addLoadHandler(() -> {
       _needsUpdate = true;
