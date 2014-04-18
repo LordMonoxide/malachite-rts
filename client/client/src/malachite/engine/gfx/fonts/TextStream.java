@@ -32,6 +32,10 @@ public class TextStream implements Iterable<TextStreamable> {
     return new NewLine();
   }
   
+  public Face face(Font.FONT_FACE face) {
+    return new Face(face);
+  }
+  
   public Colour colour(float r, float g, float b, float a) {
     return new Colour(r, g, b, a);
   }
@@ -61,7 +65,7 @@ public class TextStream implements Iterable<TextStreamable> {
     public void render(FontRenderState state) {
       if(_text == null) { return; }
       for(int i = 0; i < _text.length(); i++) {
-        Font.Glyph glyph = state.font._glyph[state.mask == 0 ? _text.codePointAt(i) : state.mask];
+        Font.Glyph glyph = state.face._glyph[state.mask == 0 ? _text.codePointAt(i) : state.mask];
         
         switch(glyph.code) {
           case '\n':
@@ -102,6 +106,39 @@ public class TextStream implements Iterable<TextStreamable> {
   public static class NewLine implements TextStreamable {
     @Override public void render(FontRenderState state) {
       state.newLine();
+    }
+  }
+  
+  public static class Face implements TextStreamable {
+    Font.FONT_FACE _face;
+    
+    public Face(Font.FONT_FACE face) {
+      _face = face;
+    }
+    
+    public Font.FONT_FACE getFace() {
+      return _face;
+    }
+    
+    public void setFace(Font.FONT_FACE face) {
+      _face = face;
+    }
+    
+    @Override
+    public void render(FontRenderState state) {
+      switch(_face) {
+        case REGULAR:
+          state.face = state.face._font.regular();
+          break;
+          
+        case BOLD:
+          state.face = state.face._font.bold();
+          break;
+          
+        case ITALIC:
+          state.face = state.face._font.italic();
+          break;
+      }
     }
   }
   

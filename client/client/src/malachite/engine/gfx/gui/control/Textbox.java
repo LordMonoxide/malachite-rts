@@ -61,7 +61,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     _caret.setColour(new float[] {_textColour.getColour()[0], _textColour.getColour()[1], _textColour.getColour()[2], 1});
 
     _font.events().addLoadHandler(() -> {
-      _caret.setWH(1, _font.getH());
+      _caret.setWH(1, _font.regular().getH());
       _caret.createQuad();
       resize();
     });
@@ -133,11 +133,11 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     
     _textFull.setText(temp);
 
-    _textW[0] = _font.getW(_text[0], _mask);
-    _textW[1] = _font.getW(_text[1], _mask);
-    _textW[2] = _font.getW(_text[2], _mask);
+    _textW[0] = _font.regular().getW(_text[0], _mask);
+    _textW[1] = _font.regular().getW(_text[1], _mask);
+    _textW[2] = _font.regular().getW(_text[2], _mask);
 
-    _textH = _font.getH();
+    _textH = _font.regular().getH();
     _caret.setX(_textW[0]);
 
     int totalW = _textW[0] + _textW[1] + _textW[2];

@@ -3,15 +3,15 @@ package malachite.engine.gfx.fonts;
 import malachite.engine.gfx.AbstractMatrix;
 
 class FontRenderState {
-  Font font;
+  Font.Face face;
   int x, y, w, h;
   int mask;
   float[] c;
   
   AbstractMatrix matrix;
 
-  FontRenderState(Font font, int x, int y, int w, int h, int mask, AbstractMatrix matrix) {
-    this.font = font;
+  FontRenderState(Font.Face face, int x, int y, int w, int h, int mask, AbstractMatrix matrix) {
+    this.face = face;
     this.x = x;
     this.y = y;
     this.w = w;
@@ -22,7 +22,7 @@ class FontRenderState {
   
   void newLine() {
     matrix.pop();
-    matrix.translate(0, font.getH());
+    matrix.translate(0, face.getH());
     matrix.push();
     x = 0;
   }

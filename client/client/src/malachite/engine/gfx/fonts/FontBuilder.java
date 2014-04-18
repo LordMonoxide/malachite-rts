@@ -25,11 +25,7 @@ public class FontBuilder {
   private Map<String, Font> _fonts = new HashMap<>();
 
   private Font _default = getFont("Verdana");
-  private Font _bold    = getFont("Verdana", java.awt.Font.BOLD,   11);
-  private Font _italic  = getFont("Verdana", java.awt.Font.ITALIC, 11);
   public Font getDefault() { return _default; }
-  public Font getBold   () { return _bold;    }
-  public Font getItalic () { return _italic;  }
 
   private FontBuilder() { }
   
@@ -38,33 +34,47 @@ public class FontBuilder {
   }
   
   public Font getFont(String name, int size) {
-    return getFont(name, java.awt.Font.PLAIN, size);
-  }
-  
-  public Font getFont(String name, int style, int size) {
-    return getFont(name, style, size, 0x20, 0x3FF, 0x2022, 0x25B2, 0x25BA, 0x25BC, 0x25C4);
+    return getFont(name, size, 0x20, 0x3FF, 0x2022, 0x25B2, 0x25BA, 0x25BC, 0x25C4);
     // Extra = Bullet, Triangle up, right, down, left
   }
 
-  public Font getFont(String name, int style, int size, int startGlyph, int endGlyph, int... extraGlyphs) {
+  public Font getFont(String name, int size, int startGlyph, int endGlyph, int... extraGlyphs) {
     String fullName = name + '.' + size;
     if(_fonts.containsKey(fullName)) {
       return _fonts.get(fullName);
     }
-
+    
     Font f = new Font();
-
+    Font.Face regular = getFace(name, java.awt.Font.PLAIN , size, startGlyph, endGlyph, extraGlyphs);
+    Font.Face bold    = getFace(name, java.awt.Font.BOLD  , size, startGlyph, endGlyph, extraGlyphs);
+    Font.Face italic  = getFace(name, java.awt.Font.ITALIC, size, startGlyph, endGlyph, extraGlyphs);
+    
+    regular._font = f;
+    bold   ._font = f;
+    italic ._font = f;
+    
+    AbstractContext.getContext().addLoadCallback(Loader.LoaderThread.GRAPHICS, () -> {
+      f.load(regular, bold, italic);
+      _fonts.put(fullName, f);
+      
+      System.out.println("Font \"" + fullName + "\" created.");
+    });
+    
+    return f;
+  }
+  
+  public Font.Face getFace(String name, int style, int size, int startGlyph, int endGlyph, int... extraGlyphs) {
     java.awt.Font font = new java.awt.Font(name, style, size);
     FontRenderContext rendCont = new FontRenderContext(null, true, true);
     FontMetrics fm = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE).getGraphics().getFontMetrics(font);
     List<Metrics> metrics = new ArrayList<>();
-
+    
     int highIndex = 0;
-
+    
     for(int i = startGlyph; i <= endGlyph; i++) {
       highIndex = addGlyph(i, font, rendCont, metrics, highIndex);
     }
-
+    
     for(int i : extraGlyphs) {
       int n = addGlyph(i, font, rendCont, metrics, highIndex);
       if(n > highIndex) { highIndex = n; }
@@ -72,31 +82,31 @@ public class FontBuilder {
     
     metrics.add(new Metrics('\n'));
     metrics.add(new Metrics(' '));
-
+    
     int x = 0;
     int y = 0;
     int w = 512;
     int h = 512;
-
+    
     Font.Glyph[] glyph = new Font.Glyph[highIndex + 1];
-
+    
     byte[] data = new byte[w * h * 4];
     for(Metrics m : metrics) {
       if(x + m.w2 > w) {
         x = 0;
         y += m.h2;
       }
-
+      
       int i1 = y * w * 4 + x * 4;
       int i2 = 0;
-
+      
       for(int n = 0; n < m.h; n++) {
         System.arraycopy(m.argb, i2, data, i1, m.w * 4);
-
+        
         i1 += w * 4;
         i2 += m.w * 4;
       }
-
+      
       Font.Glyph g = new Font.Glyph();
       g.code = m.code;
       g.w = fm.charWidth(m.code);
@@ -106,23 +116,19 @@ public class FontBuilder {
       g.tw = m.w2;
       g.th = m.h2;
       glyph[m.code] = g;
-
+      
       x += m.w2;
     }
-
+    
     ByteBuffer buffer = ByteBuffer.allocateDirect(data.length);
     buffer.put(data);
     buffer.position(0);
-
-    AbstractContext.getContext().addLoadCallback(Loader.LoaderThread.GRAPHICS, () -> {
-      Texture texture = _textures.getTexture("Font." + font.getFontName() + '.' + font.getSize(), w, h, buffer);
-
-      f.load(metrics.get(0).h, glyph, texture);
-      _fonts.put(fullName, f);
-
-      System.out.println("Font \"" + fullName + "\" created (" + w + 'x' + h + ").");
-    });
-
+    
+    Font.Face f = new Font.Face();
+    f._glyph = glyph;
+    f._texture = _textures.getTexture("Font." + font.getFontName() + '.' + font.getSize(), w, h, buffer); //$NON-NLS-1
+    f._h = metrics.get(0).h;
+    
     return f;
   }
 

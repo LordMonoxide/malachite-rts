@@ -156,7 +156,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
           
           for(Item item : _items) {
             _font.draw(0, y, item._textStream);
-            y += _font.getH();
+            y += _font.regular().getH();
           }
         }
       });
@@ -165,7 +165,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
         @Override public void up  (int x, int y, int button) { }
         @Override public void move(int x, int y, int button) { }
         @Override public void down(int x, int y, int button) {
-          setSelected(y / _font.getH());
+          setSelected(y / _font.regular().getH());
         }
       });
       
@@ -179,7 +179,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
 
     @Override
     protected void resize() {
-      _frame.setWH(_w, _items.size() * _font.getH());
+      _frame.setWH(_w, _items.size() * _font.regular().getH());
     }
 
     @Override

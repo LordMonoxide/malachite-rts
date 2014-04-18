@@ -96,8 +96,8 @@ public class Button extends AbstractControl<ControlEvents> {
     _font.events().addLoadHandler(() -> {
       _needsUpdate = true;
       _text.setText(text);
-      _textW = _font.getW(text);
-      _textH = _font.getH();
+      _textW = _font.regular().getW(text);
+      _textH = _font.regular().getH();
     });
   }
 

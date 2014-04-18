@@ -13,52 +13,31 @@ public class Font {
   private static Colour white = new Colour(new float[] {1, 1, 1, 1});
   
   private AbstractMatrix _matrix = AbstractContext.getMatrix();
-  private Texture _texture;
-
+  private Face _regular, _bold, _italic;
+  
   private Events _events = new Events(this);
   private boolean _loaded;
-
-  private int _h;
-
-  Glyph[] _glyph;
-
+  
   Font() { }
-
+  
+  public Face regular() { return _regular; }
+  public Face bold   () { return _bold;    }
+  public Face italic () { return _italic;  }
+  
   public Events events() { return _events; }
   public boolean loaded() { return _loaded; }
-
-  void load(int h, Glyph[] glyphs, Texture texture) {
-    _h = h;
-    _glyph = glyphs;
-    _texture = texture;
-
-    for(Glyph glyph : _glyph) {
-      if(glyph != null) {
-        glyph.create(_texture);
-      }
-    }
-
+  
+  void load(Face regular, Face bold, Face italic) {
+    _regular = regular;
+    _bold    = bold;
+    _italic  = italic;
+    
+    _regular.load();
+    _bold   .load();
+    _italic .load();
+    
     _loaded = true;
     _events.raiseLoad();
-  }
-
-  public int getW(String text) { return getW(text, 0); }
-  public int getW(String text, int mask) {
-    if(text == null) { return 0; }
-
-    int w = 0;
-    for(int i = 0; i < text.length(); i++) {
-      int n = mask == 0 ? text.codePointAt(i) : mask;
-      if(_glyph[n] != null) {
-        w += _glyph[n].w;
-      }
-    }
-
-    return w;
-  }
-
-  public int getH() {
-    return _h;
   }
   
   public void draw(int x, int y, TextStream text) {
@@ -74,14 +53,14 @@ public class Font {
   }
   
   public void draw(int x, int y, int w, int h, TextStream text, int mask) {
-    if(text == null)   { return; }
-    if(_glyph == null) { return; }
+    if(text == null)     { return; }
+    if(_regular == null) { return; }
     
     _matrix.push();
     _matrix.translate(x, y);
     _matrix.push();
     
-    FontRenderState state = new FontRenderState(this, 0, 0, w, h, mask, _matrix);
+    FontRenderState state = new FontRenderState(_regular, 0, 0, w, h, mask, _matrix);
     
     white.render(state);
     
@@ -91,6 +70,42 @@ public class Font {
     
     _matrix.pop();
     _matrix.pop();
+  }
+  
+  public static class Face {
+    Font    _font;
+    Texture _texture;
+    Glyph[] _glyph;
+    int     _h;
+    
+    Face() { }
+    
+    void load() {
+      for(Glyph glyph : _glyph) {
+        if(glyph != null) {
+          glyph.create(_texture);
+        }
+      }
+    }
+    
+    public int getW(String text) { return getW(text, 0); }
+    public int getW(String text, int mask) {
+      if(text == null) { return 0; }
+      
+      int w = 0;
+      for(int i = 0; i < text.length(); i++) {
+        int n = mask == 0 ? text.codePointAt(i) : mask;
+        if(_glyph[n] != null) {
+          w += _glyph[n].w;
+        }
+      }
+      
+      return w;
+    }
+    
+    public int getH() {
+      return _h;
+    }
   }
 
   protected static class Glyph {
@@ -150,5 +165,9 @@ public class Font {
     public interface Event {
       void run();
     }
+  }
+  
+  public enum FONT_FACE {
+    REGULAR, BOLD, ITALIC;
   }
 }
