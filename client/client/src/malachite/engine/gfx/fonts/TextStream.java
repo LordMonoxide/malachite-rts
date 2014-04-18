@@ -3,10 +3,18 @@ package malachite.engine.gfx.fonts;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import malachite.engine.gfx.fonts.Font.Glyph;
-
 public class TextStream implements Iterable<TextStreamable> {
   private ArrayList<TextStreamable> _stream = new ArrayList<>();
+  
+  public TextStream(TextStreamable... data) {
+    insert(data);
+  }
+  
+  public void insert(TextStreamable... data) {
+    for(TextStreamable ts : data) {
+      insert(ts);
+    }
+  }
   
   public void insert(String data) {
     insert(new Text(data));
@@ -14,6 +22,22 @@ public class TextStream implements Iterable<TextStreamable> {
   
   public void insert(TextStreamable data) {
     _stream.add(data);
+  }
+  
+  public Text text(String data) {
+    return new Text(data);
+  }
+  
+  public NewLine newLine() {
+    return new NewLine();
+  }
+  
+  public Colour colour(float r, float g, float b, float a) {
+    return new Colour(r, g, b, a);
+  }
+  
+  public Colour colour(float[] c) {
+    return new Colour(c);
   }
   
   public static class Text implements TextStreamable {
@@ -37,7 +61,7 @@ public class TextStream implements Iterable<TextStreamable> {
     public void render(FontRenderState state) {
       if(_text == null) { return; }
       for(int i = 0; i < _text.length(); i++) {
-        Glyph glyph = state.font._glyph[state.mask == 0 ? _text.codePointAt(i) : state.mask];
+        Font.Glyph glyph = state.font._glyph[state.mask == 0 ? _text.codePointAt(i) : state.mask];
         
         switch(glyph.code) {
           case '\n':
@@ -72,6 +96,12 @@ public class TextStream implements Iterable<TextStreamable> {
           state.matrix.push();
         }*/
       }
+    }
+  }
+  
+  public static class NewLine implements TextStreamable {
+    @Override public void render(FontRenderState state) {
+      state.newLine();
     }
   }
   
