@@ -164,7 +164,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
       if(!_textFull.getText().isEmpty()) {
         _font.draw(0, 0, _textStream, _mask);
       } else {
-        if(!_textPlaceholder.getText().isEmpty()) {
+        if(_textPlaceholder.getText() != null && !_textPlaceholder.getText().isEmpty()) {
           _font.draw(0, 0, _textPlaceholderStream);
         }
       }
