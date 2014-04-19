@@ -71,7 +71,7 @@ class AuthController extends Controller {
       
       $ip = Auth::user()->ips()->where('ip', '=', ip2long(Request::getClientIp()))->first();
       if(!$ip->authorised) {
-        Auth::user()->suspend_until_authorised = true;
+        Auth::user()->suspend = true;
         Auth::user()->save();
         
         return Response::json([
@@ -102,7 +102,7 @@ class AuthController extends Controller {
       $ip->authorised = true;
       $ip->save();
       
-      Auth::user()->suspend_until_authorised = false;
+      Auth::user()->suspend = false;
       Auth::user()->save();
       return Response::json(null, 204);
     } else {

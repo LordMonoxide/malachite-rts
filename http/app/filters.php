@@ -67,7 +67,7 @@ Route::filter('user.security', function() {
     ], 401);
   }
   
-  if(Auth::user()->suspend_until_authorised) {
+  if(Auth::user()->suspend) {
     return Response::json([
       'error' => 'security',
       'show'  => 'security'
