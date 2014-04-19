@@ -192,6 +192,13 @@ public class MainMenu extends AbstractGUI {
       }
     });
     
+    _wndChars.events().addCloseHandler(new Window.Events.Close() {
+      @Override public void close() {
+        _wndChars.hide();
+        logout();
+      }
+    });
+    
     _lstChars = new List<>();
     
     _btnCharLogout = new Button();
