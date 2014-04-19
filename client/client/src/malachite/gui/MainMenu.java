@@ -380,6 +380,8 @@ public class MainMenu extends AbstractGUI {
     Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_LOGGINGIN));
     wait.push();
     
+    _wndLogin.hide();
+    
     class R extends GenericResponse implements API.LoginResponse {
       R() { super(wait, _wndLogin); }
       
@@ -390,6 +392,7 @@ public class MainMenu extends AbstractGUI {
       
       @Override public void invalid(JSONObject errors) {
         wait.pop();
+        _wndLogin.show();
         System.err.println(errors);
       }
     }
