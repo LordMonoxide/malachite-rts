@@ -138,6 +138,14 @@ public class MainMenu extends AbstractGUI {
         _txtRegisterEmail.setW(_wndRegister.getContentW() - _txtRegisterEmail.getX() * 2);
         _txtRegisterPass[0].setW(_wndRegister.getContentW() - _txtRegisterPass[0].getX() * 2);
         _txtRegisterPass[1].setW(_wndRegister.getContentW() - _txtRegisterPass[1].getX() * 2);
+        
+        for(Textbox t : _txtRegisterSecurityQuestion) {
+          t.setW(_wndRegister.getContentW() - t.getX() * 2);
+        }
+        
+        for(Textbox t : _txtRegisterSecurityAnswer) {
+          t.setW(_wndRegister.getContentW() - t.getX() * 2);
+        }
       }
     });
 
@@ -157,6 +165,17 @@ public class MainMenu extends AbstractGUI {
     _txtRegisterPass[1].setH(20);
     _txtRegisterPass[1].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_CONFIRM));
     _txtRegisterPass[1].setMasked(true);
+    
+    int x = _txtRegisterPass[1].getX();
+    int y = _txtRegisterPass[1].getY() + 8;
+    for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
+      _txtRegisterSecurityQuestion[i] = new Textbox();
+      _txtRegisterSecurityAnswer  [i] = new Textbox();
+      _txtRegisterSecurityQuestion[i].setH(20);
+      _txtRegisterSecurityAnswer  [i].setH(20);
+      _txtRegisterSecurityQuestion[i].setXY(x, y += (_txtRegisterSecurityQuestion[i].getH() + 12));
+      _txtRegisterSecurityAnswer  [i].setXY(x, y += (_txtRegisterSecurityAnswer  [i].getH() + 6));
+    }
     
     _wndChars = new Window();
     _wndChars.setText(Lang.Menu.get(MenuKeys.CHARS_TITLE));
@@ -279,6 +298,11 @@ public class MainMenu extends AbstractGUI {
     _wndRegister.controls().add(_txtRegisterEmail);
     _wndRegister.controls().add(_txtRegisterPass[0]);
     _wndRegister.controls().add(_txtRegisterPass[1]);
+    
+    for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
+      _wndRegister.controls().add(_txtRegisterSecurityQuestion[i]);
+      _wndRegister.controls().add(_txtRegisterSecurityAnswer  [i]);
+    }
     
     _wndChars.controls().add(_lstChars);
     _wndChars.controls().add(_btnCharLogout);
