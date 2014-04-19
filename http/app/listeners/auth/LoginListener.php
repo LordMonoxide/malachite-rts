@@ -26,6 +26,13 @@ class LoginListener {
       
       $ip->save();
     } else {
+      // De-auth user if the IP isn't authed
+      if($ip->authorised === false) {
+        $user->authorised = false;
+        $user->save();
+        Auth::logout();
+      }
+      
       // Update timestamps to show last login
       $ip->touch();
     }
