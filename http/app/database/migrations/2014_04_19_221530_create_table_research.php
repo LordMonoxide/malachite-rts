@@ -8,7 +8,6 @@ class CreateTableResearch extends Migration {
     Schema::create('researches', function($table) {
       $table->increments('id');
       $table->string('name', 64);
-      $table->string('desc');
       $table->timestamps();
     });
   }

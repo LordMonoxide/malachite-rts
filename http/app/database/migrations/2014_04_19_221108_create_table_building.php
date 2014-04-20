@@ -8,7 +8,6 @@ class CreateTableBuilding extends Migration {
     Schema::create('buildings', function($table) {
       $table->increments('id');
       $table->string('name', 64);
-      $table->string('desc');
       $table->enum('type', ['base', 'foodstore', 'woodstore', 'metalstore', 'housing']);
       $table->timestamps();
     });

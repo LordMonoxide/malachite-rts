@@ -4,12 +4,19 @@ return [
   'title' => 'Technology',
   'buildings' => 'Buildings',
   'research' => 'Research',
-  'nodescription' => 'No description',
   'norequirements' => 'No requirements',
   'nounlocks' => 'No unlocks',
   'info' => 'Info',
   'requirements' => 'Requirements',
   'unlocks' => 'Unlocks',
+  'units' => 'Units',
+  
   'type.base' => 'Base',
-  'type.housing' => 'Housing'
+  'type.housing' => 'Housing',
+  
+  'building.camp.name' => 'Camp',
+  'building.camp.desc' => 'A nomadic base',
+  
+  'unit.villager.name' => 'Villager',
+  'unit.villager.desc' => 'A labourer'
 ];

@@ -17,16 +17,13 @@
         <div class="pure-g">
           <div class="pure-u-1">
             <p class="building-name">
-              <span class="building-name">{{{ $b->name }}}</span>
-              @if($b->desc !== '')
-                - {{{ $b->desc }}}
-              @endif
+              <span class="building-name">{{ Lang::get('tech.building.' . $b->name . '.name') }} - {{ Lang::get('tech.building.' . $b->name . '.desc') }}</span>
             </p>
           </div>
         </div>
         
         <div class="building pure-g">
-          <div class="building-info pure-u-1-3">
+          <div class="building-info pure-u-1-4">
             <h4>@lang('tech.info')</h4>
             
             <ul>
@@ -34,7 +31,7 @@
             </ul>
           </div>
           
-          <div class="building-requirements pure-u-1-3">
+          <div class="building-requirements pure-u-1-4">
             <h4>@lang('tech.requirements')</h4>
             
             @if(count($b->requirements) > 0)
@@ -48,7 +45,7 @@
             @endif
           </div>
           
-          <div class="building-unlocks pure-u-1-3">
+          <div class="building-unlocks pure-u-1-4">
             <h4>@lang('tech.unlocks')</h4>
             
             @if(count($b->unlocks) > 0)
@@ -59,6 +56,20 @@
               </ul>
             @else
               <p>@lang('tech.nounlocks')</p>
+            @endif
+          </div>
+          
+          <div class="building-units pure-u-1-4">
+            <h4>@lang('tech.units')</h4>
+            
+            @if(count($b->units) > 0)
+              <ul>
+                @foreach($b->units as $unit)
+                  <li>@lang('tech.unit.' . $unit->name . '.name')</li>
+                @endforeach
+              </ul>
+            @else
+              <p>@lang('tech.nounits')</p>
             @endif
           </div>
         </div>
