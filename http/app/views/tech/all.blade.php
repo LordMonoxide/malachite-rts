@@ -11,25 +11,28 @@
   <body>
     <section>
       <h2>@lang('tech.buildings')</h2>
+      <hr />
       
       @foreach($buildings as $b)
+        <h3>{{{ $b->name }}}</h3>
+        
+        @if($b->desc !== '')
+          <p>{{{ $b->desc }}}</p>
+        @else
+          <p>@lang('tech.nodescription')</p>
+        @endif
+        
         <p>
-          <strong>{{{ $b->name }}}</strong><br />
+        @if(count($b->requirements) > 0)
+          <strong>@lang('tech.requirements')</strong><br />
           
-          @if($b->desc !== '')
-            {{{ $b->desc }}}<br /><br />
-          @else
-            @lang('tech.nodescription')<br /><br />
-          @endif
-          
-          @if(count($b->requirements) > 0)
-            @lang('tech.requirements')<br />
-            
-            @foreach($b->requirements as $r)
-              {{{ $r->requirement->name }}}
-            @endforeach
-          @endif
+          @foreach($b->requirements as $r)
+            {{{ $r->requirement->name }}}
+          @endforeach
+        @endif
         </p>
+        
+        <hr />
       @endforeach
     </section>
     
