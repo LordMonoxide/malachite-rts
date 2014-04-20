@@ -1,17 +1,17 @@
         <div class="pure-g">
           <div class="pure-u-1">
-            <p class="building-name">
-              <span class="building-name">{{ Lang::get('tech.building.' . $data->name . '.name') }} - {{ Lang::get('tech.building.' . $data->name . '.desc') }}</span>
+            <p class="tech-name">
+              <span class="tech-name">{{ Lang::get('tech.building.' . $data->name . '.name') }}</span> - {{ Lang::get('tech.building.' . $data->name . '.desc') }}
             </p>
           </div>
         </div>
         
-        <div class="building pure-g">
+        <div class="tech pure-g">
           <div class="building-info pure-u-1-4">
             <h4>@lang('tech.info')</h4>
             
             <ul>
-              <li>@lang('tech.type.' . $data->type)</li>
+              <li>@lang('tech.type.building.' . $data->type)</li>
             </ul>
           </div>
           

@@ -66,6 +66,8 @@ Route::group(['prefix' => 'forum'], function() {
 Route::group(['prefix' => 'tech'], function() {
   Route::get('/',          ['as' => 'tech.all',       'uses' => 'tech\TechController@all']);
   Route::get('/buildings', ['as' => 'tech.buildings', 'uses' => 'tech\TechController@buildings']);
+  Route::get('/research',  ['as' => 'tech.research',  'uses' => 'tech\TechController@research']);
+  Route::get('/units',     ['as' => 'tech.units',     'uses' => 'tech\TechController@units']);
 });
 
 Route::get ('/',      ['as' => 'home',  'uses' => 'RootController@home']);

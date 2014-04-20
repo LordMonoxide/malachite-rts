@@ -11,8 +11,8 @@ return [
   'unlocks' => 'Unlocks',
   'units' => 'Units',
   
-  'type.base' => 'Base',
-  'type.housing' => 'Housing',
+  'type.building.base' => 'Base',
+  'type.building.housing' => 'Housing',
   
   'building.camp.name' => 'Camp',
   'building.camp.desc' => 'A nomadic base',

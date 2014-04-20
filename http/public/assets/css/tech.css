@@ -1,23 +1,22 @@
-#buildings,
-#research {
+.tech-section {
   margin-left: auto;
   margin-right: auto;
   width: 70%;
 }
 
-.building > div {
+.tech > div {
   border-right: 1px dashed grey;
   padding: 0px 8px 0px 8px;
 }
 
-.building > div:last-of-type {
+.tech > div:last-of-type {
   border-right: none;
 }
 
-p.building-name {
+p.tech-name {
   font-size: 110%;
 }
 
-span.building-name {
+span.tech-name {
   font-weight: bold;
 }
