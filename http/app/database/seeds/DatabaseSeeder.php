@@ -5,6 +5,7 @@ class DatabaseSeeder extends Seeder {
     Eloquent::unguard();
     $this->call('TableTruncater');
     $this->call('TableSeeder');
+    $this->call('TechSeeder');
   }
 }
 
@@ -107,6 +108,42 @@ class TableSeeder extends Seeder {
       'parent_id' => $f[1]->id,
       'name'      => 'Off-Topic'
     ]);
+  }
+}
+
+class TechSeeder extends Seeder {
+  public function run() {
+    $building[] = Building::create([
+      'name' => 'Camp',
+      'desc' => 'A camp for stuff.',
+      'type' => 'base'
+    ]);
+    
+    $building[] = Building::create([
+      'name' => 'Low-Income Housing',
+      'desc' => '',
+      'type' => 'housing'
+    ]);
+    
+    $research[] = Research::create([
+      'name' => 'Swag',
+      'desc' => ''
+    ]);
+    
+    /* Why the entire shit isn't this working?
+    $req[] = Requirement::create([
+      'unlock_id' => $building[1]->id,
+      'unlock_type' => 'building',
+      'requirement_id' => $research[0]->id,
+      'requirement_type' => 'research'
+    ]);*/
+    
+    $req[] = new Requirement;
+    $req[0]->unlock_id = $building[1]->id;
+    $req[0]->unlock_type = 'building';
+    $req[0]->requirement_id = $research[0]->id;
+    $req[0]->requirement_type = 'research';
+    $req[0]->save();
   }
 }
 
