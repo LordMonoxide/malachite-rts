@@ -16,7 +16,12 @@
       @foreach($buildings as $b)
         <div class="pure-g">
           <div class="pure-u-1">
-            <h3>{{{ $b->name }}}</h3>
+            <p class="building-name">
+              <span class="building-name">{{{ $b->name }}}</span>
+              @if($b->desc !== '')
+                - {{{ $b->desc }}}
+              @endif
+            </p>
           </div>
         </div>
         
@@ -24,37 +29,37 @@
           <div class="building-info pure-u-1-3">
             <h4>@lang('tech.info')</h4>
             
-            @if($b->desc !== '')
-              <p>{{{ $b->desc }}}</p>
-            @else
-              <p>@lang('tech.nodescription')</p>
-            @endif
+            <ul>
+              <li>@lang('tech.type.' . $b->type)</li>
+            </ul>
           </div>
           
           <div class="building-requirements pure-u-1-3">
             <h4>@lang('tech.requirements')</h4>
-            <p>
-              @if(count($b->requirements) > 0)
+            
+            @if(count($b->requirements) > 0)
+              <ul>
                 @foreach($b->requirements as $r)
-                  {{{ $r->requirement->name }}}
+                  <li>{{{ $r->requirement->name }}}</li>
                 @endforeach
-              @else
-                @lang('tech.norequirements')
-              @endif
-            </p>
+              </ul>
+            @else
+              <p>@lang('tech.norequirements')</p>
+            @endif
           </div>
           
           <div class="building-unlocks pure-u-1-3">
             <h4>@lang('tech.unlocks')</h4>
-            <p>
-              @if(count($b->unlocks) > 0)
+            
+            @if(count($b->unlocks) > 0)
+              <ul>
                 @foreach($b->unlocks as $r)
-                  {{{ $r->unlock->name }}}
+                  <li>{{{ $r->unlock->name }}}</li>
                 @endforeach
-              @else
-                @lang('tech.nounlocks')
-              @endif
-            </p>
+              </ul>
+            @else
+              <p>@lang('tech.nounlocks')</p>
+            @endif
           </div>
         </div>
         

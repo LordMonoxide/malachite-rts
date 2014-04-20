@@ -9,5 +9,7 @@ return [
   'nounlocks' => 'No unlocks',
   'info' => 'Info',
   'requirements' => 'Requirements',
-  'unlocks' => 'Unlocks'
+  'unlocks' => 'Unlocks',
+  'type.base' => 'Base',
+  'type.housing' => 'Housing'
 ];

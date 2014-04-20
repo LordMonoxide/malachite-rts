@@ -5,13 +5,19 @@
   width: 70%;
 }
 
-.building-info,
-.building-requirements,
-.building-unlocks {
-  /*border: 1px dashed grey;
-  float: left;*/
+.building > div {
+  border-right: 1px dashed grey;
+  padding: 0px 8px 0px 8px;
 }
 
-.building {
-  /*overflow: auto;*/
+.building > div:last-of-type {
+  border-right: none;
+}
+
+p.building-name {
+  font-size: 110%;
+}
+
+span.building-name {
+  font-weight: bold;
 }
