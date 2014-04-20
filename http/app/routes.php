@@ -31,6 +31,11 @@ Route::group(['prefix' => 'api'], function() {
       Route::get('/',       ['as' => 'api.storage.news.all',    'uses' => 'api\storage\NewsController@all']);
       Route::get('/latest', ['as' => 'api.storage.news.latest', 'uses' => 'api\storage\NewsController@latest']);
     });
+    
+    Route::group(['prefix' => 'tech'], function() {
+      Route::get('/buildings', ['as' => 'api.storage.tech.buildings.all', 'uses' => 'api\storage\TechController@buildings']);
+      Route::get('/research',  ['as' => 'api.storage.tech.research.all',  'uses' => 'api\storage\TechController@research']);
+    });
   });
 });
 
@@ -56,6 +61,10 @@ Route::group(['prefix' => 'forum'], function() {
   
   Route::put('/p{post}/rep/pos', ['as' => 'forum.post.rep.pos', 'uses' => 'forum\PostController@reppos']);
   Route::put('/p{post}/rep/neg', ['as' => 'forum.post.rep.neg', 'uses' => 'forum\PostController@repneg']);
+});
+
+Route::group(['prefix' => 'tech'], function() {
+  Route::get('/' , ['as' => 'tech.all', 'uses' => 'tech\TechController@all']);
 });
 
 Route::get ('/',      ['as' => 'home',  'uses' => 'RootController@home']);
