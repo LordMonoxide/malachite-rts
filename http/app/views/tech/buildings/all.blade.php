@@ -1,5 +1,5 @@
 @extends('tech.layout')
 
 @section('body')
-  @include('tech.buildings.section')
+  @include('tech.section', ['type' => 'buildings', 'data' => $buildings])
 @stop

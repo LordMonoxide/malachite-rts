@@ -1,12 +1,6 @@
 @extends('tech.layout')
 
 @section('body')
-  @include('tech.buildings.section')
-    
-    <section id="research">
-      <h2>@lang('tech.research')</h2>
-      @foreach($research as $r)
-        
-      @endforeach
-    </section>
+  @include('tech.section', ['type' => 'buildings', 'data' => $buildings])
+  @include('tech.section', ['type' => 'research',  'data' => $research])
 @stop

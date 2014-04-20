@@ -1,11 +1,7 @@
-    <section id="buildings">
-      <h2>@lang('tech.buildings')</h2>
-      
-      @foreach($buildings as $b)
         <div class="pure-g">
           <div class="pure-u-1">
             <p class="building-name">
-              <span class="building-name">{{ Lang::get('tech.building.' . $b->name . '.name') }} - {{ Lang::get('tech.building.' . $b->name . '.desc') }}</span>
+              <span class="building-name">{{ Lang::get('tech.building.' . $building->name . '.name') }} - {{ Lang::get('tech.building.' . $building->name . '.desc') }}</span>
             </p>
           </div>
         </div>
@@ -15,16 +11,16 @@
             <h4>@lang('tech.info')</h4>
             
             <ul>
-              <li>@lang('tech.type.' . $b->type)</li>
+              <li>@lang('tech.type.' . $building->type)</li>
             </ul>
           </div>
           
           <div class="building-requirements pure-u-1-4">
             <h4>@lang('tech.requirements')</h4>
             
-            @if(count($b->requirements) > 0)
+            @if(count($building->requirements) > 0)
               <ul>
-                @foreach($b->requirements as $r)
+                @foreach($building->requirements as $r)
                   <li>{{{ $r->requirement->name }}}</li>
                 @endforeach
               </ul>
@@ -36,9 +32,9 @@
           <div class="building-unlocks pure-u-1-4">
             <h4>@lang('tech.unlocks')</h4>
             
-            @if(count($b->unlocks) > 0)
+            @if(count($building->unlocks) > 0)
               <ul>
-                @foreach($b->unlocks as $r)
+                @foreach($building->unlocks as $r)
                   <li>{{{ $r->unlock->name }}}</li>
                 @endforeach
               </ul>
@@ -50,9 +46,9 @@
           <div class="building-units pure-u-1-4">
             <h4>@lang('tech.units')</h4>
             
-            @if(count($b->units) > 0)
+            @if(count($building->units) > 0)
               <ul>
-                @foreach($b->units as $unit)
+                @foreach($building->units as $unit)
                   <li>@lang('tech.unit.' . $unit->name . '.name')</li>
                 @endforeach
               </ul>
@@ -61,7 +57,3 @@
             @endif
           </div>
         </div>
-        
-        <hr />
-      @endforeach
-    </section>
