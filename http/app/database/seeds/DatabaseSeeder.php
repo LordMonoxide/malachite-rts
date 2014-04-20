@@ -47,49 +47,36 @@ class TableSeeder extends Seeder {
       'name_last'  => 'De Smet'
     ]);
     
-    UserInfo::create([
-      'user_id' => $user[0]->id
+    $user[] = User::create([
+      'email'      => 'Mitchcfergus@gmail.com',
+      'password'   => Hash::make('Longbow17'),
+      'name_first' => 'Remus',
+      'name_last'  => 'De Smet'
     ]);
     
-    UserInfo::create([
-      'user_id' => $user[1]->id
-    ]);
-    
-    UserSecurityQuestion::create([
-      'user_id' => $user[0]->id,
-      'question' => 'The answer to this question is 1',
-      'answer' => '1'
-    ]);
-    
-    UserSecurityQuestion::create([
-      'user_id' => $user[0]->id,
-      'question' => 'The answer to this question is 2',
-      'answer' => '2'
-    ]);
-    
-    UserSecurityQuestion::create([
-      'user_id' => $user[0]->id,
-      'question' => 'The answer to this question is 3',
-      'answer' => '3'
-    ]);
-    
-    UserSecurityQuestion::create([
-      'user_id' => $user[1]->id,
-      'question' => 'The answer to this question is 1',
-      'answer' => '1'
-    ]);
-    
-    UserSecurityQuestion::create([
-      'user_id' => $user[1]->id,
-      'question' => 'The answer to this question is 2',
-      'answer' => '2'
-    ]);
-    
-    UserSecurityQuestion::create([
-      'user_id' => $user[1]->id,
-      'question' => 'The answer to this question is 3',
-      'answer' => '3'
-    ]);
+    foreach($user as $u) {
+      UserInfo::create([
+        'user_id' => $u->id
+      ]);
+      
+      UserSecurityQuestion::create([
+        'user_id' => $u->id,
+        'question' => 'The answer to this question is 1',
+        'answer' => '1'
+      ]);
+      
+      UserSecurityQuestion::create([
+        'user_id' => $u->id,
+        'question' => 'The answer to this question is 2',
+        'answer' => '2'
+      ]);
+      
+      UserSecurityQuestion::create([
+        'user_id' => $u->id,
+        'question' => 'The answer to this question is 3',
+        'answer' => '3'
+      ]);
+    }
     
     $f[] = Forum::create([
       'name' => 'Malachite'
