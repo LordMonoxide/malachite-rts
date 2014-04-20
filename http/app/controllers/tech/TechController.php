@@ -11,7 +11,7 @@ use Research;
 
 class TechController extends BaseController {
   public function __construct() {
-    $this->beforeFilter('user.security');
+    $this->beforeFilter('auth');
   }
   
   public function all() {
