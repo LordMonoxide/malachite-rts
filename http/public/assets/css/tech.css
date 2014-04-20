@@ -1,0 +1,17 @@
+#buildings,
+#research {
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+}
+
+.building-info,
+.building-requirements,
+.building-unlocks {
+  /*border: 1px dashed grey;
+  float: left;*/
+}
+
+.building {
+  /*overflow: auto;*/
+}

@@ -5,5 +5,9 @@ return [
   'buildings' => 'Buildings',
   'research' => 'Research',
   'nodescription' => 'No description',
-  'requirements' => 'Requirements'
+  'norequirements' => 'No requirements',
+  'nounlocks' => 'No unlocks',
+  'info' => 'Info',
+  'requirements' => 'Requirements',
+  'unlocks' => 'Unlocks'
 ];
