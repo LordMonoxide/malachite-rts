@@ -1,7 +1,7 @@
         <div class="pure-g">
           <div class="pure-u-1">
             <p class="tech-name">
-              <span class="tech-name">{{ Lang::get('tech.building.' . $data->name . '.name') }}</span> - {{ Lang::get('tech.building.' . $data->name . '.desc') }}
+              <span class="tech-name">{{ HTML::linkAction('tech.buildings.view', Lang::get('tech.building.' . $data->name . '.name'), $data->id) }}</span> - {{ Lang::get('tech.building.' . $data->name . '.desc') }}
             </p>
           </div>
         </div>

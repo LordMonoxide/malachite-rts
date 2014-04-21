@@ -27,6 +27,10 @@ class TechController extends BaseController {
     return View::make('tech.buildings.all')->with('buildings', $buildings);
   }
   
+  public function building($building) {
+    return View::make('tech.single')->with('type', 'buildings')->with('data', $building);
+  }
+  
   public function research() {
     $research = Research::with('unlocks')->with('requirements')->get();
     return View::make('tech.research.all')->with('research', $research);
