@@ -6,9 +6,7 @@ import org.json.JSONObject;
 import malachite.api.API;
 import malachite.api.Lang;
 import malachite.api.Lang.MenuKeys;
-import malachite.api.models.Character;
 import malachite.api.models.News;
-import malachite.api.models.Race;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.TextStream;
 import malachite.engine.gfx.gui.AbstractGUI;
@@ -29,26 +27,13 @@ public class MainMenu extends AbstractGUI {
   private Button _btnRegister;
   private Frame _fraInfo;
   private Label _lblInfo;
-
+  
   private Window _wndRegister;
   private Textbox _txtRegisterEmail;
   private Textbox[] _txtRegisterPass = new Textbox[2];
   private Textbox[] _txtRegisterSecurityQuestion = new Textbox[3];
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
   
-  private Window _wndChars;
-  private List<Character> _lstChars;
-  private Button _btnCharUse;
-  private Button _btnCharNew;
-  private Button _btnCharDel;
-  private Button _btnCharLogout;
-  
-  private Window _wndNewChar;
-  private Textbox _txtNewCharName;
-  private Dropdown<Race> _drpNewCharRace;
-  private Dropdown<String> _drpNewCharSex;
-  private Button _btnNewCharCreate;
-
   @Override
   protected void load() {
     for(int i = 0; i < _imgBackground.length; i++) {
@@ -177,121 +162,8 @@ public class MainMenu extends AbstractGUI {
       _txtRegisterSecurityAnswer  [i].setXY(x, y += (_txtRegisterSecurityAnswer  [i].getH() + 6));
     }
     
-    _wndChars = new Window();
-    _wndChars.setText(Lang.Menu.get(MenuKeys.CHARS_TITLE));
-    _wndChars.setWH(400, 300);
-    _wndChars.setXY((_context.getW() - _wndChars.getW()) / 2, (_context.getH() - _wndChars.getH()) / 2);
-    _wndChars.hide();
-    _wndChars.events().addResizeHandler(new ControlEvents.Resize() {
-      @Override public void resize() {
-        _lstChars.setWH(_wndChars.getContentW(), _wndChars.getContentH() - _btnCharUse.getH() - 8);
-        _btnCharUse.setXY(_lstChars.getW() - _btnCharUse.getW() - 4, _lstChars.getY() + _lstChars.getH() + 6);
-        _btnCharNew.setXY(_btnCharUse.getX() - _btnCharNew.getW() - 4, _btnCharUse.getY());
-        _btnCharDel.setXY(_btnCharNew.getX() - _btnCharDel.getW() + 1, _btnCharUse.getY());
-        _btnCharLogout.setXY(4, _btnCharUse.getY());
-      }
-    });
-    
-    _wndChars.events().addCloseHandler(new Window.Events.Close() {
-      @Override public void close() {
-        _wndChars.hide();
-        logout();
-      }
-    });
-    
-    _lstChars = new List<>();
-    
-    _btnCharLogout = new Button();
-    _btnCharLogout.setWH(60, 20);
-    _btnCharLogout.setText(Lang.Menu.get(MenuKeys.CHARS_LOGOUT));
-    _btnCharLogout.setBackgroundColour(202 / 255f, 60 / 255f, 60 / 255f, 1);
-    _btnCharLogout.events().addClickHandler(new ControlEvents.Click() {
-      @Override public void clickDbl() { }
-      @Override public void click() {
-        _wndChars.hide();
-        logout();
-      }
-    });
-    
-    _btnCharDel = new Button();
-    _btnCharDel.setWH(50, 20);
-    _btnCharDel.setText(Lang.Menu.get(MenuKeys.CHARS_DEL));
-    _btnCharDel.setBackgroundColour(202 / 255f, 60 / 255f, 60 / 255f, 1);
-    _btnCharDel.events().addClickHandler(new ControlEvents.Click() {
-      @Override public void clickDbl() { }
-      @Override public void click() {
-        _wndChars.hide();
-        deleteCharacter(_lstChars.selected().getData());
-      }
-    });
-    
-    _btnCharNew = new Button();
-    _btnCharNew.setWH(50, 20);
-    _btnCharNew.setText(Lang.Menu.get(MenuKeys.CHARS_NEW));
-    _btnCharNew.events().addClickHandler(new ControlEvents.Click() {
-      @Override public void clickDbl() { }
-      @Override public void click() {
-        _wndChars.hide();
-        showCreateCharacter();
-      }
-    });
-    
-    _btnCharUse = new Button();
-    _btnCharUse.setWH(50, 20);
-    _btnCharUse.setText(Lang.Menu.get(MenuKeys.CHARS_USE));
-    _btnCharUse.events().addClickHandler(new ControlEvents.Click() {
-      @Override public void clickDbl() { }
-      @Override public void click() {
-        useCharacter(_lstChars.selected().getData());
-      }
-    });
-    
-    _wndNewChar = new Window();
-    _wndNewChar.setText(Lang.Menu.get(MenuKeys.NEWCHAR_TITLE));
-    _wndNewChar.setWH(400, 300);
-    _wndNewChar.setXY((_context.getW() - _wndNewChar.getW()) / 2, (_context.getH() - _wndNewChar.getH()) / 2);
-    _wndNewChar.hide();
-    _wndNewChar.events().addResizeHandler(new ControlEvents.Resize() {
-      @Override
-      public void resize() {
-        _txtNewCharName.setW(_wndNewChar.getContentW() - _txtNewCharName.getX() * 2);
-        _drpNewCharRace.setW(_wndNewChar.getContentW() - _drpNewCharRace.getX() * 2);
-        _drpNewCharSex .setW(_wndNewChar.getContentW() - _drpNewCharSex .getX() * 2);
-        _btnNewCharCreate.setX(_wndNewChar.getContentW() - _btnNewCharCreate.getW() - 4);
-      }
-    });
-    
-    _txtNewCharName = new Textbox();
-    _txtNewCharName.setXY(4, 4);
-    _txtNewCharName.setH(20);
-    _txtNewCharName.setTextPlaceholder(Lang.Menu.get(MenuKeys.NEWCHAR_NAME));
-    
-    _drpNewCharRace = new Dropdown<>();
-    _drpNewCharRace.setXY(_txtNewCharName.getX(), _txtNewCharName.getY() + _txtNewCharName.getH() + 8);
-    _drpNewCharRace.setH(20);
-    
-    _drpNewCharSex = new Dropdown<>();
-    _drpNewCharSex.setXY(_drpNewCharRace.getX(), _drpNewCharRace.getY() + _drpNewCharRace.getH() + 8);
-    _drpNewCharSex.setH(20);
-    _drpNewCharSex.add("Male", "male");
-    _drpNewCharSex.add("Female", "female");
-    
-    _btnNewCharCreate = new Button();
-    _btnNewCharCreate.setY(_drpNewCharSex.getY() + _drpNewCharSex.getH() + 8);
-    _btnNewCharCreate.setWH(50, 20);
-    _btnNewCharCreate.setText(Lang.Menu.get(MenuKeys.NEWCHAR_CREATE));
-    _btnNewCharCreate.events().addClickHandler(new ControlEvents.Click() {
-      @Override public void clickDbl() { }
-      @Override public void click() {
-        _wndNewChar.hide();
-        createCharacter(new Character(_txtNewCharName.getText(), _drpNewCharRace.getData(), _drpNewCharSex.getData()));
-      }
-    });
-    
     controls().add(_wndLogin);
     controls().add(_wndRegister);
-    controls().add(_wndChars);
-    controls().add(_wndNewChar);
     
     _fraInfo.controls().add(_lblInfo);
     
@@ -310,17 +182,6 @@ public class MainMenu extends AbstractGUI {
       _wndRegister.controls().add(_txtRegisterSecurityQuestion[i]);
       _wndRegister.controls().add(_txtRegisterSecurityAnswer  [i]);
     }
-    
-    _wndChars.controls().add(_lstChars);
-    _wndChars.controls().add(_btnCharLogout);
-    _wndChars.controls().add(_btnCharDel);
-    _wndChars.controls().add(_btnCharNew);
-    _wndChars.controls().add(_btnCharUse);
-
-    _wndNewChar.controls().add(_txtNewCharName);
-    _wndNewChar.controls().add(_drpNewCharRace);
-    _wndNewChar.controls().add(_drpNewCharSex);
-    _wndNewChar.controls().add(_btnNewCharCreate);
     
     checkLogin();
     getNews();
@@ -399,7 +260,7 @@ public class MainMenu extends AbstractGUI {
       R() { super(connecting, _wndLogin); }
       
       @Override public void loggedIn() {
-        showCharacters();
+        //TODO: Something
         connecting.pop();
       }
     }
@@ -417,8 +278,8 @@ public class MainMenu extends AbstractGUI {
       R() { super(wait, _wndLogin); }
       
       @Override public void success() {
+        //TODO: Something
         wait.pop();
-        showCharacters();
       }
       
       @Override public void invalid(JSONObject errors) {
@@ -437,96 +298,6 @@ public class MainMenu extends AbstractGUI {
   }
   
   private void showSecurity() {
-    
-  }
-  
-  private void showCharacters() {
-    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_GETTINGCHARS));
-    wait.push();
-    
-    _lstChars.clear();
-    
-    class R extends GenericResponse implements API.CharactersAllResponse {
-      R() { super(wait, _wndChars); }
-      
-      @Override public void success(Character[] characters) {
-        wait.pop();
-        _wndChars.show();
-        
-        for(Character c : characters) {
-          _lstChars.add(Lang.Menu.get(MenuKeys.CHARS_LIST, c.name, c.sex, c.race.name), c);
-        }
-      }
-    }
-    
-    API.Storage.Characters.all(new R());
-  }
-  
-  private void showCreateCharacter() {
-    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_GETTINGRACES));
-    wait.push();
-    
-    class R extends GenericResponse implements API.RacesAllResponse {
-      R() { super(wait, _wndNewChar); }
-      
-      @Override public void success(Race[] races) {
-        wait.pop();
-        _wndNewChar.show();
-        
-        for(Race r : races) {
-          _drpNewCharRace.add(r.name, r);
-        }
-        
-        _txtNewCharName.setFocus(true);
-      }
-    }
-    
-    API.Storage.Races.all(new R());
-  }
-  
-  private void deleteCharacter(Character character) {
-    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_DELETINGCHAR));
-    wait.push();
-    
-    class R extends GenericResponse implements API.CharactersDeleteResponse {
-      R() { super(wait, _wndChars); }
-      
-      @Override public void success() {
-        wait.pop();
-        showCharacters();
-      }
-      
-      @Override public void invalid(JSONObject errors) {
-        wait.pop();
-        System.err.println(errors);
-      }
-    }
-    
-    API.Storage.Characters.delete(character, new R());
-  }
-  
-  private void createCharacter(Character character) {
-    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_CREATINGCHAR));
-    wait.push();
-    
-    class R extends GenericResponse implements API.CharactersCreateResponse {
-      R() { super(wait, _wndNewChar); }
-      
-      @Override public void success() {
-        wait.pop();
-        showCharacters();
-      }
-      
-      @Override public void invalid(JSONObject errors) {
-        wait.pop();
-        System.err.println(errors);
-      }
-    }
-    
-    API.Storage.Characters.create(character, new R());
-  }
-  
-  private void useCharacter(Character character) {
     
   }
   

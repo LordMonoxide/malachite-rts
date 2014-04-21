@@ -16,17 +16,6 @@ Route::group(['prefix' => 'api'], function() {
   });
 
   Route::group(['prefix' => 'storage'], function() {
-    Route::group(['prefix' => 'characters'], function() {
-      Route::get   ('/', ['as' => 'api.storage.characters.all',    'uses' => 'api\storage\CharacterController@all']);
-      Route::put   ('/', ['as' => 'api.storage.characters.create', 'uses' => 'api\storage\CharacterController@create']);
-      Route::delete('/', ['as' => 'api.storage.characters.delete', 'uses' => 'api\storage\CharacterController@delete']);
-      Route::post  ('/', ['as' => 'api.storage.characters.choose', 'uses' => 'api\storage\CharacterController@choose']);
-    });
-    
-    Route::group(['prefix' => 'races'], function() {
-      Route::get('/', ['as' => 'api.storage.races.all', 'uses' => 'api\storage\RaceController@all']);
-    });
-    
     Route::group(['prefix' => 'news'], function() {
       Route::get('/',       ['as' => 'api.storage.news.all',    'uses' => 'api\storage\NewsController@all']);
       Route::get('/latest', ['as' => 'api.storage.news.latest', 'uses' => 'api\storage\NewsController@latest']);

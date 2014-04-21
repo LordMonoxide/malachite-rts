@@ -1,8 +1,6 @@
 package malachite.api;
 
-import malachite.api.models.Character;
 import malachite.api.models.News;
-import malachite.api.models.Race;
 import malachite.api.models.User;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
@@ -113,104 +111,6 @@ public final class API {
   public static final class Storage {
     private Storage() { }
     
-    public static final class Characters {
-      private Characters() { }
-      
-      public static void all(CharactersAllResponse cb) {
-        dispatch(Route.Storage.Characters.All, resp -> {
-          try {
-            if(resp.succeeded()) {
-              JSONArray j = resp.toJSONArray();
-              
-              Character[] characters = new Character[j.length()];
-              
-              for(int i = 0; i < j.length(); i++) {
-                JSONObject c = j.getJSONObject(i);
-                characters[i] = new Character(c.getInt(Character.ID), c.getString(Character.NAME), new Race(c.getString(Character.RACE)), c.getString(Character.SEX));
-              }
-              
-              cb.success(characters);
-            } else {
-              checkGeneric(resp, cb);
-            }
-          } catch(JSONException e) {
-            cb.jsonError(resp, e);
-          }
-        });
-      }
-      
-      public static void create(Character character, CharactersCreateResponse cb) {
-        Map<String, String> data = new HashMap<>();
-        data.put(Character.NAME, character.name);
-        data.put(Character.RACE, Integer.toString(character.race.id));
-        data.put(Character.SEX , character.sex);
-        
-        dispatch(Route.Storage.Characters.Create, data, resp -> {
-          try {
-            if(resp.succeeded()) {
-              cb.success();
-            } else {
-              if(resp.response().getStatus().code() == 409) {
-                cb.invalid(resp.toJSON());
-              } else {
-                checkGeneric(resp, cb);
-              }
-            }
-          } catch(JSONException e) {
-            cb.jsonError(resp, e);
-          }
-        });
-      }
-      
-      public static void delete(Character character, CharactersDeleteResponse cb) {
-        Map<String, String> data = new HashMap<>();
-        data.put(Character.ID, Integer.toString(character.id));
-        
-        dispatch(Route.Storage.Characters.Delete, data, resp -> {
-          try {
-            if(resp.succeeded()) {
-              cb.success();
-            } else {
-              if(resp.response().getStatus().code() == 409) {
-                cb.invalid(resp.toJSON());
-              } else {
-                checkGeneric(resp, cb);
-              }
-            }
-          } catch(JSONException e) {
-            cb.jsonError(resp, e);
-          }
-        });
-      }
-    }
-    
-    public static final class Races {
-      private Races() { }
-      
-      public static void all(RacesAllResponse cb) {
-        dispatch(Route.Storage.Races.All, resp -> {
-          try {
-            if(resp.succeeded()) {
-              JSONArray j = resp.toJSONArray();
-              
-              Race[] races = new Race[j.length()];
-              
-              for(int i = 0; i < j.length(); i++) {
-                JSONObject r = j.getJSONObject(i);
-                races[i] = new Race(r.getInt(Race.ID), r.getString(Race.NAME));
-              }
-              
-              cb.success(races);
-            } else {
-              checkGeneric(resp, cb);
-            }
-          } catch(JSONException e) {
-            cb.jsonError(resp, e);
-          }
-        });
-      }
-    }
-    
     public static final class News {
       private News() { }
       
@@ -301,24 +201,6 @@ public final class API {
   
   public interface LogoutResponse extends GenericResponse {
     public abstract void success();
-  }
-  
-  public interface CharactersAllResponse extends GenericResponse {
-    public abstract void success(Character[] characters);
-  }
-  
-  public interface CharactersCreateResponse extends GenericResponse {
-    public abstract void success();
-    public abstract void invalid(JSONObject errors);
-  }
-  
-  public interface CharactersDeleteResponse extends GenericResponse {
-    public abstract void success();
-    public abstract void invalid(JSONObject errors);
-  }
-  
-  public interface RacesAllResponse extends GenericResponse {
-    public abstract void success(Race[] races);
   }
   
   public interface NewsAllResponse {

@@ -11,28 +11,6 @@ class DatabaseSeeder extends Seeder {
 
 class TableSeeder extends Seeder {
   public function run() {
-    Race::create([
-      'name' => 'Swagmaster'
-    ]);
-    
-    Stat::create([
-      'name' => 'Strength',
-      'desc' => 'Physical ability',
-      'abbv' => 'STR'
-    ]);
-    
-    Stat::create([
-      'name' => 'Dexterity',
-      'desc' => 'Finer skills',
-      'abbv' => 'DEX'
-    ]);
-    
-    Stat::create([
-      'name' => 'Intelligence',
-      'desc' => 'Mental ability',
-      'abbv' => 'INT'
-    ]);
-    
     $user[] = User::create([
       'email'      => 'corey@narwhunderful.com',
       'password'   => Hash::make('monoxide'),
