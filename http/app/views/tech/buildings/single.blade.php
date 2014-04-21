@@ -21,7 +21,11 @@
             @if(count($data->requirements) > 0)
               <ul>
                 @foreach($data->requirements as $r)
-                  <li>{{{ $r->requirement->name }}}</li>
+                  @if($r->requirement_type === 'building')
+                    <li>{{ HTML::linkAction('tech.buildings.view', Lang::get('tech.building.' . $r->requirement->name . '.name'), $r->requirement->id) }}</li>
+                  @elseif($r->requirement_type === 'research')
+                    <li>{{ HTML::linkAction('tech.research.view',  Lang::get('tech.research.' . $r->requirement->name . '.name'), $r->requirement->id) }}</li>
+                  @endif
                 @endforeach
               </ul>
             @else
@@ -35,7 +39,13 @@
             @if(count($data->unlocks) > 0)
               <ul>
                 @foreach($data->unlocks as $r)
-                  <li>{{{ $r->unlock->name }}}</li>
+                  @if($r->requirement_type === 'building')
+                    <li>{{ HTML::linkAction('tech.buildings.view', Lang::get('tech.building.' . $r->unlock->name . '.name'), $r->unlock->id) }}</li>
+                  @elseif($r->requirement_type === 'research')
+                    <li>{{ HTML::linkAction('tech.research.view',  Lang::get('tech.research.' . $r->unlock->name . '.name'), $r->unlock->id) }}</li>
+                  @elseif($r->requirement_type === 'unit')
+                    <li>{{ HTML::linkAction('tech.units.view',  Lang::get('tech.unit.' . $r->unlock->name . '.name'), $r->unlock->id) }}</li>
+                  @endif
                 @endforeach
               </ul>
             @else
@@ -49,7 +59,7 @@
             @if(count($data->units) > 0)
               <ul>
                 @foreach($data->units as $unit)
-                  <li>@lang('tech.unit.' . $unit->name . '.name')</li>
+                  <li>{{ HTML::linkAction('tech.units.view',  Lang::get('tech.unit.' . $unit->name . '.name'), $unit->id) }}</li>
                 @endforeach
               </ul>
             @else
