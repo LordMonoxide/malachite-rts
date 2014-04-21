@@ -17,6 +17,7 @@ return [
   'building.camp.name' => 'Camp',
   'building.camp.desc' => 'A nomadic base',
   
+  'unit.trainedin' => 'Trained in:',
   'unit.villager.name' => 'Villager',
   'unit.villager.desc' => 'A labourer'
 ];
