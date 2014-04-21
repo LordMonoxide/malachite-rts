@@ -65,12 +65,16 @@ Route::group(['prefix' => 'forum'], function() {
 
 Route::group(['prefix' => 'tech'], function() {
   Route::model('building', 'Building');
+  Route::model('research', 'Research');
+  Route::model('unit',     'Unit');
   
   Route::get('/',                     ['as' => 'tech.all',            'uses' => 'tech\TechController@all']);
   Route::get('/buildings',            ['as' => 'tech.buildings.all',  'uses' => 'tech\TechController@buildings']);
   Route::get('/buildings/{building}', ['as' => 'tech.buildings.view', 'uses' => 'tech\TechController@building']);
-  Route::get('/research',             ['as' => 'tech.research',       'uses' => 'tech\TechController@research']);
-  Route::get('/units',                ['as' => 'tech.units',          'uses' => 'tech\TechController@units']);
+  Route::get('/research',             ['as' => 'tech.research.all',   'uses' => 'tech\TechController@researches']);
+  Route::get('/research/{research}',  ['as' => 'tech.research.view',  'uses' => 'tech\TechController@research']);
+  Route::get('/units',                ['as' => 'tech.units.all',      'uses' => 'tech\TechController@units']);
+  Route::get('/units/{unit}',         ['as' => 'tech.units.view',     'uses' => 'tech\TechController@unit']);
 });
 
 Route::get ('/',      ['as' => 'home',  'uses' => 'RootController@home']);

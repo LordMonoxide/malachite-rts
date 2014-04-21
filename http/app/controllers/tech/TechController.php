@@ -31,13 +31,21 @@ class TechController extends BaseController {
     return View::make('tech.single')->with('type', 'buildings')->with('data', $building);
   }
   
-  public function research() {
+  public function researches() {
     $research = Research::with('unlocks')->with('requirements')->get();
     return View::make('tech.research.all')->with('research', $research);
+  }
+  
+  public function research($research) {
+    return View::make('tech.single')->with('type', 'research')->with('data', $research);
   }
   
   public function units() {
     $units = Unit::with('requirements')->get();
     return View::make('tech.units.all')->with('units', $units);
+  }
+  
+  public function unit($unit) {
+    return View::make('tech.single')->with('type', 'units')->with('data', $unit);
   }
 }
