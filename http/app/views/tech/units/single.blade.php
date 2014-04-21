@@ -10,7 +10,7 @@
           <div class="unit-info pure-u-1-2">
             <h4>@lang('tech.info')</h4>
             <ul>
-              <li>{{ Lang::get('tech.unit.trainedin') }} {{ HTML::linkAction('tech.units.view', Lang::get('tech.building.' . $data->building->name . '.name'), $data->building->id) }}</li>
+              <li>{{ Lang::get('tech.unit.trainedin') }} {{ HTML::linkAction('tech.buildings.view', Lang::get('tech.building.' . $data->building->name . '.name'), $data->building->id) }}</li>
             </ul>
           </div>
           

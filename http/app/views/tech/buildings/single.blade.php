@@ -33,23 +33,17 @@
             @endif
           </div>
           
-          <div class="building-unlocks pure-u-1-4">
-            <h4>@lang('tech.unlocks')</h4>
+          <div class="building-research pure-u-1-4">
+            <h4>@lang('tech.research')</h4>
             
-            @if(count($data->unlocks) > 0)
+            @if(count($data->research) > 0)
               <ul>
-                @foreach($data->unlocks as $r)
-                  @if($r->requirement_type === 'building')
-                    <li>{{ HTML::linkAction('tech.buildings.view', Lang::get('tech.building.' . $r->unlock->name . '.name'), $r->unlock->id) }}</li>
-                  @elseif($r->requirement_type === 'research')
-                    <li>{{ HTML::linkAction('tech.research.view',  Lang::get('tech.research.' . $r->unlock->name . '.name'), $r->unlock->id) }}</li>
-                  @elseif($r->requirement_type === 'unit')
-                    <li>{{ HTML::linkAction('tech.units.view',  Lang::get('tech.unit.' . $r->unlock->name . '.name'), $r->unlock->id) }}</li>
-                  @endif
+                @foreach($data->research as $r)
+                  <li>{{ HTML::linkAction('tech.research.view',  Lang::get('tech.research.' . $r->name . '.name'), $r->id) }}</li>
                 @endforeach
               </ul>
             @else
-              <p>@lang('tech.nounlocks')</p>
+              <p>@lang('tech.noresearch')</p>
             @endif
           </div>
           

@@ -14,8 +14,8 @@ class CreateTableUnit extends Migration {
       $table->timestamps();
       
       $table->foreign('building_id')
-             ->references('id')
-             ->on('buildings');
+            ->references('id')
+            ->on('buildings');
     });
   }
   

@@ -9,6 +9,9 @@
         <div class="tech pure-g">
           <div class="research-info pure-u-1-3">
             <h4>@lang('tech.info')</h4>
+            <ul>
+              <li>{{ Lang::get('tech.unit.researchedin') }} {{ HTML::linkAction('tech.buildings.view', Lang::get('tech.building.' . $data->building->name . '.name'), $data->building->id) }}</li>
+            </ul>
           </div>
           
           <div class="research-requirements pure-u-1-3">

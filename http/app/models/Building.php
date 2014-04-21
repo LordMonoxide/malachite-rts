@@ -5,8 +5,8 @@ class Building extends Eloquent {
     return $this->hasMany('Unit');
   }
   
-  public function unlocks() {
-    return $this->morphMany('Requirement', 'requirement');
+  public function research() {
+    return $this->hasMany('Research');
   }
   
   public function requirements() {

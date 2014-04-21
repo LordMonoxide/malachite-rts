@@ -5,7 +5,7 @@ class Requirement extends Eloquent {
     return $this->morphTo();
   }
   
-  public function requirement() {
-    return $this->morphTo();
+  public function research() {
+    return $this->belongsTo('Research');
   }
 }
