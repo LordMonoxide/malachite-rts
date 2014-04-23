@@ -14,6 +14,8 @@ class CreateTableUsers extends Migration {
       $table->boolean('logged_in')->default(false);
       $table->boolean('suspend')->default(false);
       
+      $table->string('remember_token', 100)->nullable();
+      
       $table->timestamps();
     });
   }
