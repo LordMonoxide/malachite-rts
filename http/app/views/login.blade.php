@@ -13,9 +13,10 @@
     <div class="true-center-outer">
       <div class="true-center-inner">
         <div id="login-div" class="true-center-content">
-          {{ Form::hidden('route_dest',     URL::previous()) }}
+          {{ Form::hidden('route_dest',     Session::get('url.intended', URL::route('home'))) }}
           {{ Form::hidden('route_login',    URL::route('api.auth.login')) }}
           {{ Form::hidden('route_register', URL::route('api.auth.register')) }}
+          <?php Session::forget('url.intended'); ?>
           
           {{ Form::open(['route' => 'auth.login', 'method' => 'POST', 'id' => 'login-form', 'class' => 'pure-form pure-form-stacked']) }}
           

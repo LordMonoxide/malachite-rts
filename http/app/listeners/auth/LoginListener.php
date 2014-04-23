@@ -41,12 +41,6 @@ class LoginListener {
   public function onLogout($user) {
     $user->logged_in = false;
     $user->save();
-    
-    // Remove the auth token for all chars
-    foreach($user->characters as $char) {
-      $char->auth_id = null;
-      $char->save();
-    }
   }
   
   public function subscribe($events) {
