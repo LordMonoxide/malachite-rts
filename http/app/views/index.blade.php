@@ -8,9 +8,8 @@
   </head>
   
   <body>
-    <p>{{ HTML::linkAction('forum.index', Lang::get('forum.title')) }}</p>
-    
     @if(Auth::check())
+      <p>{{ HTML::linkAction('forum.index', Lang::get('forum.title')) }}</p>
       <p>{{ HTML::linkAction('tech.all', Lang::get('tech.title')) }}</p>
       <p>{{ HTML::linkAction('auth.logout', Lang::get('app.logout')) }}</p>
     @else
