@@ -84,9 +84,18 @@ public abstract class AbstractContext {
   public int     getH()         { return _h; }
   public int     getFPSTarget() { return _fpsTarget; }
   public double  getSPF      () { return _spf; }
+  
+  public int getMouseX() { return Mouse.getX(); }
+  public int getMouseY() { return _h - Mouse.getY(); }
 
   public void setTitle    (String title)      { Display.setTitle(title); }
   public void setResizable(boolean resizable) { Display.setResizable(resizable); }
+  public void setBackColour(float r, float g, float b, float a) {
+    _backColour[0] = r;
+    _backColour[1] = g;
+    _backColour[2] = b;
+    _backColour[3] = a;
+  }
 
   public void setWH(int w, int h) {
     _w = w;
