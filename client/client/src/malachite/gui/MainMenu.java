@@ -3,6 +3,7 @@ package malachite.gui;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import malachite.Game;
 import malachite.api.API;
 import malachite.api.Lang;
 import malachite.api.Lang.MenuKeys;
@@ -18,6 +19,8 @@ import malachite.engine.gfx.textures.Texture;
 import malachite.engine.net.http.Response;
 
 public class MainMenu extends AbstractGUI {
+  private Game.MenuProxy _proxy;
+  
   private Image[] _imgBackground = new Image[15];
   private Window _wndLogin;
   private Textbox _txtEmail;
@@ -33,6 +36,10 @@ public class MainMenu extends AbstractGUI {
   private Textbox[] _txtRegisterPass = new Textbox[2];
   private Textbox[] _txtRegisterSecurityQuestion = new Textbox[3];
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
+  
+  public MainMenu(Game.MenuProxy proxy) {
+    _proxy = proxy;
+  }
   
   @Override
   protected void load() {
@@ -260,7 +267,7 @@ public class MainMenu extends AbstractGUI {
       R() { super(connecting, _wndLogin); }
       
       @Override public void loggedIn() {
-        //TODO: Something
+        play();
         connecting.pop();
       }
     }
@@ -278,7 +285,7 @@ public class MainMenu extends AbstractGUI {
       R() { super(wait, _wndLogin); }
       
       @Override public void success() {
-        //TODO: Something
+        play();
         wait.pop();
       }
       
@@ -299,6 +306,10 @@ public class MainMenu extends AbstractGUI {
   
   private void showSecurity() {
     
+  }
+  
+  private void play() {
+    _proxy.play();
   }
   
   private class GenericResponse implements API.GenericResponse {

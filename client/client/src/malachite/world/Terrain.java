@@ -1,5 +1,5 @@
 package malachite.world;
 
 public enum Terrain {
-  NONE, GRASS
+  NONE, DIRT, GRASS;
 }

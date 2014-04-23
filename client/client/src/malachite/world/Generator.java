@@ -1,7 +1,15 @@
 package malachite.world;
 
+import java.util.Random;
+
 public abstract class Generator {
-  protected Terrain[][] _tile = new Terrain[4096][4096];
+  protected Random _rand;
+  
+  protected Tile[][] _tile = new Tile[256][256];
+  
+  public Generator(long seed) {
+    _rand = new Random(seed);
+  }
   
   public abstract World generate();
   

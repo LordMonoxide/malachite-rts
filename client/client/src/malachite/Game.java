@@ -7,8 +7,11 @@ import malachite.engine.gfx.ContextListenerAdapter;
 import malachite.engine.gfx.Loader;
 import malachite.engine.gfx.Manager;
 import malachite.engine.gfx.gl14.Context;
+import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.net.http.Request;
 import malachite.gui.MainMenu;
+import malachite.world.World;
+import malachite.world.generators.Blank;
 
 public class Game {
   public static void main(String... args) {
@@ -16,6 +19,10 @@ public class Game {
   }
 
   private AbstractContext _context;
+  
+  private AbstractGUI _interface;
+  
+  private World _world;
 
   public void initialize() {
     Request.init();
@@ -37,7 +44,8 @@ public class Game {
     @Override
     public void onRun() {
       _context.addLoadCallback(Loader.LoaderThread.GRAPHICS, () -> {
-        new MainMenu().push();
+        _interface = new MainMenu(new MenuProxy());
+        _interface.push();
       });
     }
     
@@ -45,5 +53,20 @@ public class Game {
     public void onClosed() {
       Request.destroy();
     }
+  }
+  
+  public class MenuProxy {
+    public void play() {
+      _interface.pop();
+      
+      _world = new Blank().generate();
+      
+      _interface = new malachite.gui.Game(_world);
+      _interface.push();
+    }
+  }
+  
+  public class GameProxy {
+    
   }
 }

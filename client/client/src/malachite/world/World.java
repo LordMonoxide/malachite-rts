@@ -1,7 +1,11 @@
 package malachite.world;
 
 public class World {
-  Terrain[][] _tile;
+  Tile[][] _tile;
   
   World() { }
+  
+  public Tile[][] getTiles() {
+    return _tile;
+  }
 }
