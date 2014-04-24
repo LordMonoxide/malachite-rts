@@ -34,8 +34,6 @@ public class Rivers extends Generator {
       int x = _tile[0].length / 2;
       int y = _tile.length / 2;
       
-      double hyp = Math.sqrt(2);
-      
       double x2 = x;
       double y2 = y;
       while(x2 > 0 && y2 > 0 && x2 < _tile[0].length - 1 && y2 < _tile.length - 1) {
