@@ -12,10 +12,10 @@ class TechController extends Controller {
   }
   
   public function buildings() {
-    return Response::json(Building::with('unlocks')->with('requirements')->get(), 200);
+    return Response::json(Building::all(), 200);
   }
   
   public function research() {
-    return Response::json(Research::with('unlocks')->with('requirements')->get(), 200);
+    return Response::json(Research::all(), 200);
   }
 }
