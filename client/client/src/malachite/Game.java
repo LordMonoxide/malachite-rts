@@ -11,7 +11,6 @@ import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.net.http.Request;
 import malachite.gui.MainMenu;
 import malachite.world.World;
-import malachite.world.generators.Blank;
 import malachite.world.generators.Rivers;
 
 public class Game {
