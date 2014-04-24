@@ -81,7 +81,7 @@ public class Lang<T> {
     STATUS_LOADING     ("status.loading"),      //$NON-NLS-1$
     STATUS_CONNECTING  ("status.connecting"),   //$NON-NLS-1$
     STATUS_LOGGINGIN   ("status.loggingin"),    //$NON-NLS-1$
-    STATUS_LOGGINGOUT  ("status.loggintout"),   //$NON-NLS-1$
+    STATUS_LOGGINGOUT  ("status.loggingout"),   //$NON-NLS-1$
     STATUS_GETTINGCHARS("status.gettingchars"), //$NON-NLS-1$
     STATUS_GETTINGRACES("status.gettingraces"), //$NON-NLS-1$
     STATUS_CREATINGCHAR("status.creatingchar"), //$NON-NLS-1$
