@@ -12,15 +12,18 @@ public class Rivers extends Generator {
   
   @Override
   public World generate() {
+    generateTerrain();
+    generateWater();
+    
+    return commit();
+  }
+  
+  private void generateTerrain() {
     for(int y = 0; y < _tile.length; y++) {
       for(int x = 0; x < _tile[y].length; x++) {
         _tile[x][y] = new Tile(_rand.nextBoolean() ? Terrain.GRASS : Terrain.DIRT, x * 32, y * 32);
       }
     }
-    
-    generateWater();
-    
-    return commit();
   }
   
   private void generateWater() {
@@ -46,9 +49,18 @@ public class Rivers extends Generator {
       
       System.out.println("Generating river @ " + x2 + ", " + y2 + " (theta " + riverTheta * 180 / Math.PI + ')');
       
+      int changeChance = 10;
+      
       for(;;) {
         x2 -= Math.cos(riverTheta);
         y2 -= Math.sin(riverTheta);
+        
+        if(_rand.nextInt(changeChance) == 0) {
+          riverTheta += (_rand.nextDouble() * Math.PI * 2 - Math.PI) * 0.1;
+          changeChance = 10;
+        } else {
+          changeChance--;
+        }
         
         int tx = (int)x2;
         int ty = (int)y2;
