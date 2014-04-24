@@ -12,6 +12,7 @@ import malachite.engine.net.http.Request;
 import malachite.gui.MainMenu;
 import malachite.world.World;
 import malachite.world.generators.Blank;
+import malachite.world.generators.Rivers;
 
 public class Game {
   public static void main(String... args) {
@@ -59,7 +60,7 @@ public class Game {
     public void play() {
       _interface.pop();
       
-      _world = new Blank().generate();
+      _world = new Rivers().generate();
       
       _interface = new malachite.gui.Game(_world);
       _interface.push();

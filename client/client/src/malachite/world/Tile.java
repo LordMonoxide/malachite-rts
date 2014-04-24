@@ -32,6 +32,10 @@ public class Tile {
       case GRASS:
         d.setTXY(0, 0);
         break;
+        
+      case WATER:
+        d.setTXY(32, 160);
+        break;
     }
     
     d.setTWH(32, 32);
