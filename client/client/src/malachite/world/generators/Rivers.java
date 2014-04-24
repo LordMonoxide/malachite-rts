@@ -50,7 +50,7 @@ public class Rivers extends Generator {
       x2 = Math.round(x2);
       y2 = Math.round(y2);
       
-      System.out.println("Generating river @ " + x2 + ", " + y2 + " (theta " + riverTheta * 180 / Math.PI + ')');
+      System.out.println("Generating river @ " + x2 + ", " + y2 + " size " + riverSize + " (theta " + riverTheta * 180 / Math.PI + ')');
       
       int changeChance = 10;
       
@@ -72,18 +72,21 @@ public class Rivers extends Generator {
           break;
         }
         
-        _tile[tx][ty] = new Tile(Terrain.WATER, tx * 32, ty * 32);
+        double swathTheta = riverTheta - Math.PI / 2;
+        double leftX = tx - (int)(Math.cos(swathTheta) * riverSize);
+        double leftY = ty - (int)(Math.sin(swathTheta) * riverSize);
+        double rightX = tx - (int)(Math.cos(riverTheta + Math.PI / 2) * riverSize);
+        double rightY = ty - (int)(Math.sin(riverTheta + Math.PI / 2) * riverSize);
         
-        int leftX = tx - (int)(Math.cos(riverTheta - Math.PI / 2) * riverSize);
-        int leftY = ty - (int)(Math.sin(riverTheta - Math.PI / 2) * riverSize);
-        if(leftX >= 0 && leftY >= 0 && leftX < _tile[0].length && leftY < _tile.length) {
-          _tile[leftX][leftY] = new Tile(Terrain.WATER, leftX * 32, leftY * 32);
-        }
-        
-        int rightX = tx - (int)(Math.cos(riverTheta + Math.PI / 2) * riverSize);
-        int rightY = ty - (int)(Math.sin(riverTheta + Math.PI / 2) * riverSize);
-        if(rightX >= 0 && rightY >= 0 && rightX < _tile[0].length && rightY < _tile.length) {
-          _tile[rightX][rightY] = new Tile(Terrain.WATER, rightX * 32, rightY * 32);
+        for(int s = 1; s <= riverSize * 32; s++) {
+          int leftXI = (int)Math.round(leftX + Math.cos(swathTheta) * s / 32);
+          int leftYI = (int)Math.round(leftY + Math.sin(swathTheta) * s / 32);
+          
+          if(leftXI >= 0 && leftYI >= 0 && leftXI < _tile[0].length && leftYI < _tile.length) {
+            if(_tile[leftXI][leftYI] == null) {
+              _tile[leftXI][leftYI] = new Tile(Terrain.WATER, leftXI * 32, leftYI * 32);
+            }
+          }
         }
       }
     }
