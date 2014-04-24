@@ -1,5 +1,6 @@
 package malachite.api;
 
+import malachite.api.models.Building;
 import malachite.api.models.News;
 import malachite.api.models.User;
 import malachite.engine.net.http.Request;
@@ -159,6 +160,33 @@ public final class API {
         });
       }
     }
+    
+    public static final class Tech {
+      private Tech() { }
+      
+      public static final void buildings(BuildingsResponse cb) {
+        dispatch(Route.Storage.Tech.Buildings, resp -> {
+          try {
+            if(resp.succeeded()) {
+              JSONArray j = resp.toJSONArray();
+              
+              Building[] buildings = new Building[j.length()];
+              
+              for(int i = 0; i < j.length(); i++) {
+                JSONObject r = j.getJSONObject(i);
+                buildings[i] = new Building(r.getInt(Building.ID), r.getString(Building.NAME), r.getString(Building.TYPE));
+              }
+              
+              cb.success(buildings);
+            } else {
+              checkGeneric(resp, cb);
+            }
+          } catch(JSONException e) {
+            cb.jsonError(resp, e);
+          }
+        });
+      }
+    }
   }
   
   public static void lang(Route route, LangResponse cb) {
@@ -215,6 +243,10 @@ public final class API {
     public abstract void jsonError(Response r, JSONException e);
   }
   
+  public interface BuildingsResponse extends GenericResponse {
+    public abstract void success(Building[] buildings);
+  }
+  
   public static abstract class LangResponse {
     public abstract void success(Map<String, String> lang);
     public abstract void error(Response r);
@@ -230,26 +262,26 @@ public final class API {
       this.method = method;
     }
     
-    public static class Lang {
+    public static final class Lang {
       public static final App  App  = new App();
       public static final Menu Menu = new Menu();
       
       private Lang() { }
       
-      public static class App extends Route {
+      public static final class App extends Route {
         private App() {
           super("/lang/app", HttpMethod.GET); //$NON-NLS-1$
         }
       }
       
-      public static class Menu extends Route {
+      public static final class Menu extends Route {
         private Menu() {
           super("/lang/menu", HttpMethod.GET); //$NON-NLS-1$
         }
       }
     }
     
-    public static class Auth {
+    public static final class Auth {
       public static final Check    Check    = new Check();
       public static final Register Register = new Register();
       public static final Login    Login    = new Login();
@@ -259,66 +291,53 @@ public final class API {
       
       private Auth() { }
       
-      public static class Check extends Route {
+      public static final class Check extends Route {
         private Check() {
           super("/auth/check", HttpMethod.GET); //$NON-NLS-1$
         }
       }
       
-      public static class Register extends Route {
+      public static final class Register extends Route {
         private Register() {
           super("/auth/register", HttpMethod.PUT); //$NON-NLS-1$
         }
       }
       
-      public static class Login extends Route {
+      public static final class Login extends Route {
         private Login() {
           super("/auth/login", HttpMethod.POST); //$NON-NLS-1$
         }
       }
       
-      public static class Logout extends Route {
+      public static final class Logout extends Route {
         private Logout() {
           super("/auth/logout", HttpMethod.POST); //$NON-NLS-1$
         }
       }
       
-      public static class Security extends Route {
+      public static final class Security extends Route {
         private Security(HttpMethod method) {
           super("/auth/security", method); //$NON-NLS-1$
         }
       }
     }
     
-    public static class Storage {
+    public static final class Storage {
       private Storage() { }
       
-      public static class Characters extends Route {
-        public static final Characters All    = new Characters(HttpMethod.GET);
-        public static final Characters Create = new Characters(HttpMethod.PUT);
-        public static final Characters Delete = new Characters(HttpMethod.DELETE);
-        public static final Characters Choose = new Characters(HttpMethod.POST);
-        
-        private Characters(HttpMethod method) {
-          super("/storage/characters", method); //$NON-NLS-1$
-        }
-      }
-      
-      public static class Races extends Route {
-        public static final Races All = new Races(HttpMethod.GET);
-        
-        private Races(HttpMethod method) {
-          super("/storage/races", method); //$NON-NLS-1$
-        }
-      }
-      
-      public static class News extends Route {
+      public static final class News extends Route {
         public static final News All    = new News("/");       //$NON-NLS-1$
         public static final News Latest = new News("/latest"); //$NON-NLS-1$
         
         private News(String route) {
           super("/storage/news" + route, HttpMethod.GET); //$NON-NLS-1$
         }
+      }
+      
+      public static final class Tech {
+        private Tech() { }
+        
+        public static final Route Buildings = new Route("/storage/tech/buildings", HttpMethod.GET); //$NON-NLS-1$
       }
     }
   }
