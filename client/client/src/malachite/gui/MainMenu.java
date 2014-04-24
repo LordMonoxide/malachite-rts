@@ -289,7 +289,7 @@ public class MainMenu extends AbstractGUI {
   }
   
   private void logout() {
-    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_LOGGINGIN));
+    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_LOGGINGOUT));
     wait.push();
     
     class R extends GenericResponse implements API.LogoutResponse {
