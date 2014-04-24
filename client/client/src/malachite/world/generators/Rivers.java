@@ -22,7 +22,8 @@ public class Rivers extends Generator {
     for(int y = 0; y < _tile.length; y++) {
       for(int x = 0; x < _tile[y].length; x++) {
         if(_tile[x][y] == null) {
-          _tile[x][y] = new Tile(_rand.nextBoolean() ? Terrain.GRASS : Terrain.DIRT, x * 32, y * 32);
+          //_tile[x][y] = new Tile(_rand.nextBoolean() ? Terrain.GRASS : Terrain.DIRT, x * 32, y * 32);
+          _tile[x][y] = new Tile(Terrain.GRASS, x * 32, y * 32);
         }
       }
     }
