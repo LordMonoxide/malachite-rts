@@ -12,6 +12,8 @@ public class Tile {
   
   AbstractDrawable d;
   
+  private Tile _left, _right, _up, _down;
+  
   public Tile(Terrain terrain, int x, int y) {
     this.terrain = terrain;
     
@@ -40,6 +42,13 @@ public class Tile {
     
     d.setTWH(32, 32);
     d.createQuad();
+  }
+  
+  void link(Tile left, Tile right, Tile up, Tile down) {
+    _left  = left;
+    _right = right;
+    _up    = up;
+    _down  = down;
   }
   
   public void render() {
