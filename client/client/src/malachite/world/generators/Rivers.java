@@ -7,13 +7,13 @@ import malachite.world.World;
 
 public class Rivers extends Generator {
   public Rivers() {
-    super(0);
+    super(14);
   }
   
   @Override
   public World generate() {
-    generateTerrain();
     generateWater();
+    generateTerrain();
     
     return commit();
   }
@@ -21,7 +21,9 @@ public class Rivers extends Generator {
   private void generateTerrain() {
     for(int y = 0; y < _tile.length; y++) {
       for(int x = 0; x < _tile[y].length; x++) {
-        _tile[x][y] = new Tile(_rand.nextBoolean() ? Terrain.GRASS : Terrain.DIRT, x * 32, y * 32);
+        if(_tile[x][y] == null) {
+          _tile[x][y] = new Tile(_rand.nextBoolean() ? Terrain.GRASS : Terrain.DIRT, x * 32, y * 32);
+        }
       }
     }
   }
@@ -31,6 +33,7 @@ public class Rivers extends Generator {
     
     for(int riverNumber = 0; riverNumber < numberOfRivers; riverNumber++) {
       double riverTheta = _rand.nextInt(360) * Math.PI / 180;
+      int riverSize = _rand.nextInt(3) + 2;
       
       System.out.println("Angle\t" + riverTheta);
       
@@ -70,6 +73,18 @@ public class Rivers extends Generator {
         }
         
         _tile[tx][ty] = new Tile(Terrain.WATER, tx * 32, ty * 32);
+        
+        int leftX = tx - (int)(Math.cos(riverTheta - Math.PI / 2) * riverSize);
+        int leftY = ty - (int)(Math.sin(riverTheta - Math.PI / 2) * riverSize);
+        if(leftX >= 0 && leftY >= 0 && leftX < _tile[0].length && leftY < _tile.length) {
+          _tile[leftX][leftY] = new Tile(Terrain.WATER, leftX * 32, leftY * 32);
+        }
+        
+        int rightX = tx - (int)(Math.cos(riverTheta + Math.PI / 2) * riverSize);
+        int rightY = ty - (int)(Math.sin(riverTheta + Math.PI / 2) * riverSize);
+        if(rightX >= 0 && rightY >= 0 && rightX < _tile[0].length && rightY < _tile.length) {
+          _tile[rightX][rightY] = new Tile(Terrain.WATER, rightX * 32, rightY * 32);
+        }
       }
     }
   }
