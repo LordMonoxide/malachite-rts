@@ -37,6 +37,10 @@ public class MainMenu extends AbstractGUI {
   private Textbox[] _txtRegisterSecurityQuestion = new Textbox[3];
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
   
+  private Window _wndMainMenu;
+  private Button _btnPlay;
+  private Button _btnLogout;
+  
   public MainMenu(Game.MenuProxy proxy) {
     _proxy = proxy;
   }
@@ -168,9 +172,47 @@ public class MainMenu extends AbstractGUI {
       _txtRegisterSecurityQuestion[i].setXY(x, y += (_txtRegisterSecurityQuestion[i].getH() + 12));
       _txtRegisterSecurityAnswer  [i].setXY(x, y += (_txtRegisterSecurityAnswer  [i].getH() + 6));
     }
+
+    _wndMainMenu = new Window();
+    _wndMainMenu.setWH(400, 300);
+    _wndMainMenu.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
+    _wndMainMenu.setText("mainmenu");
+    _wndMainMenu.hide();
+    _wndMainMenu.events().addResizeHandler(new ControlEvents.Resize() {
+      @Override
+      public void resize() {
+        _btnPlay  .setX((_wndMainMenu.getContentW() - _btnPlay  .getW()) / 2);
+        _btnLogout.setX((_wndMainMenu.getContentW() - _btnLogout.getW()) / 2);
+      }
+    });
+    
+    _btnPlay = new Button();
+    _btnPlay.setWH(50, 20);
+    _btnPlay.setY(8);
+    _btnPlay.setText("play");
+    _btnPlay.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        _wndMainMenu.hide();
+        play();
+      }
+    });
+    
+    _btnLogout = new Button();
+    _btnLogout.setWH(50, 20);
+    _btnLogout.setY(_btnPlay.getY() + _btnPlay.getH() + 8);
+    _btnLogout.setText("logout");
+    _btnLogout.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        _wndMainMenu.hide();
+        logout();
+      }
+    });
     
     controls().add(_wndLogin);
     controls().add(_wndRegister);
+    controls().add(_wndMainMenu);
     
     _fraInfo.controls().add(_lblInfo);
     
@@ -189,6 +231,9 @@ public class MainMenu extends AbstractGUI {
       _wndRegister.controls().add(_txtRegisterSecurityQuestion[i]);
       _wndRegister.controls().add(_txtRegisterSecurityAnswer  [i]);
     }
+    
+    _wndMainMenu.controls().add(_btnPlay);
+    _wndMainMenu.controls().add(_btnLogout);
     
     checkLogin();
     getNews();
@@ -267,7 +312,7 @@ public class MainMenu extends AbstractGUI {
       R() { super(connecting, _wndLogin); }
       
       @Override public void loggedIn() {
-        play();
+        showMainMenu();
         connecting.pop();
       }
     }
@@ -285,7 +330,7 @@ public class MainMenu extends AbstractGUI {
       R() { super(wait, _wndLogin); }
       
       @Override public void success() {
-        play();
+        showMainMenu();
         wait.pop();
       }
       
@@ -306,6 +351,10 @@ public class MainMenu extends AbstractGUI {
   
   private void showSecurity() {
     
+  }
+  
+  private void showMainMenu() {
+    _wndMainMenu.show();
   }
   
   private void play() {
