@@ -46,9 +46,6 @@ public class Rivers extends Generator {
       x2 = Math.round(x2);
       y2 = Math.round(y2);
       
-      int startX = (int)x2;
-      int startY = (int)y2;
-      
       System.out.println("Generating river @ " + x2 + ", " + y2 + " (theta " + riverTheta * 180 / Math.PI + ')');
       
       for(;;) {
