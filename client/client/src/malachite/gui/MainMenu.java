@@ -1,14 +1,9 @@
 package malachite.gui;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import malachite.Game;
-import malachite.api.API;
+import malachite.Game.MessageInterface;
 import malachite.api.Lang;
 import malachite.api.Lang.MenuKeys;
-import malachite.api.models.News;
-import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.TextStream;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
@@ -16,23 +11,22 @@ import malachite.engine.gfx.gui.VAlign;
 import malachite.engine.gfx.gui.builtin.Message;
 import malachite.engine.gfx.gui.control.*;
 import malachite.engine.gfx.textures.Texture;
-import malachite.engine.net.http.Response;
 
-public class MainMenu extends AbstractGUI {
+public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   private Game.MenuProxy _proxy;
   
-  private Image[] _imgBackground = new Image[15];
-  private Window _wndLogin;
-  private Textbox _txtEmail;
-  private Textbox _txtPass;
-  private Check _chkRemember;
-  private Button _btnLogin;
-  private Button _btnRegister;
-  private Frame _fraInfo;
-  private Label _lblInfo;
+  private Image[]   _imgBackground = new Image[15];
+  private Window    _wndLogin;
+  private Textbox   _txtEmail;
+  private Textbox   _txtPass;
+  private Check     _chkRemember;
+  private Button    _btnLogin;
+  private Button    _btnRegister;
+  private Frame     _fraInfo;
+  private Label     _lblInfo;
   
-  private Window _wndRegister;
-  private Textbox _txtRegisterEmail;
+  private Window    _wndRegister;
+  private Textbox   _txtRegisterEmail;
   private Textbox[] _txtRegisterPass = new Textbox[2];
   private Textbox[] _txtRegisterSecurityQuestion = new Textbox[3];
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
@@ -98,7 +92,7 @@ public class MainMenu extends AbstractGUI {
     _btnLogin.setWH(50, 20);
     _btnLogin.setText(Lang.Menu.get(MenuKeys.LOGIN_LOGIN));
     _btnLogin.events().addClickHandler(new ControlEvents.Click() {
-      @Override public void click()    { attemptLogin(); }
+      @Override public void click()    { _proxy.login(_txtEmail.getText(), _txtPass.getText()); }
       @Override public void clickDbl() { }
     });
 
@@ -194,7 +188,7 @@ public class MainMenu extends AbstractGUI {
       @Override public void clickDbl() { }
       @Override public void click() {
         _wndMainMenu.hide();
-        play();
+        _proxy.play();
       }
     });
     
@@ -206,7 +200,7 @@ public class MainMenu extends AbstractGUI {
       @Override public void clickDbl() { }
       @Override public void click() {
         _wndMainMenu.hide();
-        logout();
+        _proxy.logout();
       }
     });
     
@@ -235,171 +229,121 @@ public class MainMenu extends AbstractGUI {
     _wndMainMenu.controls().add(_btnPlay);
     _wndMainMenu.controls().add(_btnLogout);
     
-    checkLogin();
-    getNews();
+    _proxy.requestNews();
   }
-
+  
   @Override
   protected void destroy() {
 
   }
-
+  
   @Override
   protected void resize() {
     
   }
-
+  
   @Override
   protected void draw() {
 
   }
-
+  
   @Override
   protected boolean logic() {
     return false;
   }
   
-  private void getNews() {
-    API.Storage.News.latest(new API.NewsLatestResponse() {
-      @Override public void success(News news) {
-        if(news != null) {
-          System.out.println(news.title + '\n' + news.body);
-          
-          TextStream ts = new TextStream();
-          ts.insert(ts.colour(_lblInfo.getTextColour()));
-          ts.insert(ts.face(Font.FONT_FACE.BOLD));
-          ts.insert(news.title);
-          ts.insert(ts.face(Font.FONT_FACE.REGULAR));
-          ts.insert(ts.newLine());
-          ts.insert(news.body);
-          _lblInfo.setTextStream(ts);
-        } else {
-          System.out.println("No news");
-        }
-      }
-      
-      @Override public void jsonError(Response r, JSONException e) {
-        _lblInfo.setText("JSON error:\n" + r + '\n' + e);
-      }
-      
-      @Override public void error(Response r) {
-        _lblInfo.setText("Error:\n" + r);
-      }
-    });
+  @Override
+  public void reset() {
+    hideLogin();
+    hideRegister();
+    hideMainMenu();
   }
   
-  private void logout() {
-    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_LOGGINGOUT));
-    wait.push();
-    
-    class R extends GenericResponse implements API.LogoutResponse {
-      R() { super(wait, _wndLogin); }
-      
-      @Override public void success() {
-        wait.pop();
-        showLogin();
-      }
-    }
-    
-    API.Auth.logout(new R());
+  @Override
+  public MessageInterface showMessage(MenuKeys title, MenuKeys text) {
+    return new MessageHandler(title, text);
   }
   
-  private void checkLogin() {
-    Message connecting = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_CONNECTING));
-    connecting.push();
-    
-    class R extends GenericResponse implements API.CheckResponse {
-      R() { super(connecting, _wndLogin); }
-      
-      @Override public void loggedIn() {
-        showMainMenu();
-        connecting.pop();
-      }
-    }
-    
-    API.Auth.check(new R());
+  @Override
+  public void gettingNews() {
+    _lblInfo.setText("Getting news...");
   }
   
-  private void attemptLogin() {
-    Message wait = Message.wait(Lang.Menu.get(MenuKeys.STATUS_LOADING), Lang.Menu.get(MenuKeys.STATUS_LOGGINGIN));
-    wait.push();
-    
-    _wndLogin.hide();
-    
-    class R extends GenericResponse implements API.LoginResponse {
-      R() { super(wait, _wndLogin); }
-      
-      @Override public void success() {
-        showMainMenu();
-        wait.pop();
-      }
-      
-      @Override public void invalid(JSONObject errors) {
-        wait.pop();
-        _wndLogin.show();
-        System.err.println(errors);
-      }
-    }
-    
-    API.Auth.login(_txtEmail.getText(), _txtPass.getText(), new R());
+  @Override
+  public void showNews(TextStream news) {
+    _lblInfo.setTextStream(news);
   }
   
-  private void showLogin() {
+  @Override
+  public void noNews() {
+    _lblInfo.setText(null);
+  }
+  
+  @Override
+  public void showLogin() {
     _wndLogin.show();
     _txtEmail.setFocus(true);
+    _txtEmail.setText(null);
+    _txtPass.setText(null);
+    _chkRemember.setChecked(false);
   }
   
-  private void showSecurity() {
+  @Override
+  public void hideLogin() {
+    _wndLogin.hide();
+  }
+  
+  @Override
+  public void showRegister() {
+    _wndRegister.show();
+    _txtRegisterEmail.setText(null);
+    _txtRegisterPass[0].setText(null);
+    _txtRegisterPass[1].setText(null);
+    
+    for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
+      _txtRegisterSecurityQuestion[i].setText(null);
+      _txtRegisterSecurityAnswer  [i].setText(null);
+    }
+  }
+  
+  @Override
+  public void hideRegister() {
+    _wndRegister.hide();
+  }
+  
+  @Override
+  public void showSecurity() {
     
   }
   
-  private void showMainMenu() {
+  @Override
+  public void hideSecurity() {
+    
+  }
+  
+  @Override public void showMainMenu() {
     _wndMainMenu.show();
   }
   
-  private void play() {
-    _proxy.play();
+  @Override public void hideMainMenu() {
+    _wndMainMenu.hide();
   }
   
-  private class GenericResponse implements API.GenericResponse {
-    private final Message _wait;
-    private final Window _window;
+  private class MessageHandler implements Game.MessageInterface {
+    Message m;
     
-    private GenericResponse(Message wait, Window window) {
-      _wait   = wait;
-      _window = window;
+    private MessageHandler(MenuKeys title, MenuKeys text) {
+      m = Message.wait(Lang.Menu.get(title), Lang.Menu.get(text));
+      m.push();
     }
     
-    @Override
-    public void loginRequired() {
-      if(_wait != null) { _wait.pop(); }
-      showLogin();
+    @Override public void update(MenuKeys title, MenuKeys text) {
+      m.setTitle(Lang.Menu.get(title));
+      m.setText (Lang.Menu.get(text));
     }
     
-    @Override
-    public void securityRequired() {
-      if(_wait   != null) { _wait.pop();    }
-      if(_window != null) { _window.hide(); }
-      
-      showSecurity();
-    }
-    
-    @Override
-    public void error(Response r) {
-      System.err.println("Error " + r);
-      
-      if(_wait != null) {
-        _wait.setText("Error " + r);
-      }
-    }
-    
-    @Override
-    public void jsonError(Response r, JSONException e) {
-      System.err.println("Enconding error " + e + ' ' + r);
-      
-      if(_wait != null) {
-        _wait.setText("Encoding error: " + e + ' ' + r);
-      }
+    @Override public void hide() {
+      m.pop();
     }
   }
 }

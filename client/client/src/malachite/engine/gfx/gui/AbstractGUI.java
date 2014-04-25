@@ -1,9 +1,13 @@
 package malachite.engine.gfx.gui;
 
+import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.AbstractMatrix;
 import malachite.engine.gfx.Loader;
 import malachite.engine.gfx.textures.TextureBuilder;
+
 import org.lwjgl.input.Keyboard;
 
 public abstract class AbstractGUI {
@@ -12,6 +16,7 @@ public abstract class AbstractGUI {
   protected AbstractMatrix _matrix = AbstractContext.getMatrix();
   protected TextureBuilder _textures = TextureBuilder.getInstance();
 
+  protected Events  _events;
   protected boolean _loaded;
 
   private boolean _visible = true;
@@ -34,11 +39,18 @@ public abstract class AbstractGUI {
       @Override protected void resize() { }
     };
     _control._gui = this;
+    
+    _events = new Events();
 
     _context.addLoadCallback(Loader.LoaderThread.OFFLOAD, () -> {
       this.load();
       _loaded = true;
+      _events.raiseLoad();
     });
+  }
+  
+  public Events events() {
+    return _events;
   }
 
   public boolean getVisible() {
@@ -273,4 +285,30 @@ public abstract class AbstractGUI {
   protected boolean handleKeyDown   (int key)  { return false; }
   protected boolean handleKeyUp     (int key)  { return false; }
   protected boolean handleCharDown  (char key) { return false; }
+
+  public class Events {
+    private Deque<Event> _load = new ConcurrentLinkedDeque<>();
+
+    private Events() {
+    }
+
+    public void addLoadHandler(Event e) {
+      _load.add(e);
+
+      if(_loaded) {
+        raiseLoad();
+      }
+    }
+
+    public void raiseLoad() {
+      Event e = null;
+      while((e = _load.poll()) != null) {
+        e.run();
+      }
+    }
+  }
+  
+  public interface Event {
+    void run();
+  }
 }

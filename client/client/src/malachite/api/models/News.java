@@ -1,9 +1,9 @@
 package malachite.api.models;
 
 public class News {
-  public static final String ID    = "id";    //$NON-NLS-1$
-  public static final String TITLE = "title"; //$NON-NLS-1$
-  public static final String BODY  = "body";  //$NON-NLS-1$
+  public static final String DB_ID    = "id";    //$NON-NLS-1$
+  public static final String DB_TITLE = "title"; //$NON-NLS-1$
+  public static final String DB_BODY  = "body";  //$NON-NLS-1$
   
   public final int    id;
   public final String title;

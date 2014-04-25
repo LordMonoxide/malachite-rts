@@ -74,8 +74,8 @@ public final class API {
   
     public static void login(String email, String password, LoginResponse cb) {
       Map<String, String> data = new HashMap<>();
-      data.put(User.EMAIL,    email);
-      data.put(User.PASSWORD, password);
+      data.put(User.DB_EMAIL,    email);
+      data.put(User.DB_PASSWORD, password);
       
       dispatch(Route.Auth.Login, data, resp -> {
         try {
@@ -125,7 +125,7 @@ public final class API {
               
               for(int i = 0; i < j.length(); i++) {
                 JSONObject r = j.getJSONObject(i);
-                news[i] = new malachite.api.models.News(r.getInt(malachite.api.models.News.ID), r.getString(malachite.api.models.News.TITLE), r.getString(malachite.api.models.News.BODY));
+                news[i] = new malachite.api.models.News(r.getInt(malachite.api.models.News.DB_ID), r.getString(malachite.api.models.News.DB_TITLE), r.getString(malachite.api.models.News.DB_BODY));
               }
               
               cb.success(news);
@@ -144,7 +144,7 @@ public final class API {
             switch(resp.response().getStatus().code()) {
               case 200:
                 JSONObject r = resp.toJSON();
-                cb.success(new malachite.api.models.News(r.getInt(malachite.api.models.News.ID), r.getString(malachite.api.models.News.TITLE), r.getString(malachite.api.models.News.BODY)));
+                cb.success(new malachite.api.models.News(r.getInt(malachite.api.models.News.DB_ID), r.getString(malachite.api.models.News.DB_TITLE), r.getString(malachite.api.models.News.DB_BODY)));
                 break;
                 
               case 204:
@@ -174,7 +174,7 @@ public final class API {
               
               for(int i = 0; i < j.length(); i++) {
                 JSONObject r = j.getJSONObject(i);
-                buildings[i] = new Building(r.getInt(Building.ID), r.getString(Building.NAME), r.getString(Building.TYPE));
+                buildings[i] = new Building(r.getInt(Building.DB_ID), r.getString(Building.DB_NAME), Building.TYPE.fromString(r.getString(Building.DB_TYPE)));
               }
               
               cb.success(buildings);

@@ -1,10 +1,11 @@
 package malachite.gui;
 
+import malachite.Game.GameInterface;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.world.Tile;
 import malachite.world.World;
 
-public class Game extends AbstractGUI {
+public class Game extends AbstractGUI implements GameInterface {
   World _world;
   Tile[][] _tile;
   float _viewX, _viewY;
