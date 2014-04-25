@@ -11,6 +11,10 @@ return [
   'status.creatingchar' => 'Creating character...',
   'status.deletingchar' => 'Deleting character...',
   
+  // News
+  'news.gettingsnews' => 'Getting news...',
+  'news.nonews'       => 'There is no recent news.',
+  
   // Login menu
   'login.title'    => 'Login',
   'login.email'    => 'Email',
@@ -25,20 +29,12 @@ return [
   'register.pass'    => 'Password',
   'register.confirm' => 'Confirm Password',
   
-  // Characters menu
-  'chars.title'  => 'Characters',
-  'chars.logout' => 'Log out',
-  'chars.new'    => 'New',
-  'chars.del'    => 'Delete',
-  'chars.use'    => 'Play',
-  'chars.list'   => ':name, a :sex :race',
+  // Main menu
+  'mainmenu.title'  => 'Main Menu',
+  'mainmenu.play'   => 'Play',
+  'mainmenu.logout' => 'Log out',
   
-  // New char menu
-  'newchar.title'  => 'New Character',
-  'newchar.name'   => 'Name',
-  'newchar.race'   => 'Race',
-  'newchar.sex'    => 'Sex',
-  'newchar.male'   => 'Male',
-  'newchar.female' => 'Female',
-  'newchar.create' => 'Create'
+  // Errors
+  'error.error' => 'Error:',
+  'error.json'  => 'JSON Error:'
 ];

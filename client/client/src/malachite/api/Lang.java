@@ -87,6 +87,9 @@ public class Lang<T> {
     STATUS_CREATINGCHAR("status.creatingchar"), //$NON-NLS-1$
     STATUS_DELETINGCHAR("status.deletingchar"), //$NON-NLS-1$
     
+    NEWS_GETTINGNEWS("news.gettingnews"), //$NON-NLS-1$
+    NEWS_NONEWS     ("news.nonews"),      //$NON-NLS-1$
+    
     LOGIN_TITLE   ("login.title"),    //$NON-NLS-1$
     LOGIN_EMAIL   ("login.email"),    //$NON-NLS-1$
     LOGIN_PASS    ("login.pass"),     //$NON-NLS-1$
@@ -99,20 +102,12 @@ public class Lang<T> {
     REGISTER_PASS   ("register.pass"),    //$NON-NLS-1$
     REGISTER_CONFIRM("register.confirm"), //$NON-NLS-1$
     
-    CHARS_TITLE ("chars.title"),  //$NON-NLS-1$
-    CHARS_LOGOUT("chars.logout"), //$NON-NLS-1$
-    CHARS_NEW   ("chars.new"),    //$NON-NLS-1$
-    CHARS_DEL   ("chars.del"),    //$NON-NLS-1$
-    CHARS_USE   ("chars.use"),    //$NON-NLS-1$
-    CHARS_LIST  ("chars.list"),   //$NON-NLS-1$
+    MAINMENU_TITLE ("mainmenu.title"),  //$NON-NLS-1$
+    MAINMENU_PLAY  ("mainmenu.play"),   //$NON-NLS-1$
+    MAINMENU_LOGOUT("mainmenu.logout"), //$NON-NLS-1$
     
-    NEWCHAR_TITLE ("newchar.title"),  //$NON-NLS-1$
-    NEWCHAR_NAME  ("newchar.name"),   //$NON-NLS-1$
-    NEWCHAR_RACE  ("newchar.race"),   //$NON-NLS-1$
-    NEWCHAR_SEX   ("newchar.sex"),    //$NON-NLS-1$
-    NEWCHAR_MALE  ("newchar.male"),   //$NON-NLS-1$
-    NEWCHAR_FEMALE("newchar.female"), //$NON-NLS-1$
-    NEWCHAR_CREATE("newchar.create"); //$NON-NLS-1$
+    ERROR_ERROR("error.error"), //$NON-NLS-1$
+    ERROR_JSON ("error.json");  //$NON-NLS-1$
     
     String _text;
     

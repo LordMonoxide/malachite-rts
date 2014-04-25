@@ -211,11 +211,14 @@ public final class API {
     });
   }
   
-  public interface GenericResponse {
-    public abstract void loginRequired();
-    public abstract void securityRequired();
+  public interface ErrorResponse {
     public abstract void error(Response r);
     public abstract void jsonError(Response r, JSONException e);
+  }
+  
+  public interface GenericResponse extends ErrorResponse {
+    public abstract void loginRequired();
+    public abstract void securityRequired();
   }
   
   public interface CheckResponse extends GenericResponse {

@@ -1,5 +1,7 @@
 package malachite.gui;
 
+import org.json.JSONException;
+
 import malachite.Game;
 import malachite.Game.MessageInterface;
 import malachite.api.Lang;
@@ -11,6 +13,7 @@ import malachite.engine.gfx.gui.VAlign;
 import malachite.engine.gfx.gui.builtin.Message;
 import malachite.engine.gfx.gui.control.*;
 import malachite.engine.gfx.textures.Texture;
+import malachite.engine.net.http.Response;
 
 public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   private Game.MenuProxy _proxy;
@@ -170,7 +173,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndMainMenu = new Window();
     _wndMainMenu.setWH(400, 300);
     _wndMainMenu.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
-    _wndMainMenu.setText("mainmenu");
+    _wndMainMenu.setText(Lang.Menu.get(Lang.MenuKeys.MAINMENU_TITLE));
     _wndMainMenu.hide();
     _wndMainMenu.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
@@ -183,7 +186,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnPlay = new Button();
     _btnPlay.setWH(50, 20);
     _btnPlay.setY(8);
-    _btnPlay.setText("play");
+    _btnPlay.setText(Lang.Menu.get(Lang.MenuKeys.MAINMENU_PLAY));
     _btnPlay.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
@@ -195,7 +198,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnLogout = new Button();
     _btnLogout.setWH(50, 20);
     _btnLogout.setY(_btnPlay.getY() + _btnPlay.getH() + 8);
-    _btnLogout.setText("logout");
+    _btnLogout.setText(Lang.Menu.get(Lang.MenuKeys.MAINMENU_LOGOUT));
     _btnLogout.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
@@ -266,7 +269,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   
   @Override
   public void gettingNews() {
-    _lblInfo.setText("Getting news...");
+    _lblInfo.setText(Lang.Menu.get(Lang.MenuKeys.NEWS_GETTINGNEWS));
   }
   
   @Override
@@ -276,7 +279,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   
   @Override
   public void noNews() {
-    _lblInfo.setText(null);
+    _lblInfo.setText(Lang.Menu.get(Lang.MenuKeys.NEWS_NONEWS));
   }
   
   @Override
@@ -345,5 +348,13 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     @Override public void hide() {
       m.pop();
     }
+  }
+  
+  @Override public void showError(Response r) {
+    Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_ERROR), r.toString());
+  }
+  
+  @Override public void showJSONError(Response r, JSONException e) {
+    Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_JSON), r.toString() + '\n' + e);
   }
 }

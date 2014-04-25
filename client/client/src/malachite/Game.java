@@ -7,7 +7,6 @@ import malachite.api.API;
 import malachite.api.Lang;
 import malachite.api.Lang.AppKeys;
 import malachite.api.Lang.MenuKeys;
-import malachite.api.models.Building;
 import malachite.api.models.News;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
@@ -35,8 +34,6 @@ public class Game {
   
   private World _world;
   
-  private Building[] _building;
-
   public void initialize() {
     Request.init();
     Lang.load();
@@ -131,7 +128,9 @@ public class Game {
     public void requestNews() {
       _menu.gettingNews();
       
-      API.Storage.News.latest(new API.NewsLatestResponse() {
+      class R extends ErrorResponse implements API.NewsLatestResponse {
+        R() { super(null); }
+        
         @Override public void success(News news) {
           if(news != null) {
             System.out.println(news.title + '\n' + news.body);
@@ -147,29 +146,9 @@ public class Game {
             _menu.noNews();
           }
         }
-        
-        @Override public void jsonError(Response r, JSONException e) {
-          TextStream ts = new TextStream();
-          ts.insert(ts.face(Font.FONT_FACE.BOLD));
-          ts.insert("JSON error:");
-          ts.insert(ts.face(Font.FONT_FACE.REGULAR));
-          ts.insert(ts.newLine());
-          ts.insert(r.toString());
-          ts.insert(ts.newLine());
-          ts.insert(e.toString());
-          _menu.showNews(ts);
-        }
-        
-        @Override public void error(Response r) {
-          TextStream ts = new TextStream();
-          ts.insert(ts.face(Font.FONT_FACE.BOLD));
-          ts.insert("Error:");
-          ts.insert(ts.face(Font.FONT_FACE.REGULAR));
-          ts.insert(ts.newLine());
-          ts.insert(r.toString());
-          _menu.showNews(ts);
-        }
-      });
+      }
+      
+      API.Storage.News.latest(new R());
     }
     
     public void play() {
@@ -203,6 +182,9 @@ public class Game {
     
     public void showMainMenu();
     public void hideMainMenu();
+    
+    public void showError    (Response r);
+    public void showJSONError(Response r, JSONException e);
   }
   
   public class GameProxy {
@@ -213,11 +195,25 @@ public class Game {
     
   }
   
-  private class GenericResponse implements API.GenericResponse {
-    private final MessageInterface _message;
+  private class ErrorResponse implements API.ErrorResponse {
+    protected final MessageInterface _message;
     
-    private GenericResponse(MessageInterface message) {
+    private ErrorResponse(MessageInterface message) {
       _message = message;
+    }
+    
+    @Override public void error(Response r) {
+      _menu.showError(r);
+    }
+    
+    @Override public void jsonError(Response r, JSONException e) {
+      _menu.showJSONError(r, e);
+    }
+  }
+  
+  private class GenericResponse extends ErrorResponse implements API.GenericResponse {
+    private GenericResponse(MessageInterface message) {
+      super(message);
     }
     
     @Override
@@ -230,18 +226,6 @@ public class Game {
     public void securityRequired() {
       _message.hide();
       _menu.showSecurity();
-    }
-    
-    @Override
-    public void error(Response r) {
-      System.err.println("Error " + r);
-      //TODO: _message.update("Error " + r);
-    }
-    
-    @Override
-    public void jsonError(Response r, JSONException e) {
-      System.err.println("Enconding error " + e + ' ' + r);
-      //TODO: _message.update("Encoding error: " + e + ' ' + r);
     }
   }
 }
