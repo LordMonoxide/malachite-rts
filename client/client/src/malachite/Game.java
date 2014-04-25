@@ -4,9 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import malachite.api.API;
+import malachite.api.APIFuture;
 import malachite.api.Lang;
 import malachite.api.Lang.AppKeys;
 import malachite.api.Lang.MenuKeys;
+import malachite.api.models.Building;
 import malachite.api.models.News;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
@@ -33,6 +35,8 @@ public class Game {
   private GameInterface _game;
   
   private World _world;
+  
+  private Building[] _building;
   
   public void initialize() {
     Request.init();
@@ -79,6 +83,18 @@ public class Game {
     }
     
     API.Auth.check(new R());
+  }
+  
+  private APIFuture loadBuildings() {
+    class R extends GenericResponse implements API.BuildingsResponse {
+      R() { super(null); }
+      
+      @Override public void success(Building[] buildings) {
+        _building = buildings;
+      }
+    }
+    
+    return API.Storage.Tech.buildings(new R());
   }
   
   public interface MessageInterface {
@@ -152,13 +168,19 @@ public class Game {
     }
     
     public void play() {
-      ((AbstractGUI)_menu).pop();
-      _menu = null;
+      _menu.loadingGame();
       
-      _world = new Rivers().generate();
-      
-      _game = new malachite.gui.Game(_world);
-      ((AbstractGUI)_game).push();
+      APIFuture.await(() -> {
+        ((AbstractGUI)_menu).pop();
+        _menu = null;
+        
+        _world = new Rivers().generate();
+        
+        _game = new malachite.gui.Game(_world);
+        ((AbstractGUI)_game).push();
+      },
+        loadBuildings()
+      );
     }
   }
   
@@ -182,6 +204,8 @@ public class Game {
     
     public void showMainMenu();
     public void hideMainMenu();
+    
+    public void loadingGame();
     
     public void showError    (Response r);
     public void showJSONError(Response r, JSONException e);

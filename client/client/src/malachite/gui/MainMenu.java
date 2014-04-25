@@ -1,5 +1,7 @@
 package malachite.gui;
 
+import java.util.ArrayList;
+
 import org.json.JSONException;
 
 import malachite.Game;
@@ -17,6 +19,8 @@ import malachite.engine.net.http.Response;
 
 public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   private Game.MenuProxy _proxy;
+  
+  private ArrayList<Message> _message = new ArrayList<>();
   
   private Image[]   _imgBackground = new Image[15];
   private Window    _wndLogin;
@@ -237,7 +241,11 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   
   @Override
   protected void destroy() {
-
+    for(Message m : _message) {
+      m.pop();
+    }
+    
+    _message.clear();
   }
   
   @Override
@@ -338,6 +346,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     private MessageHandler(MenuKeys title, MenuKeys text) {
       m = Message.wait(Lang.Menu.get(title), Lang.Menu.get(text));
       m.push();
+      _message.add(m);
     }
     
     @Override public void update(MenuKeys title, MenuKeys text) {
@@ -350,11 +359,21 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     }
   }
   
+  @Override public void loadingGame() {
+    Message m = Message.wait(Lang.Menu.get(Lang.MenuKeys.STATUS_LOADING), Lang.Menu.get(Lang.MenuKeys.STATUS_LOADINGGAME));
+    m.push();
+    _message.add(m);
+  }
+  
   @Override public void showError(Response r) {
-    Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_ERROR), r.toString());
+    Message m = Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_ERROR), r.toString());
+    m.push();
+    _message.add(m);
   }
   
   @Override public void showJSONError(Response r, JSONException e) {
-    Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_JSON), r.toString() + '\n' + e);
+    Message m = Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_JSON), r.toString() + '\n' + e);
+    m.push();
+    _message.add(m);
   }
 }

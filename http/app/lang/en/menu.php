@@ -10,6 +10,7 @@ return [
   'status.gettingraces' => 'Getting races...',
   'status.creatingchar' => 'Creating character...',
   'status.deletingchar' => 'Deleting character...',
+  'status.loadinggame'  => 'Loading game...',
   
   // News
   'news.gettingsnews' => 'Getting news...',

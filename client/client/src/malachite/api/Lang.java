@@ -13,39 +13,35 @@ public class Lang<T> {
   public static void load() {
     System.out.println("Getting lang..."); //$NON-NLS-1$
     
-    API.lang(API.Route.Lang.App, new API.LangResponse() {
-      @Override public void success(Map<String, String> lang) {
-        App._lang = lang;
-      }
+    APIFuture.await(
+      API.lang(API.Route.Lang.App, new API.LangResponse() {
+        @Override public void success(Map<String, String> lang) {
+          App._lang = lang;
+        }
+        
+        @Override public void error(Response r) {
+          System.err.println(r.content());
+        }
+        
+        @Override public void jsonError(Response r, JSONException e) {
+          System.err.println("JSON encoding error getting app lang:\n" + e + '\n' + r.content()); //$NON-NLS-1$
+        }
+      }),
       
-      @Override public void error(Response r) {
-        System.err.println(r.content());
-      }
-      
-      @Override public void jsonError(Response r, JSONException e) {
-        System.err.println("JSON encoding error getting app lang:\n" + e + '\n' + r.content()); //$NON-NLS-1$
-      }
-    });
-    
-    API.lang(API.Route.Lang.Menu, new API.LangResponse() {
-      @Override public void success(Map<String, String> lang) {
-        Menu._lang = lang;
-      }
-      
-      @Override public void error(Response r) {
-        System.err.println(r.content());
-      }
-      
-      @Override public void jsonError(Response r, JSONException e) {
-        System.err.println("JSON encoding error getting menu lang:\n" + e + '\n' + r.content()); //$NON-NLS-1$
-      }
-    });
-    
-    while(App._lang == null || Menu._lang == null) {
-      try {
-        Thread.sleep(10);
-      } catch(InterruptedException e) { }
-    }
+      API.lang(API.Route.Lang.Menu, new API.LangResponse() {
+        @Override public void success(Map<String, String> lang) {
+          Menu._lang = lang;
+        }
+        
+        @Override public void error(Response r) {
+          System.err.println(r.content());
+        }
+        
+        @Override public void jsonError(Response r, JSONException e) {
+          System.err.println("JSON encoding error getting menu lang:\n" + e + '\n' + r.content()); //$NON-NLS-1$
+        }
+      })
+    );
   }
   
   private Map<String, String> _lang;
@@ -86,6 +82,7 @@ public class Lang<T> {
     STATUS_GETTINGRACES("status.gettingraces"), //$NON-NLS-1$
     STATUS_CREATINGCHAR("status.creatingchar"), //$NON-NLS-1$
     STATUS_DELETINGCHAR("status.deletingchar"), //$NON-NLS-1$
+    STATUS_LOADINGGAME ("status.loadinggame"),  //$NON-NLS-1$
     
     NEWS_GETTINGNEWS("news.gettingnews"), //$NON-NLS-1$
     NEWS_NONEWS     ("news.nonews"),      //$NON-NLS-1$

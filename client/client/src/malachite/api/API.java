@@ -58,7 +58,9 @@ public final class API {
   public static final class Auth {
     private Auth() { }
     
-    public static void check(CheckResponse cb) {
+    public static APIFuture check(CheckResponse cb) {
+      APIFuture f = new APIFuture();
+      
       dispatch(Route.Auth.Check, resp -> {
         try {
           if(resp.succeeded()) {
@@ -69,10 +71,16 @@ public final class API {
         } catch(JSONException e) {
           cb.jsonError(resp, e);
         }
+        
+        f.complete();
       });
+      
+      return f;
     }
   
-    public static void login(String email, String password, LoginResponse cb) {
+    public static APIFuture login(String email, String password, LoginResponse cb) {
+      APIFuture f = new APIFuture();
+      
       Map<String, String> data = new HashMap<>();
       data.put(User.DB_EMAIL,    email);
       data.put(User.DB_PASSWORD, password);
@@ -91,10 +99,16 @@ public final class API {
         } catch(JSONException e) {
           cb.jsonError(resp, e);
         }
+        
+        f.complete();
       });
+      
+      return f;
     }
     
-    public static void logout(LogoutResponse cb) {
+    public static APIFuture logout(LogoutResponse cb) {
+      APIFuture f = new APIFuture();
+      
       dispatch(Route.Auth.Logout, resp -> {
         try {
           if(resp.succeeded()) {
@@ -105,7 +119,11 @@ public final class API {
         } catch(JSONException e) {
           cb.jsonError(resp, e);
         }
+        
+        f.complete();
       });
+      
+      return f;
     }
   }
   
@@ -115,7 +133,9 @@ public final class API {
     public static final class News {
       private News() { }
       
-      public static void all(NewsAllResponse cb) {
+      public static APIFuture all(NewsAllResponse cb) {
+        APIFuture f = new APIFuture();
+        
         dispatch(Route.Storage.News.All, resp -> {
           try {
             if(resp.succeeded()) {
@@ -135,10 +155,16 @@ public final class API {
           } catch(JSONException e) {
             cb.jsonError(resp, e);
           }
+          
+          f.complete();
         });
+        
+        return f;
       }
       
-      public static void latest(NewsLatestResponse cb) {
+      public static APIFuture latest(NewsLatestResponse cb) {
+        APIFuture f = new APIFuture();
+        
         dispatch(Route.Storage.News.Latest, resp -> {
           try {
             switch(resp.response().getStatus().code()) {
@@ -157,14 +183,20 @@ public final class API {
           } catch(JSONException e) {
             cb.jsonError(resp, e);
           }
+          
+          f.complete();
         });
+        
+        return f;
       }
     }
     
     public static final class Tech {
       private Tech() { }
       
-      public static final void buildings(BuildingsResponse cb) {
+      public static final APIFuture buildings(BuildingsResponse cb) {
+        APIFuture f = new APIFuture();
+        
         dispatch(Route.Storage.Tech.Buildings, resp -> {
           try {
             if(resp.succeeded()) {
@@ -184,12 +216,18 @@ public final class API {
           } catch(JSONException e) {
             cb.jsonError(resp, e);
           }
+          
+          f.complete();
         });
+        
+        return f;
       }
     }
   }
   
-  public static void lang(Route route, LangResponse cb) {
+  public static APIFuture lang(Route route, LangResponse cb) {
+    APIFuture f = new APIFuture();
+    
     dispatch(route, resp -> {
       try {
         if(resp.succeeded()) {
@@ -208,7 +246,11 @@ public final class API {
       } catch(JSONException e) {
         cb.jsonError(resp, e);
       }
+      
+      f.complete();
     });
+    
+    return f;
   }
   
   public interface ErrorResponse {
