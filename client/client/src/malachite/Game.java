@@ -10,6 +10,8 @@ import malachite.api.Lang.AppKeys;
 import malachite.api.Lang.MenuKeys;
 import malachite.api.models.Building;
 import malachite.api.models.News;
+import malachite.api.models.Research;
+import malachite.api.models.Unit;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
 import malachite.engine.gfx.Loader;
@@ -37,6 +39,8 @@ public class Game {
   private World _world;
   
   private Building[] _building;
+  private Research[] _research;
+  private Unit    [] _unit;
   
   public void initialize() {
     Request.init();
@@ -95,6 +99,30 @@ public class Game {
     }
     
     return API.Storage.Tech.buildings(new R());
+  }
+  
+  private APIFuture loadResearch() {
+    class R extends GenericResponse implements API.ResearchResponse {
+      R() { super(null); }
+      
+      @Override public void success(Research[] research) {
+        _research = research;
+      }
+    }
+    
+    return API.Storage.Tech.research(new R());
+  }
+  
+  private APIFuture loadUnits() {
+    class R extends GenericResponse implements API.UnitsResponse {
+      R() { super(null); }
+      
+      @Override public void success(Unit[] units) {
+        _unit = units;
+      }
+    }
+    
+    return API.Storage.Tech.units(new R());
   }
   
   public interface MessageInterface {
@@ -179,7 +207,9 @@ public class Game {
         _game = new malachite.gui.Game(_world);
         ((AbstractGUI)_game).push();
       },
-        loadBuildings()
+        loadBuildings(),
+        loadResearch(),
+        loadUnits()
       );
     }
   }

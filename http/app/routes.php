@@ -24,6 +24,7 @@ Route::group(['prefix' => 'api'], function() {
     Route::group(['prefix' => 'tech'], function() {
       Route::get('/buildings', ['as' => 'api.storage.tech.buildings.all', 'uses' => 'api\storage\TechController@buildings']);
       Route::get('/research',  ['as' => 'api.storage.tech.research.all',  'uses' => 'api\storage\TechController@research']);
+      Route::get('/units',     ['as' => 'api.storage.tech.units.all',     'uses' => 'api\storage\TechController@units']);
     });
   });
 });
