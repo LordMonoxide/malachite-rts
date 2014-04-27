@@ -1,5 +1,7 @@
 package malachite;
 
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,11 +38,12 @@ public class Game {
   private MenuInterface _menu;
   private GameInterface _game;
   
-  private World _world;
-  
   private Building[] _building;
   private Research[] _research;
   private Unit    [] _unit;
+  
+  private World _world;
+  private ArrayList<Player> _player = new ArrayList<>();
   
   public void initialize() {
     Request.init();
@@ -125,6 +128,28 @@ public class Game {
     return API.Storage.Tech.units(new R());
   }
   
+  private void initGame() {
+    ((AbstractGUI)_menu).pop();
+    _menu = null;
+    
+    _world = new Rivers().generate();
+    addPlayer();
+    
+    _game = new malachite.gui.Game(_world);
+    ((AbstractGUI)_game).push();
+  }
+  
+  private void addPlayer() {
+    Player p = new Player();
+    addUnit(p, new malachite.Unit(null));
+    _player.add(p);
+  }
+  
+  private void addUnit(Player p, malachite.Unit u) {
+    p.addUnit(u);
+    _world.addEntity(u.createEntity());
+  }
+  
   public interface MessageInterface {
     public void update(MenuKeys title, MenuKeys text);
     public void hide();
@@ -199,13 +224,7 @@ public class Game {
       _menu.loadingGame();
       
       APIFuture.await(() -> {
-        ((AbstractGUI)_menu).pop();
-        _menu = null;
-        
-        _world = new Rivers().generate();
-        
-        _game = new malachite.gui.Game(_world);
-        ((AbstractGUI)_game).push();
+        initGame();
       },
         loadBuildings(),
         loadResearch(),
