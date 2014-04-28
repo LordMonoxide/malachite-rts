@@ -86,7 +86,7 @@ public class Request {
                   o.write(response.headers().get(HttpHeaders.Names.SET_COOKIE));
                 }
               }
-
+              
               if(response.getStatus().code() >= 200 &&
                  response.getStatus().code() <= 299 &&
                  HttpHeaders.isTransferEncodingChunked(response)) {
@@ -94,6 +94,8 @@ public class Request {
               }
             } else if(msg instanceof HttpContent) {
               HttpContent chunk = (HttpContent)msg;
+              
+              r._content += chunk.content().toString(CharsetUtil.UTF_8);
 
               if(chunk instanceof LastHttpContent) {
                 if(_chunked) {
@@ -101,8 +103,6 @@ public class Request {
                 }
 
                 _cb.remove(ctx.channel()).onResponse(r);
-              } else {
-                r._content += chunk.content().toString(CharsetUtil.UTF_8);
               }
             }
           }
