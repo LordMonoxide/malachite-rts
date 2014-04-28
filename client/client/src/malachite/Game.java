@@ -13,6 +13,7 @@ import malachite.api.Lang.MenuKeys;
 import malachite.api.models.Building;
 import malachite.api.models.News;
 import malachite.api.models.Research;
+import malachite.api.models.Settings;
 import malachite.api.models.Unit;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
@@ -42,6 +43,7 @@ public class Game {
   private Research[] _research;
   private Unit    [] _unit;
   
+  private Settings _settings;
   private World _world;
   private ArrayList<Player> _player = new ArrayList<>();
   
@@ -126,6 +128,18 @@ public class Game {
     }
     
     return API.Storage.Tech.units(new R());
+  }
+  
+  private APIFuture loadSettings() {
+    class R extends GenericResponse implements API.SettingsResponse {
+      R() { super(null); }
+        
+      @Override public void success(Settings[] settings) {
+        _settings = settings[0]; //TODO: not this
+      }
+    }
+    
+    return API.Storage.Settings.all(new R());
   }
   
   private void initGame() {
@@ -228,7 +242,8 @@ public class Game {
       },
         loadBuildings(),
         loadResearch(),
-        loadUnits()
+        loadUnits(),
+        loadSettings()
       );
     }
   }

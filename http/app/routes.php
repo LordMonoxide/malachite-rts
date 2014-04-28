@@ -21,6 +21,10 @@ Route::group(['prefix' => 'api'], function() {
       Route::get('/latest', ['as' => 'api.storage.news.latest', 'uses' => 'api\storage\NewsController@latest']);
     });
     
+    Route::group(['prefix' => 'settings'], function() {
+      Route::get('/', ['as' => 'api.storage.settings.all', 'uses' => 'api\storage\SettingsController@all']);
+    });
+    
     Route::group(['prefix' => 'tech'], function() {
       Route::get('/buildings', ['as' => 'api.storage.tech.buildings.all', 'uses' => 'api\storage\TechController@buildings']);
       Route::get('/research',  ['as' => 'api.storage.tech.research.all',  'uses' => 'api\storage\TechController@research']);

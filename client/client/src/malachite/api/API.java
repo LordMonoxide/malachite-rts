@@ -3,6 +3,7 @@ package malachite.api;
 import malachite.api.models.Building;
 import malachite.api.models.News;
 import malachite.api.models.Research;
+import malachite.api.models.Settings;
 import malachite.api.models.Unit;
 import malachite.api.models.User;
 import malachite.engine.net.http.Request;
@@ -193,6 +194,39 @@ public final class API {
       }
     }
     
+    public static final class Settings {
+      private Settings() { }
+      
+      public static final APIFuture all(SettingsResponse cb) {
+        APIFuture f = new APIFuture();
+        
+        dispatch(Route.Storage.Settings.All, resp -> {
+          try {
+            if(resp.succeeded()) {
+              JSONArray j = resp.toJSONArray();
+              
+              malachite.api.models.Settings[] settings = new malachite.api.models.Settings[j.length()];
+              
+              for(int i = 0; i < j.length(); i++) {
+                JSONObject r = j.getJSONObject(i);
+                settings[i] = new malachite.api.models.Settings(r);
+              }
+              
+              cb.success(settings);
+            } else {
+              checkGeneric(resp, cb);
+            }
+          } catch(JSONException e) {
+            cb.jsonError(resp, e);
+          }
+          
+          f.complete();
+        });
+        
+        return f;
+      }
+    }
+    
     public static final class Tech {
       private Tech() { }
       
@@ -348,6 +382,10 @@ public final class API {
     public abstract void jsonError(Response r, JSONException e);
   }
   
+  public interface SettingsResponse extends GenericResponse {
+    public abstract void success(Settings[] settings);
+  }
+  
   public interface BuildingsResponse extends GenericResponse {
     public abstract void success(Building[] buildings);
   }
@@ -445,6 +483,12 @@ public final class API {
         private News(String route) {
           super("/storage/news" + route, HttpMethod.GET); //$NON-NLS-1$
         }
+      }
+      
+      public static final class Settings {
+        private Settings() { }
+        
+        public static final Route All = new Route("/storage/settings", HttpMethod.GET); //$NON-NLS-1$
       }
       
       public static final class Tech {

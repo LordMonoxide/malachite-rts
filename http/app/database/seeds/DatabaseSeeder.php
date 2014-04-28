@@ -88,6 +88,22 @@ class TechSeeder extends Seeder {
       'name'        => 'villager',
       'type'        => 'villager'
     ]);
+    
+    $settings = GameSetting::create([
+      'name' => 'Test Settings'
+    ]);
+    
+    GameSettingsBuilding::create([
+      'game_setting_id' => $settings->id,
+      'building_id'     => $camp->id,
+      'count'           => 1
+    ]);
+    
+    GameSettingsUnit::create([
+      'game_setting_id' => $settings->id,
+      'unit_id'         => $villager->id,
+      'count'           => 3
+    ]);
   }
 }
 

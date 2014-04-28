@@ -366,12 +366,14 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   }
   
   @Override public void showError(Response r) {
+    System.err.println(Lang.Menu.get(Lang.MenuKeys.ERROR_ERROR) + '\n' + r.toString());
     Message m = Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_ERROR), r.toString());
     m.push();
     _message.add(m);
   }
   
   @Override public void showJSONError(Response r, JSONException e) {
+    System.err.println(Lang.Menu.get(Lang.MenuKeys.ERROR_JSON) + '\n' + r.toString() + '\n' + e);
     Message m = Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_JSON), r.toString() + '\n' + e);
     m.push();
     _message.add(m);
