@@ -11,12 +11,12 @@ public class Entity {
   
   private float _x, _y;
   
-  public Entity(float x, float y) {
+  public Entity(float x, float y, float w, float h) {
     _x = x;
     _y = y;
     
     _draw = Context.newDrawable();
-    _draw.setWH(32, 32);
+    _draw.setWH(w, h);
     _draw.setColour(1, 0, 1, 1);
     _draw.createQuad();
   }

@@ -1,6 +1,7 @@
 package malachite;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +34,8 @@ public class Game {
   public static void main(String... args) {
     new Game().initialize();
   }
+  
+  private static Random _random = new Random(); //TODO: seed
 
   private AbstractContext _context;
   
@@ -142,6 +145,30 @@ public class Game {
     return API.Storage.Settings.all(new R());
   }
   
+  private Building buildingByID(int id) {
+    for(Building b : _building) {
+      if(b.id == id) { return b; }
+    }
+    
+    return null;
+  }
+  
+  private Research researchByID(int id) {
+    for(Research r : _research) {
+      if(r.id == id) { return r; }
+    }
+    
+    return null;
+  }
+  
+  private Unit unitByID(int id) {
+    for(Unit u : _unit) {
+      if(u.id == id) { return u; }
+    }
+    
+    return null;
+  }
+  
   private void initGame() {
     ((AbstractGUI)_menu).pop();
     _menu = null;
@@ -155,13 +182,38 @@ public class Game {
   
   private void addPlayer() {
     Player p = new Player();
-    addUnit(p, new malachite.Unit(null));
+    
+    int startX = _random.nextInt(1000) + 100;
+    int startY = _random.nextInt(600) + 100;
+    
+    for(Settings.Building building : _settings.building) {
+      for(int i = 0; i < building.count; i++) {
+        //TODO: each building starts at the same loc
+        addBuilding(p, new malachite.Building(startX, startY, buildingByID(building.id)));
+      }
+    }
+    
+    for(Settings.Unit unit : _settings.unit) {
+      for(int i = 0; i < unit.count; i++) {
+        double theta = _random.nextDouble() * Math.PI * 2;
+        double dist  = _random.nextDouble() * 350 + 100;
+        float unitX = (float)(startX + Math.cos(theta) * dist);
+        float unitY = (float)(startY + Math.sin(theta) * dist);
+        addUnit(p, new malachite.Unit(unitX, unitY, unitByID(unit.id)));
+      }
+    }
+    
     _player.add(p);
   }
   
   private void addUnit(Player p, malachite.Unit u) {
     p.addUnit(u);
     _world.addEntity(u.createEntity());
+  }
+  
+  private void addBuilding(Player p, malachite.Building b) {
+    p.addBuilding(b);
+    _world.addEntity(b.createEntity());
   }
   
   public interface MessageInterface {
