@@ -24,7 +24,7 @@ public class Game extends AbstractGUI implements GameInterface {
   }
   
   @Override
-  protected void destroy() {
+  public void destroy() {
     
   }
   

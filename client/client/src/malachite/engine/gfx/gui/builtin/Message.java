@@ -56,7 +56,7 @@ public class Message extends AbstractGUI {
   }
 
   @Override
-  protected void destroy() {
+  public void destroy() {
     
   }
 

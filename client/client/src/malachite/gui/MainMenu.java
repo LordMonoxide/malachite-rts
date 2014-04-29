@@ -240,7 +240,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   }
   
   @Override
-  protected void destroy() {
+  public void destroy() {
     for(Message m : _message) {
       m.pop();
     }

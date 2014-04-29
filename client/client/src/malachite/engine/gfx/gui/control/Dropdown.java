@@ -174,7 +174,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
     }
 
     @Override
-    protected void destroy() {
+    public void destroy() {
       
     }
 

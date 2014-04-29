@@ -88,7 +88,7 @@ public abstract class AbstractGUI {
   }
 
   protected abstract void load();
-  protected abstract void destroy();
+  public    abstract void destroy();
   protected abstract void resize();
   protected abstract void draw();
   protected abstract boolean logic();

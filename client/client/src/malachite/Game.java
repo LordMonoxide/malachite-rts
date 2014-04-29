@@ -171,6 +171,7 @@ public class Game {
   
   private void initGame() {
     ((AbstractGUI)_menu).pop();
+    ((AbstractGUI)_menu).destroy();
     _menu = null;
     
     _world = new Rivers().generate();
