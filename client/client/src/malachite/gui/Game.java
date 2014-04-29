@@ -1,21 +1,76 @@
 package malachite.gui;
 
+import java.util.ArrayList;
+
 import malachite.Game.GameInterface;
+import malachite.Game.GameProxy;
+import malachite.api.Lang;
 import malachite.engine.gfx.gui.AbstractGUI;
+import malachite.engine.gfx.gui.ControlEvents;
+import malachite.engine.gfx.gui.control.Button;
+import malachite.engine.gfx.gui.control.Frame;
+import malachite.engine.gfx.gui.control.Image;
+import malachite.engine.gfx.gui.control.Label;
+import malachite.world.Entity;
 import malachite.world.World;
 
 public class Game extends AbstractGUI implements GameInterface {
+  private GameProxy _proxy;
+  
   World _world;
   float _viewX, _viewY;
   int _viewW, _viewH;
   
-  public Game(World world) {
+  private Frame    _fraGame;
+  private Frame    _fraPanel;
+  private Frame    _fraBuildingsMenu;
+  private Label    _lblBuildingsMenuTitle;
+  private Button[] _btnBuildingsMenuBuilding;
+  
+  private ArrayList<Image> _entities = new ArrayList<>();
+  
+  public Game(GameProxy proxy, World world) {
+    _proxy = proxy;
     _world = world;
   }
   
   @Override
   protected void load() {
     _context.setBackColour(0, 0, 0, 1);
+    
+    _fraGame = new Frame();
+    _fraGame.events().addDrawHandler (new GameDrawHandler ());
+    _fraGame.events().addMouseHandler(new GameMouseHandler());
+    
+    _fraPanel = new Frame();
+    _fraPanel.setH(200);
+    _fraPanel.hide();
+    
+    _fraBuildingsMenu = new Frame();
+    _fraBuildingsMenu.setH(_fraPanel.getH());
+    
+    _lblBuildingsMenuTitle = new Label();
+    _lblBuildingsMenuTitle.setAutoSize(true);
+    _lblBuildingsMenuTitle.setText(Lang.Game.get(Lang.GameKeys.MENU_BUILDINGS_TITLE));
+    
+    _btnBuildingsMenuBuilding = new Button[_proxy.buildingCount()];
+    
+    int i = 0;
+    _proxy.eachBuilding((building) -> {
+      _btnBuildingsMenuBuilding[i] = new Button();
+      _btnBuildingsMenuBuilding[i].setText(building.name);
+      _btnBuildingsMenuBuilding[i].setWH(48, 48);
+      _btnBuildingsMenuBuilding[i].setXY(i * 56 + 8, _lblBuildingsMenuTitle.getY() + _lblBuildingsMenuTitle.getH() + 8);
+      _fraBuildingsMenu.controls().add(_btnBuildingsMenuBuilding[i]);
+    });
+    
+    _fraBuildingsMenu.controls().add(_lblBuildingsMenuTitle);
+    
+    _fraPanel.controls().add(_fraBuildingsMenu);
+    
+    controls().add(_fraGame);
+    controls().add(_fraPanel);
+    
     resize();
   }
   
@@ -28,21 +83,21 @@ public class Game extends AbstractGUI implements GameInterface {
   protected void resize() {
     _viewW = (int)Math.ceil(_context.getW() / 32);
     _viewH = (int)Math.ceil(_context.getH() / 32);
+    
+    if(_fraPanel.isVisible()) {
+      _fraGame.setWH(_context.getW(), _context.getH() - _fraPanel.getH());
+    } else {
+      _fraGame.setWH(_context.getW(), _context.getH());
+    }
+    
+    _fraPanel.setW(_context.getW());
+    _fraPanel.setY(_fraGame.getH());
+    _fraBuildingsMenu.setW(_fraPanel.getW());
   }
   
   @Override
   protected void draw() {
-    _matrix.push();
-    _matrix.translate(-_viewX, -_viewY);
     
-    int x1 = (int)Math.max(0, _viewX / 32);
-    int y1 = (int)Math.max(0, _viewY / 32);
-    int w1 = Math.min(x1 + _viewW + 1, _world.getW() - 1);
-    int h1 = Math.min(y1 + _viewH + 1, _world.getH() - 1);
-    
-    _world.draw(x1, y1, w1, h1);
-    
-    _matrix.pop();
   }
   
   @Override
@@ -67,5 +122,63 @@ public class Game extends AbstractGUI implements GameInterface {
     }
     
     return false;
+  }
+  
+  @Override
+  public void addEntity(Entity entity) {
+    Image i = new EntityRenderer(entity);
+    _fraGame.controls().add(i);
+    _entities.add(i);
+  }
+  
+  private class GameDrawHandler extends ControlEvents.Draw {
+    @Override public void draw() {
+      _matrix.push();
+      _matrix.translate(-_viewX, -_viewY);
+      
+      int x1 = (int)Math.max(0, _viewX / 32);
+      int y1 = (int)Math.max(0, _viewY / 32);
+      int w1 = Math.min(x1 + _viewW + 1, _world.getW() - 1);
+      int h1 = Math.min(y1 + _viewH + 1, _world.getH() - 1);
+      
+      _world.draw(x1, y1, w1, h1);
+      
+      _matrix.pop();
+    }
+  }
+  
+  private class GameMouseHandler extends ControlEvents.Mouse {
+    @Override public void move(int x, int y, int button) {
+      
+    }
+    
+    @Override public void down(int x, int y, int button) {
+      
+    }
+    
+    @Override public void up(int x, int y, int button) {
+      
+    }
+  }
+  
+  private class EntityRenderer extends Image {
+    private Entity _entity;
+    
+    private EntityRenderer(Entity entity) {
+      super(InitFlags.WITH_BACKGROUND);
+      System.out.println(entity);
+      _entity = entity;
+      setWH(_entity.getW(), _entity.getH());
+      setBackgroundColour(1, 0, 1, 1);
+    }
+    
+    @Override public void draw() {
+      _matrix.push();
+      _matrix.translate(_entity.getX(), _entity.getY());
+      drawBegin();
+      drawEnd();
+      _matrix.pop();
+      drawNext();
+    }
   }
 }

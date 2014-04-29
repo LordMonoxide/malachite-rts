@@ -27,9 +27,5 @@ public class World {
         _tile[x1][y1].render();
       }
     }
-    
-    for(Entity entity : _entity) {
-      entity.draw();
-    }
   }
 }

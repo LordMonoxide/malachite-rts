@@ -27,6 +27,7 @@ import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
 import malachite.gui.MainMenu;
+import malachite.world.Entity;
 import malachite.world.World;
 import malachite.world.generators.Rivers;
 
@@ -36,7 +37,9 @@ public class Game {
   }
   
   private static Random _random = new Random(); //TODO: seed
-
+  
+  private Game _this = this;
+  
   private AbstractContext _context;
   
   private MenuInterface _menu;
@@ -175,17 +178,17 @@ public class Game {
     _menu = null;
     
     _world = new Rivers().generate();
+    _game  = new malachite.gui.Game(new GameProxy(), _world);
     addPlayer();
     
-    _game = new malachite.gui.Game(_world);
     ((AbstractGUI)_game).push();
   }
   
   private void addPlayer() {
     Player p = new Player();
     
-    int startX = _random.nextInt(1000) + 100;
-    int startY = _random.nextInt(600) + 100;
+    int startX = _random.nextInt(640) + 320;
+    int startY = _random.nextInt(360) + 180;
     
     for(Settings.Building building : _settings.building) {
       for(int i = 0; i < building.count; i++) {
@@ -197,9 +200,10 @@ public class Game {
     for(Settings.Unit unit : _settings.unit) {
       for(int i = 0; i < unit.count; i++) {
         double theta = _random.nextDouble() * Math.PI * 2;
-        double dist  = _random.nextDouble() * 350 + 100;
+        double dist  = _random.nextDouble() * 150 + 100;
         float unitX = (float)(startX + Math.cos(theta) * dist);
         float unitY = (float)(startY + Math.sin(theta) * dist);
+        System.out.println("Added unit " + (unitX - startX) + ", " + (unitY - startY) + " away from camp");
         addUnit(p, new malachite.Unit(unitX, unitY, unitByID(unit.id)));
       }
     }
@@ -209,12 +213,16 @@ public class Game {
   
   private void addUnit(Player p, malachite.Unit u) {
     p.addUnit(u);
-    _world.addEntity(u.createEntity());
+    Entity e = u.createEntity();
+    _world.addEntity(e);
+    _game.addEntity(e);
   }
   
   private void addBuilding(Player p, malachite.Building b) {
     p.addBuilding(b);
-    _world.addEntity(b.createEntity());
+    Entity e = b.createEntity();
+    _world.addEntity(e);
+    _game.addEntity(e);
   }
   
   public interface MessageInterface {
@@ -329,11 +337,51 @@ public class Game {
   }
   
   public class GameProxy {
+    public Building buildingByID(int id) {
+      return _this.buildingByID(id);
+    }
     
+    public Research researchByID(int id) {
+      return _this.researchByID(id);
+    }
+    
+    public Unit unitByID(int id) {
+      return _this.unitByID(id);
+    }
+    
+    public int buildingCount() {
+      return _building.length;
+    }
+    
+    public int researchCount() {
+      return _research.length;
+    }
+    
+    public int unitCount() {
+      return _unit.length;
+    }
+    
+    public void eachBuilding(BuildingIterator it) {
+      for(Building building : _building) {
+        it.next(building);
+      }
+    }
+    
+    public void eachResearch(ResearchIterator it) {
+      for(Research research : _research) {
+        it.next(research);
+      }
+    }
+    
+    public void eachUnit(UnitIterator it) {
+      for(Unit unit : _unit) {
+        it.next(unit);
+      }
+    }
   }
   
   public interface GameInterface {
-    
+    public void addEntity(Entity entity);
   }
   
   private class ErrorResponse implements API.ErrorResponse {
@@ -368,5 +416,17 @@ public class Game {
       _message.hide();
       _menu.showSecurity();
     }
+  }
+  
+  public interface BuildingIterator {
+    void next(Building building);
+  }
+  
+  public interface ResearchIterator {
+    void next(Research research);
+  }
+  
+  public interface UnitIterator {
+    void next(Unit unit);
   }
 }
