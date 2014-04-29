@@ -1,11 +1,7 @@
 package malachite.gui;
 
-import java.util.ArrayList;
-
-import malachite.Unit;
 import malachite.Game.GameInterface;
 import malachite.engine.gfx.gui.AbstractGUI;
-import malachite.world.Tile;
 import malachite.world.World;
 
 public class Game extends AbstractGUI implements GameInterface {
