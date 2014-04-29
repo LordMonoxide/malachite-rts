@@ -9,6 +9,7 @@ import malachite.engine.net.http.Response;
 public class Lang<T> {
   public static final Lang<AppKeys>  App  = new Lang<>();
   public static final Lang<MenuKeys> Menu = new Lang<>();
+  public static final Lang<GameKeys> Game = new Lang<>();
   
   public static void load() {
     System.out.println("Getting lang..."); //$NON-NLS-1$
@@ -40,6 +41,20 @@ public class Lang<T> {
         @Override public void jsonError(Response r, JSONException e) {
           System.err.println("JSON encoding error getting menu lang:\n" + e + '\n' + r.content()); //$NON-NLS-1$
         }
+      }),
+      
+      API.lang(API.Route.Lang.Game, new API.LangResponse() {
+        @Override public void success(Map<String, String> lang) {
+          Game._lang = lang;
+        }
+        
+        @Override public void error(Response r) {
+          System.err.println(r.content());
+        }
+        
+        @Override public void jsonError(Response r, JSONException e) {
+          System.err.println("JSON encoding error getting menu lang:\n" + e + '\n' + r.content()); //$NON-NLS-1$
+        }
       })
     );
   }
@@ -49,7 +64,11 @@ public class Lang<T> {
   private Lang() { }
   
   public String get(T key, String... substitute) {
+    if(_lang == null) { return key.toString(); }
+    
     String lang = _lang.get(key.toString());
+    
+    if(lang == null) { return key.toString(); }
     
     for(String s : substitute) {
       lang = lang.replaceFirst(":\\w+", s); //$NON-NLS-1$
@@ -109,6 +128,21 @@ public class Lang<T> {
     String _text;
     
     MenuKeys(String text) {
+      _text = text;
+    }
+    
+    @Override
+    public String toString() {
+      return _text;
+    }
+  }
+  
+  public enum GameKeys {
+    MENU_BUILDINGS_TITLE("menu.buildings.title"); //$NON-NLS-1$
+    
+    String _text;
+    
+    GameKeys(String text) {
       _text = text;
     }
     

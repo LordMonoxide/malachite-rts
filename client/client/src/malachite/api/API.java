@@ -414,22 +414,11 @@ public final class API {
     }
     
     public static final class Lang {
-      public static final App  App  = new App();
-      public static final Menu Menu = new Menu();
+      public static final Route App  = new Route("/lang/app" , HttpMethod.GET); //$NON-NLS-1$
+      public static final Route Menu = new Route("/lang/menu", HttpMethod.GET); //$NON-NLS-1$
+      public static final Route Game = new Route("/lang/game", HttpMethod.GET); //$NON-NLS-1$
       
       private Lang() { }
-      
-      public static final class App extends Route {
-        private App() {
-          super("/lang/app", HttpMethod.GET); //$NON-NLS-1$
-        }
-      }
-      
-      public static final class Menu extends Route {
-        private Menu() {
-          super("/lang/menu", HttpMethod.GET); //$NON-NLS-1$
-        }
-      }
     }
     
     public static final class Auth {
