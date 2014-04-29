@@ -135,6 +135,7 @@ public class Button extends AbstractControl<ControlEvents> {
     }
 
     drawEnd();
+    drawNext();
   }
   
   private class HoverHandler extends ControlEvents.Hover {

@@ -167,6 +167,7 @@ public class Check extends AbstractControl<Check.Events> {
     }
 
     drawEnd();
+    drawNext();
   }
   
   private class FocusHandler extends ControlEvents.Focus {

@@ -44,5 +44,6 @@ public class Image extends AbstractControl<ControlEvents> {
     }
 
     drawEnd();
+    drawNext();
   }
 }

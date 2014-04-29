@@ -177,6 +177,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     }
 
     drawEnd();
+    drawNext();
   }
 
   @Override

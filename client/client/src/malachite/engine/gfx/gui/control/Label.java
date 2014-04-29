@@ -87,5 +87,6 @@ public class Label extends AbstractControl<ControlEvents> {
     }
 
     drawEnd();
+    drawNext();
   }
 }

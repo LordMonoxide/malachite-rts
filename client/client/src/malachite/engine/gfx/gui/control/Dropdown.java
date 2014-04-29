@@ -125,6 +125,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
     }
 
     drawEnd();
+    drawNext();
   }
   
   public class Item {

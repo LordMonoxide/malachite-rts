@@ -430,7 +430,9 @@ public abstract class AbstractControl<T extends ControlEvents> {
 
       _matrix.pop();
     }
-
+  }
+  
+  protected final void drawNext() {
     if(_controlNext != null) {
       _controlNext.draw();
     }
@@ -439,6 +441,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
   public void draw() {
     drawBegin();
     drawEnd();
+    drawNext();
   }
 
   public void logic() { }
