@@ -57,6 +57,13 @@ public class Sandbox implements Runnable {
         for(Movable m : _obj) {
           Point p = m.nextDest();
           
+          while(p != null && Math.hypot(p.x - m._x, p.y - m._y) <= m._vel) {
+            m.setX(p.x);
+            m.setY(p.y);
+            m.removeDest(p);
+            p = m.nextDest();
+          }
+          
           if(p != null) {
             double th = Math.atan2(p.y - m._y, p.x - m._x);
             System.out.println(th + '\t' + m._bear);
@@ -69,6 +76,8 @@ public class Sandbox implements Runnable {
             if(m.isStopped()) {
               m.startMoving();
             }
+          } else if(m.isMoving()) {
+            m.stopMoving();
           }
           
           if(m._velTarget != 0) {

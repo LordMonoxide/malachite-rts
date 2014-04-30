@@ -112,4 +112,8 @@ public class Movable {
     
     return _path.getFirst();
   }
+  
+  public boolean removeDest(Point p) {
+    return _path.remove(p);
+  }
 }
