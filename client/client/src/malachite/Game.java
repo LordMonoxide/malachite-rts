@@ -16,6 +16,7 @@ import malachite.api.models.News;
 import malachite.api.models.Research;
 import malachite.api.models.Settings;
 import malachite.api.models.Unit;
+import malachite.buildings.AbstractBuilding;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
 import malachite.engine.gfx.Loader;
@@ -27,6 +28,7 @@ import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
 import malachite.gui.MainMenu;
+import malachite.units.AbstractUnit;
 import malachite.world.Entity;
 import malachite.world.World;
 import malachite.world.generators.Rivers;
@@ -193,7 +195,7 @@ public class Game {
     for(Settings.Building building : _settings.building) {
       for(int i = 0; i < building.count; i++) {
         //TODO: each building starts at the same loc
-        addBuilding(p, new malachite.Building(startX, startY, buildingByID(building.id)));
+        addBuilding(p, AbstractBuilding.Create(buildingByID(building.id), startX, startY));
       }
     }
     
@@ -203,21 +205,21 @@ public class Game {
         double dist  = _random.nextDouble() * 150 + 100;
         float unitX = (float)(startX + Math.cos(theta) * dist);
         float unitY = (float)(startY + Math.sin(theta) * dist);
-        addUnit(p, new malachite.Unit(unitX, unitY, unitByID(unit.id)));
+        addUnit(p, AbstractUnit.Create(unitByID(unit.id), unitX, unitY));
       }
     }
     
     _player.add(p);
   }
   
-  private void addUnit(Player p, malachite.Unit u) {
+  private void addUnit(Player p, malachite.units.AbstractUnit u) {
     p.addUnit(u);
     Entity e = u.createEntity();
     _world.addEntity(e);
     _game.addEntity(e);
   }
   
-  private void addBuilding(Player p, malachite.Building b) {
+  private void addBuilding(Player p, malachite.buildings.AbstractBuilding b) {
     p.addBuilding(b);
     Entity e = b.createEntity();
     _world.addEntity(e);

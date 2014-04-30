@@ -1,10 +1,13 @@
 package malachite.world;
 
 public class Entity {
-  private float _x, _y;
-  private int _w, _h;
+  public final Source source;
   
-  public Entity(float x, float y, int w, int h) {
+  private float  _x, _y;
+  private int    _w, _h;
+  
+  public Entity(Source source, float x, float y, int w, int h) {
+    this.source = source;
     _x = x;
     _y = y;
     _w = w;
@@ -19,5 +22,9 @@ public class Entity {
   @Override
   public String toString() {
     return "Entity @(" + _x + ", " + _y + ") " + _w + "x" + _h + " (" + super.toString() + ')'; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+  }
+  
+  public interface Source {
+    public Entity createEntity();
   }
 }
