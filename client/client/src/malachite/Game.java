@@ -188,11 +188,12 @@ public class Game {
     
     _world = new Rivers().generate();
     _game  = new malachite.gui.Game(new GameProxy(), _world);
-    addPlayer();
-    
-    _sandbox.start();
     
     ((AbstractGUI)_game).push();
+    ((AbstractGUI)_game).events().addLoadHandler(() -> {
+      _sandbox.start();
+      addPlayer();
+    });
   }
   
   private void addPlayer() {
