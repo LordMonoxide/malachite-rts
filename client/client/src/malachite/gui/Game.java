@@ -174,6 +174,7 @@ public class Game extends AbstractGUI implements GameInterface {
     
     @Override public void draw() {
       _matrix.push();
+      _matrix.translate(-_viewX, -_viewY);
       _matrix.translate(_entity.getX(), _entity.getY());
       drawBegin();
       drawEnd();
