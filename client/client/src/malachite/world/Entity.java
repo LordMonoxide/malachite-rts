@@ -1,10 +1,11 @@
 package malachite.world;
 
-public class Entity {
+import malachite.engine.physics.Movable;
+
+public class Entity extends Movable {
   public final Source source;
   
-  private float  _x, _y;
-  private int    _w, _h;
+  private int _w, _h;
   
   public Entity(Source source, float x, float y, int w, int h) {
     this.source = source;
@@ -14,10 +15,8 @@ public class Entity {
     _h = h;
   }
   
-  public float getX() { return _x; }
-  public float getY() { return _y; }
-  public int   getW() { return _w; }
-  public int   getH() { return _h; }
+  public int getW() { return _w; }
+  public int getH() { return _h; }
   
   @Override
   public String toString() {

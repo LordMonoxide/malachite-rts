@@ -12,6 +12,7 @@ import malachite.engine.gfx.gui.control.Button;
 import malachite.engine.gfx.gui.control.Frame;
 import malachite.engine.gfx.gui.control.Image;
 import malachite.engine.gfx.gui.control.Label;
+import malachite.pathfinding.Point;
 import malachite.units.AbstractUnit;
 import malachite.units.Villager;
 import malachite.world.Entity;
@@ -30,7 +31,9 @@ public class Game extends AbstractGUI implements GameInterface {
   private Label    _lblBuildingsMenuTitle;
   private Button[] _btnBuildingsMenuBuilding;
   
-  private ArrayList<Image> _entities = new ArrayList<>();
+  private ArrayList<EntityRenderer> _entities = new ArrayList<>();
+  
+  private Entity[] _selectedEntities;
   
   public Game(GameProxy proxy, World world) {
     _proxy = proxy;
@@ -43,7 +46,7 @@ public class Game extends AbstractGUI implements GameInterface {
     
     _fraGame = new Frame();
     _fraGame.events().addDrawHandler (new GameDrawHandler ());
-    _fraGame.events().addClickHandler(new GameClickHandler());
+    _fraGame.events().addMouseHandler(new GameMouseHandler());
     
     _fraPanel = new Frame();
     _fraPanel.setH(200);
@@ -136,6 +139,8 @@ public class Game extends AbstractGUI implements GameInterface {
   }
   
   public void clickEntity(Entity entity, EntityRenderer renderer) {
+    selectEntities(entity);
+    
     if(entity.source instanceof AbstractBuilding) {
       showBuildingPanel((AbstractBuilding)entity.source);
     }
@@ -166,6 +171,14 @@ public class Game extends AbstractGUI implements GameInterface {
     resize();
   }
   
+  public void selectEntities(Entity... entities) {
+    _selectedEntities = entities;
+  }
+  
+  public void clearSelection() {
+    _selectedEntities = null;
+  }
+  
   private class GameDrawHandler extends ControlEvents.Draw {
     @Override public void draw() {
       _matrix.push();
@@ -182,15 +195,38 @@ public class Game extends AbstractGUI implements GameInterface {
     }
   }
   
-  private class GameClickHandler extends ControlEvents.Click {
-    @Override public void clickDbl() { }
-    @Override public void click() {
-      hidePanel();
+  private class GameMouseHandler extends ControlEvents.Mouse {
+    @Override public void move(int x, int y, int button) {
+      
+    }
+    
+    @Override public void down(int x, int y, int button) {
+      
+    }
+    
+    @Override public void up(int x, int y, int button) {
+      switch(button) {
+        case 0:
+          hidePanel();
+          clearSelection();
+          break;
+          
+        case 1:
+          if(_selectedEntities != null) {
+            for(Entity e : _selectedEntities) {
+              if(e.source instanceof AbstractUnit) {
+                _proxy.moveEntity(e, new Point(x + _viewX, y + _viewY));
+              }
+            }
+          }
+          
+          break;
+      }
     }
   }
   
   private class EntityRenderer extends Image {
-    private Entity _entity;
+    private final Entity entity;
     
     private EntityRenderer(Entity entity) {
       super(
@@ -200,8 +236,8 @@ public class Game extends AbstractGUI implements GameInterface {
       );
       
       System.out.println(entity);
-      _entity = entity;
-      setWH(_entity.getW(), _entity.getH());
+      this.entity = entity;
+      setWH(entity.getW(), entity.getH());
       setBackgroundColour(1, 0, 1, 1);
       
       EntityRenderer t = this;
@@ -214,7 +250,7 @@ public class Game extends AbstractGUI implements GameInterface {
     }
     
     @Override public void draw() {
-      setXY((int)(_entity.getX() - _viewX), (int)(_entity.getY() - _viewY));
+      setXY((int)(entity.getX() - _viewX), (int)(entity.getY() - _viewY));
       drawBegin();
       drawEnd();
       drawNext();

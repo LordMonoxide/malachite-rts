@@ -27,7 +27,10 @@ import malachite.engine.gfx.gl14.Context;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
+import malachite.engine.physics.Sandbox;
 import malachite.gui.MainMenu;
+import malachite.pathfinding.Pathfinder;
+import malachite.pathfinding.Point;
 import malachite.units.AbstractUnit;
 import malachite.world.Entity;
 import malachite.world.World;
@@ -55,6 +58,9 @@ public class Game {
   private World _world;
   private ArrayList<Player> _player = new ArrayList<>();
   
+  private Sandbox    _sandbox = new Sandbox();
+  private Pathfinder _pathfinder = new Pathfinder();
+  
   public void initialize() {
     Request.init();
     Lang.load();
@@ -80,6 +86,7 @@ public class Game {
         @Override
         public void onClosed() {
           Request.destroy();
+          _sandbox.stop();
         }
       });
     });
@@ -183,6 +190,8 @@ public class Game {
     _game  = new malachite.gui.Game(new GameProxy(), _world);
     addPlayer();
     
+    _sandbox.start();
+    
     ((AbstractGUI)_game).push();
   }
   
@@ -217,6 +226,7 @@ public class Game {
     Entity e = u.createEntity();
     _world.addEntity(e);
     _game.addEntity(e);
+    _sandbox.add(e);
   }
   
   private void addBuilding(Player p, malachite.buildings.AbstractBuilding b) {
@@ -378,6 +388,10 @@ public class Game {
       for(Unit unit : _unit) {
         it.next(unit);
       }
+    }
+    
+    public void moveEntity(Entity entity, Point destination) {
+      entity.moveAlong(_pathfinder.findPath(new Point(entity.getX(), entity.getY()), destination));
     }
   }
   

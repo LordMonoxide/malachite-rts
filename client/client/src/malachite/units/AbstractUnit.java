@@ -27,6 +27,9 @@ public abstract class AbstractUnit implements Entity.Source {
     return u;
   }
   
+  public float getX() { return _x; }
+  public float getY() { return _y; }
+  
   @Override
   public Entity createEntity() {
     return new Entity(this, _x, _y, 32, 32);
