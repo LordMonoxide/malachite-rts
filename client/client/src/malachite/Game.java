@@ -203,7 +203,6 @@ public class Game {
         double dist  = _random.nextDouble() * 150 + 100;
         float unitX = (float)(startX + Math.cos(theta) * dist);
         float unitY = (float)(startY + Math.sin(theta) * dist);
-        System.out.println("Added unit " + (unitX - startX) + ", " + (unitY - startY) + " away from camp");
         addUnit(p, new malachite.Unit(unitX, unitY, unitByID(unit.id)));
       }
     }
