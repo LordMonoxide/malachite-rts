@@ -291,10 +291,10 @@ public abstract class AbstractContext {
     int[] colour = {_selectColour[0], _selectColour[1], _selectColour[2], _selectColour[3]};
 
     _selectColour[0]++;
-    if(_selectColour[0] == 255) {
+    if(_selectColour[0] >= 255) {
       _selectColour[0] = 0;
       _selectColour[1]++;
-      if(_selectColour[1] == 255) {
+      if(_selectColour[1] >= 255) {
         _selectColour[1] = 0;
         _selectColour[2]++;
       }
