@@ -51,6 +51,7 @@ public class Game extends AbstractGUI implements GameInterface {
     
     _fraBuildingsMenu = new Frame();
     _fraBuildingsMenu.setH(_fraPanel.getH());
+    _fraBuildingsMenu.hide();
     
     _lblBuildingsMenuTitle = new Label();
     _lblBuildingsMenuTitle.setAutoSize(true);
@@ -161,7 +162,7 @@ public class Game extends AbstractGUI implements GameInterface {
   
   public void hidePanel() {
     _fraPanel.hide();
-    _fraBuildingsMenu.show();
+    _fraBuildingsMenu.hide();
     resize();
   }
   
@@ -213,7 +214,7 @@ public class Game extends AbstractGUI implements GameInterface {
     }
     
     @Override public void draw() {
-      setXY((int)_entity.getX(), (int)_entity.getY());
+      setXY((int)(_entity.getX() - _viewX), (int)(_entity.getY() - _viewY));
       drawBegin();
       drawEnd();
       drawNext();
