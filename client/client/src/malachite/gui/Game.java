@@ -126,9 +126,19 @@ public class Game extends AbstractGUI implements GameInterface {
   
   @Override
   public void addEntity(Entity entity) {
-    Image i = new EntityRenderer(entity);
+    EntityRenderer i = new EntityRenderer(entity);
     _fraGame.controls().add(i);
     _entities.add(i);
+  }
+  
+  public void clickEntity(Entity entity, EntityRenderer renderer) {
+    showVillagerPanel();
+  }
+  
+  public void showVillagerPanel() {
+    _fraPanel.show();
+    _fraBuildingsMenu.show();
+    resize();
   }
   
   private class GameDrawHandler extends ControlEvents.Draw {
@@ -165,20 +175,30 @@ public class Game extends AbstractGUI implements GameInterface {
     private Entity _entity;
     
     private EntityRenderer(Entity entity) {
-      super(InitFlags.WITH_BACKGROUND);
+      super(
+        InitFlags.WITH_BACKGROUND,
+        InitFlags.WITH_DEFAULT_EVENTS,
+        InitFlags.REGISTER
+      );
+      
       System.out.println(entity);
       _entity = entity;
       setWH(_entity.getW(), _entity.getH());
       setBackgroundColour(1, 0, 1, 1);
+      
+      EntityRenderer t = this;
+      events().addClickHandler(new ControlEvents.Click() {
+        @Override public void clickDbl() { }
+        @Override public void click() {
+          clickEntity(entity, t);
+        }
+      });
     }
     
     @Override public void draw() {
-      _matrix.push();
-      _matrix.translate(-_viewX, -_viewY);
-      _matrix.translate(_entity.getX(), _entity.getY());
+      setXY((int)_entity.getX(), (int)_entity.getY());
       drawBegin();
       drawEnd();
-      _matrix.pop();
       drawNext();
     }
   }
