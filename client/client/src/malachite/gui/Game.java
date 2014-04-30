@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import malachite.Game.GameInterface;
 import malachite.Game.GameProxy;
 import malachite.api.Lang;
+import malachite.buildings.AbstractBuilding;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.control.Button;
 import malachite.engine.gfx.gui.control.Frame;
 import malachite.engine.gfx.gui.control.Image;
 import malachite.engine.gfx.gui.control.Label;
+import malachite.units.AbstractUnit;
+import malachite.units.Villager;
 import malachite.world.Entity;
 import malachite.world.World;
 
@@ -40,7 +43,7 @@ public class Game extends AbstractGUI implements GameInterface {
     
     _fraGame = new Frame();
     _fraGame.events().addDrawHandler (new GameDrawHandler ());
-    _fraGame.events().addMouseHandler(new GameMouseHandler());
+    _fraGame.events().addClickHandler(new GameClickHandler());
     
     _fraPanel = new Frame();
     _fraPanel.setH(200);
@@ -132,11 +135,32 @@ public class Game extends AbstractGUI implements GameInterface {
   }
   
   public void clickEntity(Entity entity, EntityRenderer renderer) {
-    showVillagerPanel();
+    if(entity.source instanceof AbstractBuilding) {
+      showBuildingPanel((AbstractBuilding)entity.source);
+    }
+    
+    if(entity.source instanceof AbstractUnit) {
+      showUnitPanel((AbstractUnit)entity.source);
+    }
   }
   
-  public void showVillagerPanel() {
+  public void showBuildingPanel(AbstractBuilding building) {
     _fraPanel.show();
+    resize();
+  }
+  
+  public void showUnitPanel(AbstractUnit unit) {
+    _fraPanel.show();
+    
+    if(unit instanceof Villager) {
+      _fraBuildingsMenu.show();
+    }
+    
+    resize();
+  }
+  
+  public void hidePanel() {
+    _fraPanel.hide();
     _fraBuildingsMenu.show();
     resize();
   }
@@ -157,17 +181,10 @@ public class Game extends AbstractGUI implements GameInterface {
     }
   }
   
-  private class GameMouseHandler extends ControlEvents.Mouse {
-    @Override public void move(int x, int y, int button) {
-      
-    }
-    
-    @Override public void down(int x, int y, int button) {
-      
-    }
-    
-    @Override public void up(int x, int y, int button) {
-      
+  private class GameClickHandler extends ControlEvents.Click {
+    @Override public void clickDbl() { }
+    @Override public void click() {
+      hidePanel();
     }
   }
   
