@@ -2,6 +2,8 @@ package malachite.gui;
 
 import java.util.ArrayList;
 
+import org.lwjgl.input.Keyboard;
+
 import malachite.Game.GameInterface;
 import malachite.Game.GameProxy;
 import malachite.api.Lang;
@@ -20,6 +22,8 @@ import malachite.world.World;
 
 public class Game extends AbstractGUI implements GameInterface {
   private GameProxy _proxy;
+  
+  private PauseMenu _pause;
   
   World _world;
   float _viewX, _viewY;
@@ -43,6 +47,8 @@ public class Game extends AbstractGUI implements GameInterface {
   @Override
   protected void load() {
     _context.setBackColour(0, 0, 0, 1);
+    
+    _pause = new PauseMenu(_proxy);
     
     _fraGame = new Frame();
     _fraGame.events().addDrawHandler (new GameDrawHandler ());
@@ -177,6 +183,17 @@ public class Game extends AbstractGUI implements GameInterface {
   
   public void clearSelection() {
     _selectedEntities = null;
+  }
+  
+  @Override
+  protected boolean handleKeyUp(int key)  {
+    switch(key) {
+      case Keyboard.KEY_ESCAPE:
+        _pause.push();
+        return true;
+    }
+    
+    return false;
   }
   
   private class GameDrawHandler extends ControlEvents.Draw {

@@ -349,6 +349,10 @@ public class Game {
   }
   
   public class GameProxy {
+    public void quit() {
+      _context.destroy();
+    }
+    
     public Building buildingByID(int id) {
       return _this.buildingByID(id);
     }
