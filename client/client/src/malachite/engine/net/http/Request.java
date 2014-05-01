@@ -28,21 +28,24 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder.ErrorDataEncoderException;
 import io.netty.util.CharsetUtil;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.OutputStreamWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class Request {
   private static final String URL = "malachite.monoxidedesign.com"; //$NON-NLS-1$
   private static final String RoutePrefix = "/api"; //$NON-NLS-1$
   private static final String CookieDir = "cookies/"; //$NON-NLS-1$
-
+  
   private static EventLoopGroup _group;
   private static Bootstrap _bootstrap;
   
@@ -55,8 +58,25 @@ public class Request {
   
   public static void destroy() {
     _group.shutdownGracefully();
+    
+    File dir = new File(CookieDir + URL);
+    if(dir.exists()) {
+      for(File f : dir.listFiles()) {
+        Properties p = new Properties();
+        
+        try(FileInputStream fs = new FileInputStream(f)) {
+          p.load(fs);
+        } catch(IOException ex) {
+          continue;
+        }
+        
+        if(p.getProperty("expires") == null) { //$NON-NLS-1$
+          f.delete();
+        }
+      }
+    }
   }
-
+  
   public static void init() {
     _cb = new HashMap<>();
     
@@ -66,24 +86,57 @@ public class Request {
     .channel(NioSocketChannel.class)
     .handler(new ChannelInitializer<SocketChannel>() {
       private boolean _chunked;
-
+      
       @Override
       protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast(new HttpClientCodec(), new SimpleChannelInboundHandler<HttpObject>() {
           private Response r;
-
+          
           @Override
           protected void messageReceived(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
             if(msg instanceof HttpResponse) {
               HttpResponse response = (HttpResponse)msg;
-
+              
               r = new Response();
               r._response = response;
-
-              if(response.headers().contains(HttpHeaders.Names.SET_COOKIE)) {
-                try(OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream(CookieDir + URL))) {
-                  o.write(response.headers().get(HttpHeaders.Names.SET_COOKIE));
+              
+              for(Map.Entry<String, String> header : response.headers()) {
+                if(header.getKey().equals(HttpHeaders.Names.SET_COOKIE.toString())) {
+                  String[] parts = header.getValue().split("; "); //$NON-NLS-1$
+                  String[] kv = parts[0].split("="); //$NON-NLS-1$
+                  
+                  File file = new File(CookieDir + URL + '/' + kv[0]);
+                  file.getParentFile().mkdirs();
+                  file.createNewFile();
+                  
+                  Properties p = new Properties();
+                  
+                  try(FileInputStream fs = new FileInputStream(file)) {
+                    p.load(fs);
+                  }
+                  
+                  boolean hasExpiry = false;
+                  boolean hasHttpOnly = false;
+                  for(String part : parts) {
+                    kv = part.split("="); //$NON-NLS-1$
+                    
+                    if(kv[0].equals("expires" )) { hasExpiry   = true; } //$NON-NLS-1$
+                    if(kv[0].equals("httponly")) { hasHttpOnly = true; } //$NON-NLS-1$
+                    
+                    if(kv.length == 1) {
+                      p.setProperty(kv[0], kv[0]);
+                    } else {
+                      p.setProperty(kv[0], kv[1]);
+                    }
+                  }
+                  
+                  if(!hasExpiry  ) { p.remove("expires" ); } //$NON-NLS-1$
+                  if(!hasHttpOnly) { p.remove("httponly"); } //$NON-NLS-1$
+                  
+                  try(FileOutputStream fs = new FileOutputStream(file)) {
+                    p.store(fs, null);
+                  }
                 }
               }
               
@@ -96,17 +149,17 @@ public class Request {
               HttpContent chunk = (HttpContent)msg;
               
               r._content += chunk.content().toString(CharsetUtil.UTF_8);
-
+              
               if(chunk instanceof LastHttpContent) {
                 if(_chunked) {
                   _chunked = false;
                 }
-
+                
                 _cb.remove(ctx.channel()).onResponse(r);
               }
             }
           }
-
+          
           @Override
           public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             cause.printStackTrace();
@@ -116,11 +169,11 @@ public class Request {
       }
     });
   }
-
+  
   public void setRoute(String route) throws URISyntaxException {
     _uri = new URI(route);
   }
-
+  
   public void setMethod(HttpMethod method) {
     _method = method;
   }
@@ -138,7 +191,7 @@ public class Request {
   public void setData(Map<String, String> data) {
     _data = data;
   }
-
+  
   public void dispatch(Callback cb) {
     _bootstrap.connect(URL, 80).addListener(new ChannelFutureListener() {
       @Override
@@ -164,9 +217,28 @@ public class Request {
         
         request.headers().set(HttpHeaders.Names.HOST, URL);
         
-        try(BufferedReader br = new BufferedReader(new FileReader(CookieDir + URL))) {
-          request.headers().set(HttpHeaders.Names.COOKIE, br.readLine());
-        } catch(FileNotFoundException e) { }
+        File dir = new File(CookieDir + URL);
+        if(dir.exists()) {
+          for(File f : dir.listFiles()) {
+            Properties p = new Properties();
+            
+            try(FileInputStream fs = new FileInputStream(f)) {
+              p.load(fs);
+            }
+            
+            String expires = p.getProperty("expires"); //$NON-NLS-1$
+            if(expires != null) {
+              DateFormat df = new SimpleDateFormat("EEE, dd-MMM-yyyy kk:mm:ss z"); //$NON-NLS-1$
+              Date d = df.parse(expires);
+              if(d.before(new Date())) {
+                f.delete();
+                continue;
+              }
+            }
+            
+            request.headers().set(HttpHeaders.Names.COOKIE, f.getName() + '=' + p.getProperty(f.getName()));
+          }
+        }
         
         if(_header != null) {
           for(Map.Entry<CharSequence, Object> e : _header.entrySet()) {
@@ -199,7 +271,7 @@ public class Request {
           ch.write(request);
           ch.writeAndFlush(post);
         }
-
+        
         System.out.println(ch);
         _cb.put(ch, cb);
       }
