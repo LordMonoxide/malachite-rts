@@ -186,7 +186,6 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
     if(_caretPulse <= Time.get()) {
       resetCaretAlpha();
-      _caretPulse = Time.get() + Time.MSToTicks(1000);
     }
   }
 
@@ -200,6 +199,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   private void resetCaretAlpha() {
     _caret.getColour()[3] = 1;
+    _caretPulse = Time.get() + Time.MSToTicks(1000);
   }
 
   private class KeyHandler extends ControlEvents.Key {
@@ -241,6 +241,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     public void got() {
       _border.setColour(_hoverBorder);
       _border.createBorder();
+      resetCaretAlpha();
     }
 
     @Override
