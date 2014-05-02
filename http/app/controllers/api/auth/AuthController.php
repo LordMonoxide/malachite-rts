@@ -9,6 +9,7 @@ use Response;
 use Validator;
 
 use User;
+use UserInfo;
 
 class AuthController extends Controller {
   public function __construct() {
@@ -37,7 +38,7 @@ class AuthController extends Controller {
       $user->name_last  = Input::get('name_last');
       $user->save();
       
-      $userInfo = new UserForumInfo;
+      $userInfo = new UserInfo;
       $userInfo->user_id = $user->id;
       $userInfo->save();
       
