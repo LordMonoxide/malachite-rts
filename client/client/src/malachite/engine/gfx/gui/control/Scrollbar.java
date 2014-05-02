@@ -54,8 +54,8 @@ public class Scrollbar extends AbstractControl<Scrollbar.Events> {
       _dec.setXYWH(0, 0, _w / 2, _h);
       _inc.setXYWH(_dec.getW(), 0, _w - _dec.getW(), _h);
     } else {
-      _inc.setXYWH(0, 0, _w, _h / 2);
-      _dec.setXYWH(0, _dec.getH(), _w, _h - _dec.getH());
+      _dec.setXYWH(0, 0, _w, _h / 2);
+      _inc.setXYWH(0, _dec.getH(), _w, _h - _dec.getH());
     }
   }
 
