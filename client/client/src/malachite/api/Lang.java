@@ -64,11 +64,17 @@ public class Lang<T> {
   private Lang() { }
   
   public String get(T key, String... substitute) {
-    if(_lang == null) { return key.toString(); }
+    if(_lang == null) {
+      System.err.println("Missing lang"); //$NON-NLS-1$
+      return key.toString();
+    }
     
     String lang = _lang.get(key.toString());
     
-    if(lang == null) { return key.toString(); }
+    if(lang == null) {
+      System.err.println("Missing lang mapping for " + key); //$NON-NLS-1$
+      return key.toString();
+    }
     
     for(String s : substitute) {
       lang = lang.replaceFirst(":\\w+", s); //$NON-NLS-1$
@@ -113,10 +119,14 @@ public class Lang<T> {
     LOGIN_LOGIN   ("login.login"),    //$NON-NLS-1$
     LOGIN_REGISTER("login.register"), //$NON-NLS-1$
     
-    REGISTER_TITLE  ("register.title"),   //$NON-NLS-1$
-    REGISTER_EMAIL  ("register.email"),   //$NON-NLS-1$
-    REGISTER_PASS   ("register.pass"),    //$NON-NLS-1$
-    REGISTER_CONFIRM("register.confirm"), //$NON-NLS-1$
+    REGISTER_TITLE   ("register.title"),    //$NON-NLS-1$
+    REGISTER_EMAIL   ("register.email"),    //$NON-NLS-1$
+    REGISTER_PASS    ("register.pass"),     //$NON-NLS-1$
+    REGISTER_CONFIRM ("register.confirm"),  //$NON-NLS-1$
+    REGISTER_SECURITY("register.security"), //$NON-NLS-1$
+    REGISTER_QUESTION("register.question"), //$NON-NLS-1$
+    REGISTER_ANSWER  ("register.answer"),   //$NON-NLS-1$
+    REGISTER_SUBMIT  ("register.submit"),   //$NON-NLS-1$
     
     MAINMENU_TITLE ("mainmenu.title"),  //$NON-NLS-1$
     MAINMENU_PLAY  ("mainmenu.play"),   //$NON-NLS-1$

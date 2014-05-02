@@ -25,10 +25,14 @@ return [
   'login.register' => 'Register...',
   
   // Register menu
-  'register.title'   => 'Register',
-  'register.email'   => 'Email',
-  'register.pass'    => 'Password',
-  'register.confirm' => 'Confirm Password',
+  'register.title'    => 'Register',
+  'register.email'    => 'Email',
+  'register.pass'     => 'Password',
+  'register.confirm'  => 'Confirm Password',
+  'register.security' => 'Security Question :num of :total',
+  'register.question' => 'Security Question :num',
+  'register.answer'   => 'Security Question Answer :num',
+  'register.submit'   => 'Register',
   
   // Main menu
   'mainmenu.title'  => 'Main Menu',
