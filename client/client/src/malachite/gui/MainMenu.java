@@ -78,6 +78,12 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
         _lblInfo.setWH(_fraInfo.getW() - _lblInfo.getX() * 2, _fraInfo.getH() - _lblInfo.getY() * 2);
       }
     });
+    
+    _wndLogin.events().addCloseHandler(new Window.Events.Close() {
+      @Override public void close() {
+        _proxy.quit();
+      }
+    });
 
     _txtEmail = new Textbox();
     _txtEmail.setXY(4, 4);
@@ -99,8 +105,10 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnLogin.setWH(50, 20);
     _btnLogin.setText(Lang.Menu.get(MenuKeys.LOGIN_LOGIN));
     _btnLogin.events().addClickHandler(new ControlEvents.Click() {
-      @Override public void click()    { _proxy.login(_txtEmail.getText(), _txtPass.getText()); }
       @Override public void clickDbl() { }
+      @Override public void click() {
+        _proxy.login(_txtEmail.getText(), _txtPass.getText());
+      }
     });
 
     _btnRegister = new Button();
@@ -108,13 +116,11 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnRegister.setWH(80, 20);
     _btnRegister.setText(Lang.Menu.get(MenuKeys.LOGIN_REGISTER));
     _btnRegister.events().addClickHandler(new ControlEvents.Click() {
-      @Override
-      public void click() {
-        _wndLogin.hide();
-        _wndRegister.show();
-      }
-
       @Override public void clickDbl() { }
+      @Override public void click() {
+        hideLogin();
+        showRegister();
+      }
     });
 
     _fraInfo = new Frame();
@@ -143,6 +149,13 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
         for(Textbox t : _txtRegisterSecurityAnswer) {
           t.setW(_wndRegister.getContentW() - t.getX() * 2);
         }
+      }
+    });
+    
+    _wndRegister.events().addCloseHandler(new Window.Events.Close() {
+      @Override public void close() {
+        hideRegister();
+        showLogin();
       }
     });
 
@@ -184,6 +197,13 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
       public void resize() {
         _btnPlay  .setX((_wndMainMenu.getContentW() - _btnPlay  .getW()) / 2);
         _btnLogout.setX((_wndMainMenu.getContentW() - _btnLogout.getW()) / 2);
+      }
+    });
+    
+    _wndMainMenu.events().addCloseHandler(new Window.Events.Close() {
+      @Override public void close() {
+        _wndMainMenu.hide();
+        _proxy.logout();
       }
     });
     

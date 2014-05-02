@@ -243,6 +243,10 @@ public class Game {
   }
   
   public class MenuProxy {
+    public void quit() {
+      _context.destroy();
+    }
+    
     public void login(String email, String pass) {
       MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_LOGGINGIN);
       _menu.hideLogin();
