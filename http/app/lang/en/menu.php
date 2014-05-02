@@ -4,6 +4,7 @@ return [
   // Status
   'status.loading'      => 'Loading...',
   'status.connecting'   => 'Connecting...',
+  'status.registering'  => 'Registering...',
   'status.loggingin'    => 'Logging in...',
   'status.loggingout'   => 'Logging out...',
   'status.gettingchars' => 'Getting characters...',
@@ -13,7 +14,7 @@ return [
   'status.loadinggame'  => 'Loading game...',
   
   // News
-  'news.gettingsnews' => 'Getting news...',
+  'news.gettingnews' => 'Getting news...',
   'news.nonews'       => 'There is no recent news.',
   
   // Login menu
@@ -25,14 +26,18 @@ return [
   'login.register' => 'Register...',
   
   // Register menu
-  'register.title'    => 'Register',
-  'register.email'    => 'Email',
-  'register.pass'     => 'Password',
-  'register.confirm'  => 'Confirm Password',
-  'register.security' => 'Security Question :num of :total',
-  'register.question' => 'Security Question :num',
-  'register.answer'   => 'Security Question Answer :num',
-  'register.submit'   => 'Register',
+  'register.title'     => 'Register',
+  'register.creds'     => 'Login Credentials',
+  'register.email'     => 'Email',
+  'register.pass'      => 'Password',
+  'register.confirm'   => 'Confirm Password',
+  'register.personal'  => 'Personal Information',
+  'register.namefirst' => 'First Name',
+  'register.namelast'  => 'Last Name',
+  'register.security'  => 'Security Question :num of :total',
+  'register.question'  => 'Security Question :num',
+  'register.answer'    => 'Security Question Answer :num',
+  'register.submit'    => 'Register',
   
   // Main menu
   'mainmenu.title'  => 'Main Menu',
