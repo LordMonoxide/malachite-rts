@@ -69,6 +69,12 @@ public class Window extends AbstractControl<Window.Events> {
     _text.setX(4);
     _text.setTextColour(1, 1, 1, 1);
     _text.setAutoSize(true);
+    _text.events().addResizeHandler(new ControlEvents.Resize() {
+      @Override public void resize() {
+        _text.setY((_title.getH() - _text.getH()) / 2);
+      }
+    });
+    
     _title.controls().add(_text);
 
     _close = new Button();
@@ -134,7 +140,6 @@ public class Window extends AbstractControl<Window.Events> {
   
   public void setText(String text) {
     _text.setText(text);
-    _text.setY((_title.getH() - _text.getH()) / 2);
   }
   
   public int getContentW() {
