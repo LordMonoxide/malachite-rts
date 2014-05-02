@@ -131,20 +131,28 @@ public class Window extends AbstractControl<Window.Events> {
   public String getText() {
     return _text.getText();
   }
-
+  
   public void setText(String text) {
     _text.setText(text);
     _text.setY((_title.getH() - _text.getH()) / 2);
   }
-
+  
   public int getContentW() {
     return _content.getW();
   }
-
+  
   public int getContentH() {
     return _content.getH();
   }
-
+  
+  public void showCloseButton() {
+    _close.show();
+  }
+  
+  public void hideCloseButton() {
+    _close.hide();
+  }
+  
   public static class Events extends ControlEvents {
     private Deque<Close> _close = new ConcurrentLinkedDeque<>();
 
