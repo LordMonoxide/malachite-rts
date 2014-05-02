@@ -18,6 +18,8 @@ import malachite.engine.gfx.textures.Texture;
 import malachite.engine.net.http.Response;
 
 public class MainMenu extends AbstractGUI implements Game.MenuInterface {
+  private MainMenu _this = this;
+  
   private Game.MenuProxy _proxy;
   
   private ArrayList<Message> _message = new ArrayList<>();
@@ -33,10 +35,17 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   private Label     _lblInfo;
   
   private Window    _wndRegister;
+  private Label     _lblRegisterCreds;
   private Textbox   _txtRegisterEmail;
   private Textbox[] _txtRegisterPass = new Textbox[2];
+  private Label     _lblRegisterPersonal;
+  private Textbox   _txtRegisterNameFirst;
+  private Textbox   _txtRegisterNameLast;
+  private Label     _lblRegisterSecurity;
   private Textbox[] _txtRegisterSecurityQuestion = new Textbox[3];
   private Textbox[] _txtRegisterSecurityAnswer = new Textbox[3];
+  private Scrollbar _scrRegisterSecurity;
+  private Button    _btnRegisterSubmit;
   
   private Window _wndMainMenu;
   private Button _btnPlay;
@@ -138,17 +147,39 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndRegister.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
       public void resize() {
+        _txtRegisterEmail.setXY(_lblRegisterCreds.getX(), _lblRegisterCreds.getY() + _lblRegisterCreds.getH() + 4);
+        _txtRegisterPass[0].setXY(_txtRegisterEmail.getX(), _txtRegisterEmail.getY() + _txtRegisterEmail.getH() + 8);
+        _txtRegisterPass[1].setXY(_txtRegisterPass[0].getX(), _txtRegisterPass[0].getY() + _txtRegisterPass[0].getH() + 6);
+        
+        _lblRegisterPersonal.setXY(_txtRegisterPass[1].getX(), _txtRegisterPass[1].getY() + _txtRegisterPass[1].getH() + 8);
+        _txtRegisterNameFirst.setXY(_lblRegisterPersonal.getX(), _lblRegisterPersonal.getY() + _lblRegisterPersonal.getH() + 4);
+        _txtRegisterNameLast.setXY(_txtRegisterNameFirst.getX(), _txtRegisterNameFirst.getY() + _txtRegisterNameFirst.getH() + 8);
+        
+        _lblRegisterSecurity.setXY(_txtRegisterNameLast.getX(), _txtRegisterNameLast.getY() + _txtRegisterNameLast.getH() + 8);
+        
+        int x = _txtRegisterPass[1].getX();
+        int y = _lblRegisterSecurity.getY() + _lblRegisterSecurity.getH() + 4;
+        for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
+          _txtRegisterSecurityQuestion[i].setXY(x, y);
+          _txtRegisterSecurityAnswer  [i].setXY(x, y + _txtRegisterSecurityQuestion[i].getH() + 6);
+        }
+        
         _txtRegisterEmail.setW(_wndRegister.getContentW() - _txtRegisterEmail.getX() * 2);
         _txtRegisterPass[0].setW(_wndRegister.getContentW() - _txtRegisterPass[0].getX() * 2);
         _txtRegisterPass[1].setW(_wndRegister.getContentW() - _txtRegisterPass[1].getX() * 2);
+        _txtRegisterNameFirst.setW(_wndRegister.getContentW() - _txtRegisterNameFirst.getX() * 2);
+        _txtRegisterNameLast .setW(_wndRegister.getContentW() - _txtRegisterNameLast .getX() * 2);
         
         for(Textbox t : _txtRegisterSecurityQuestion) {
-          t.setW(_wndRegister.getContentW() - t.getX() * 2);
+          t.setW(_wndRegister.getContentW() - t.getX() * 2 - _scrRegisterSecurity.getW());
         }
         
         for(Textbox t : _txtRegisterSecurityAnswer) {
-          t.setW(_wndRegister.getContentW() - t.getX() * 2);
+          t.setW(_wndRegister.getContentW() - t.getX() * 2 - _scrRegisterSecurity.getW());
         }
+        
+        _scrRegisterSecurity.setXY(_txtRegisterSecurityQuestion[0].getX() + _txtRegisterSecurityQuestion[0].getW(), _txtRegisterSecurityQuestion[0].getY());
+        _btnRegisterSubmit.setXY(_scrRegisterSecurity.getX() + _scrRegisterSecurity.getW() - _btnRegisterSubmit.getW(), _txtRegisterSecurityAnswer[_txtRegisterSecurityAnswer.length - 1].getY() + _txtRegisterSecurityAnswer[_txtRegisterSecurityAnswer.length - 1].getH() + 8);
       }
     });
     
@@ -158,34 +189,91 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
         showLogin();
       }
     });
-
+    
+    ControlEvents.Resize onResize = new ControlEvents.Resize() {
+      @Override public void resize() {
+        _this.resize();
+      }
+    };
+    
+    _lblRegisterCreds = new Label();
+    _lblRegisterCreds.setX(4);
+    _lblRegisterCreds.setAutoSize(true);
+    _lblRegisterCreds.setText(Lang.Menu.get(MenuKeys.REGISTER_CREDS));
+    _lblRegisterCreds.events().addResizeHandler(onResize);
+    
     _txtRegisterEmail = new Textbox();
-    _txtRegisterEmail.setXY(4, 4);
     _txtRegisterEmail.setH(20);
     _txtRegisterEmail.setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_EMAIL));
 
     _txtRegisterPass[0] = new Textbox();
-    _txtRegisterPass[0].setXY(_txtRegisterEmail.getX(), _txtRegisterEmail.getY() + _txtRegisterEmail.getH() + 8);
     _txtRegisterPass[0].setH(20);
     _txtRegisterPass[0].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_PASS));
     _txtRegisterPass[0].setMasked(true);
 
     _txtRegisterPass[1] = new Textbox();
-    _txtRegisterPass[1].setXY(_txtRegisterPass[0].getX(), _txtRegisterPass[0].getY() + _txtRegisterPass[0].getH() + 8);
     _txtRegisterPass[1].setH(20);
     _txtRegisterPass[1].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_CONFIRM));
     _txtRegisterPass[1].setMasked(true);
     
-    int x = _txtRegisterPass[1].getX();
-    int y = _txtRegisterPass[1].getY() + 8;
+    _lblRegisterPersonal = new Label();
+    _lblRegisterPersonal.setAutoSize(true);
+    _lblRegisterPersonal.setText(Lang.Menu.get(MenuKeys.REGISTER_PERSONAL));
+    _lblRegisterPersonal.events().addResizeHandler(onResize);
+    
+    _txtRegisterNameFirst = new Textbox();
+    _txtRegisterNameFirst.setH(20);
+    _txtRegisterNameFirst.setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_NAMEFIRST));
+    
+    _txtRegisterNameLast = new Textbox();
+    _txtRegisterNameLast.setH(20);
+    _txtRegisterNameLast.setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_NAMELAST));
+    
+    _lblRegisterSecurity = new Label();
+    _lblRegisterSecurity.setAutoSize(true);
+    _lblRegisterSecurity.setText(Lang.Menu.get(MenuKeys.REGISTER_SECURITY, String.valueOf(1), String.valueOf(_txtRegisterSecurityQuestion.length)));
+    _lblRegisterSecurity.events().addResizeHandler(onResize);
+    
+    _scrRegisterSecurity = new Scrollbar();
+    _scrRegisterSecurity.setWH(20, 48);
+    _scrRegisterSecurity.setMax(_txtRegisterSecurityQuestion.length - 1);
+    _scrRegisterSecurity.events().addChangeHandler(new Scrollbar.Events.Change() {
+      @Override public void change(int val) {
+        for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
+          _txtRegisterSecurityQuestion[i].hide();
+          _txtRegisterSecurityAnswer  [i].hide();
+        }
+        
+        _lblRegisterSecurity.setText(Lang.Menu.get(MenuKeys.REGISTER_SECURITY, String.valueOf(val + 1), String.valueOf(_txtRegisterSecurityQuestion.length)));
+        
+        _txtRegisterSecurityQuestion[val].show();
+        _txtRegisterSecurityAnswer  [val].show();
+      }
+    });
+    
     for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
       _txtRegisterSecurityQuestion[i] = new Textbox();
       _txtRegisterSecurityAnswer  [i] = new Textbox();
       _txtRegisterSecurityQuestion[i].setH(20);
       _txtRegisterSecurityAnswer  [i].setH(20);
-      _txtRegisterSecurityQuestion[i].setXY(x, y += (_txtRegisterSecurityQuestion[i].getH() + 12));
-      _txtRegisterSecurityAnswer  [i].setXY(x, y += (_txtRegisterSecurityAnswer  [i].getH() + 6));
+      _txtRegisterSecurityQuestion[i].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_QUESTION, String.valueOf(i + 1)));
+      _txtRegisterSecurityAnswer  [i].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_ANSWER  , String.valueOf(i + 1)));
+      _txtRegisterSecurityQuestion[i].hide();
+      _txtRegisterSecurityAnswer  [i].hide();
     }
+    
+    _txtRegisterSecurityQuestion[0].show();
+    _txtRegisterSecurityAnswer  [0].show();
+    
+    _btnRegisterSubmit = new Button();
+    _btnRegisterSubmit.setWH(_btnRegister.getW(), _btnRegister.getH());
+    _btnRegisterSubmit.setText(Lang.Menu.get(MenuKeys.REGISTER_SUBMIT));
+    _btnRegisterSubmit.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        _proxy.register(_txtRegisterEmail.getText(), _txtRegisterPass[0].getText(), _txtRegisterPass[1].getText(), _txtRegisterNameFirst.getText(), _txtRegisterNameLast.getText());
+      }
+    });
 
     _wndMainMenu = new Window();
     _wndMainMenu.setWH(400, 300);
@@ -243,10 +331,17 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndLogin.controls().add(_btnLogin);
     _wndLogin.controls().add(_btnRegister);
     _wndLogin.controls().add(_fraInfo);
-
+    
+    _wndRegister.controls().add(_lblRegisterCreds);
     _wndRegister.controls().add(_txtRegisterEmail);
     _wndRegister.controls().add(_txtRegisterPass[0]);
     _wndRegister.controls().add(_txtRegisterPass[1]);
+    _wndRegister.controls().add(_lblRegisterPersonal);
+    _wndRegister.controls().add(_txtRegisterNameFirst);
+    _wndRegister.controls().add(_txtRegisterNameLast);
+    _wndRegister.controls().add(_lblRegisterSecurity);
+    _wndRegister.controls().add(_scrRegisterSecurity);
+    _wndRegister.controls().add(_btnRegisterSubmit);
     
     for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
       _wndRegister.controls().add(_txtRegisterSecurityQuestion[i]);

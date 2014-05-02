@@ -247,6 +247,29 @@ public class Game {
       _context.destroy();
     }
     
+    public void register(String email, String pass, String pass2, String nameFirst, String nameLast) {
+      MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_REGISTERING);
+      _menu.hideRegister();
+      
+      class R extends GenericResponse implements API.RegisterResponse {
+        R() { super(m); }
+        
+        @Override
+        public void success() {
+          m.hide();
+          _menu.showMainMenu();
+        }
+        
+        @Override public void invalid(JSONObject errors) {
+          m.hide();
+          _menu.showRegister();
+          System.err.println(errors); //TODO
+        }
+      }
+      
+      API.Auth.register(email, pass, pass2, nameFirst, nameLast, new R());
+    }
+    
     public void login(String email, String pass) {
       MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_LOGGINGIN);
       _menu.hideLogin();
@@ -262,7 +285,7 @@ public class Game {
         @Override public void invalid(JSONObject errors) {
           m.hide();
           _menu.showLogin();
-          System.err.println(errors);
+          System.err.println(errors); //TODO
         }
       }
       
