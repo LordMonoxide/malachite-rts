@@ -15,6 +15,8 @@ public class Label extends AbstractControl<ControlEvents> {
   private boolean _autoSize;
   
   public Label() {
+    super(InitFlags.WITH_DEFAULT_EVENTS);
+    
     _textStream.insert(_textColour);
     _textStream.insert(_text);
   }
