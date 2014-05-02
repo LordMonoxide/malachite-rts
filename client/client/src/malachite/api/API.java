@@ -80,7 +80,38 @@ public final class API {
       
       return f;
     }
-  
+    
+    public static APIFuture register(String email, String password, String password2, String nameFirst, String nameLast, RegisterResponse cb) {
+      APIFuture f = new APIFuture();
+      
+      Map<String, String> data = new HashMap<>();
+      data.put(User.DB_EMAIL, email);
+      data.put(User.DB_PASSWORD, password);
+      data.put(User.DB_PASSWORD_CONFIRMATION, password2);
+      data.put(User.DB_NAME_FIRST, nameFirst);
+      data.put(User.DB_NAME_LAST, nameLast);
+      
+      dispatch(Route.Auth.Register, data, resp -> {
+        try {
+          if(resp.succeeded()) {
+            cb.success();
+          } else {
+            if(resp.response().getStatus().code() == 409) {
+              cb.invalid(resp.toJSON());
+            } else {
+              checkGeneric(resp, cb);
+            }
+          }
+        } catch(JSONException e) {
+          cb.jsonError(resp, e);
+        }
+        
+        f.complete();
+      });
+      
+      return f;
+    }
+    
     public static APIFuture login(String email, String password, LoginResponse cb) {
       APIFuture f = new APIFuture();
       
@@ -359,6 +390,11 @@ public final class API {
   
   public interface CheckResponse extends GenericResponse {
     public abstract void loggedIn();
+  }
+  
+  public interface RegisterResponse extends GenericResponse {
+    public abstract void success();
+    public abstract void invalid(JSONObject errors);
   }
   
   public interface LoginResponse extends GenericResponse {
