@@ -54,6 +54,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   
   public MainMenu(Game.MenuProxy proxy) {
     _proxy = proxy;
+    ready();
   }
   
   @Override

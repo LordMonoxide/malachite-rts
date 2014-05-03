@@ -42,6 +42,7 @@ public class Game extends AbstractGUI implements GameInterface {
   public Game(GameProxy proxy, World world) {
     _proxy = proxy;
     _world = world;
+    ready();
   }
   
   @Override

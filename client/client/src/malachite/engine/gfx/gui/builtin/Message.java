@@ -8,16 +8,19 @@ import malachite.engine.gfx.gui.control.Window;
 
 public class Message extends AbstractGUI {
   public static Message wait(String title, String text) {
-    Message m = new Message();
-    m._initTitle = title;
-    m._initText  = text;
-    return m;
+    return new Message(title, text);
   }
   
   private String _initTitle;
   private String _initText;
   private Window _wndMessage;
   private Label  _lblText;
+  
+  private Message(String initTitle, String initText) {
+    _initTitle = initTitle;
+    _initText  = initText;
+    ready();
+  }
   
   @Override
   protected void load() {

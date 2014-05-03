@@ -41,7 +41,9 @@ public abstract class AbstractGUI {
     _control._gui = this;
     
     _events = new Events();
-
+  }
+  
+  protected void ready() {
     _context.addLoadCallback(Loader.LoaderThread.OFFLOAD, () -> {
       this.load();
       _loaded = true;

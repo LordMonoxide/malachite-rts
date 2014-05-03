@@ -18,6 +18,7 @@ public class PauseMenu extends AbstractGUI {
   
   public PauseMenu(GameProxy proxy) {
     _proxy = proxy;
+    ready();
   }
   
   @Override protected void load() {

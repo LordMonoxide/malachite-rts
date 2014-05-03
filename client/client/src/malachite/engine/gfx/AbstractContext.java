@@ -1,7 +1,10 @@
 package malachite.engine.gfx;
 
+import malachite.engine.gfx.fonts.Font;
+import malachite.engine.gfx.fonts.FontBuilder;
 import malachite.engine.gfx.gui.GUIManager;
 import malachite.engine.util.Time;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -145,12 +148,14 @@ public abstract class AbstractContext {
 
     updateSize();
 
-    if(_listener != null) {
-      _listener.onCreate();
-    }
-
     _renderThread = Thread.currentThread();
     _loaderThread = _loader._thread;
+
+    FontBuilder.getInstance().getDefault().events().addLoadHandler(() -> {
+      if(_listener != null) {
+        _listener.onCreate();
+      }
+    });
 
     return true;
   }
