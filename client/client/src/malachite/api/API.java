@@ -81,7 +81,7 @@ public final class API {
       return f;
     }
     
-    public static APIFuture register(String email, String password, String password2, String nameFirst, String nameLast, RegisterResponse cb) {
+    public static APIFuture register(String email, String password, String password2, String nameFirst, String nameLast, RegisterResponse cb, SecurityQuestion... security) {
       APIFuture f = new APIFuture();
       
       Map<String, String> data = new HashMap<>();
@@ -90,6 +90,13 @@ public final class API {
       data.put(User.DB_PASSWORD_CONFIRMATION, password2);
       data.put(User.DB_NAME_FIRST, nameFirst);
       data.put(User.DB_NAME_LAST, nameLast);
+      
+      int i = 1;
+      for(SecurityQuestion s : security) {
+        data.put(User.DB_QUESTION + i, s.question);
+        data.put(User.DB_ANSWER   + i, s.answer  );
+        i++;
+      }
       
       dispatch(Route.Auth.Register, data, resp -> {
         try {
@@ -523,6 +530,15 @@ public final class API {
         public static final Route Research  = new Route("/storage/tech/research",  HttpMethod.GET); //$NON-NLS-1$
         public static final Route Units     = new Route("/storage/tech/units",     HttpMethod.GET); //$NON-NLS-1$
       }
+    }
+  }
+  
+  public static class SecurityQuestion {
+    public final String question, answer;
+    
+    public SecurityQuestion(String question, String answer) {
+      this.question = question;
+      this.answer   = answer;
     }
   }
 }

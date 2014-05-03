@@ -247,7 +247,7 @@ public class Game {
       _context.destroy();
     }
     
-    public void register(String email, String pass, String pass2, String nameFirst, String nameLast) {
+    public void register(String email, String pass, String pass2, String nameFirst, String nameLast, API.SecurityQuestion... security) {
       MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_REGISTERING);
       _menu.hideRegister();
       
@@ -267,7 +267,7 @@ public class Game {
         }
       }
       
-      API.Auth.register(email, pass, pass2, nameFirst, nameLast, new R());
+      API.Auth.register(email, pass, pass2, nameFirst, nameLast, new R(), security);
     }
     
     public void login(String email, String pass) {

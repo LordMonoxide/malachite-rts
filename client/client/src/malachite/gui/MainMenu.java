@@ -6,6 +6,7 @@ import org.json.JSONException;
 
 import malachite.Game;
 import malachite.Game.MessageInterface;
+import malachite.api.API;
 import malachite.api.Lang;
 import malachite.api.Lang.MenuKeys;
 import malachite.engine.gfx.fonts.TextStream;
@@ -271,10 +272,15 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnRegisterSubmit.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
-        _proxy.register(_txtRegisterEmail.getText(), _txtRegisterPass[0].getText(), _txtRegisterPass[1].getText(), _txtRegisterNameFirst.getText(), _txtRegisterNameLast.getText());
+        API.SecurityQuestion[] security = new API.SecurityQuestion[_txtRegisterSecurityQuestion.length];
+        for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
+          security[i] = new API.SecurityQuestion(_txtRegisterSecurityQuestion[i].getText(), _txtRegisterSecurityAnswer[i].getText());
+        }
+        
+        _proxy.register(_txtRegisterEmail.getText(), _txtRegisterPass[0].getText(), _txtRegisterPass[1].getText(), _txtRegisterNameFirst.getText(), _txtRegisterNameLast.getText(), security);
       }
     });
-
+    
     _wndMainMenu = new Window();
     _wndMainMenu.setWH(400, 300);
     _wndMainMenu.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);

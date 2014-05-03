@@ -10,6 +10,7 @@ use Validator;
 
 use User;
 use UserInfo;
+use UserSecurityQuestion;
 
 class AuthController extends Controller {
   public function __construct() {
@@ -27,7 +28,13 @@ class AuthController extends Controller {
       'password'   => ['required', 'min:8', 'max:256', 'confirmed'],
       'name_first' => ['required', 'min:2', 'max:30'],
       'name_last'  => ['min:2', 'max:30'],
-      'remember'   => ['in:yes,no,on,off,1,0']
+      'remember'   => ['in:yes,no,on,off,1,0'],
+      'question1'  => ['required', 'alpha_num', 'min:4', 'max:255'],
+      'question2'  => ['required', 'alpha_num', 'min:4', 'max:255'],
+      'question3'  => ['required', 'alpha_num', 'min:4', 'max:255'],
+      'answer1'    => ['required', 'alpha_num', 'min:4', 'max:255'],
+      'answer2'    => ['required', 'alpha_num', 'min:4', 'max:255'],
+      'answer3'    => ['required', 'alpha_num', 'min:4', 'max:255']
     ]);
     
     if($validator->passes()) {
@@ -37,6 +44,24 @@ class AuthController extends Controller {
       $user->name_first = Input::get('name_first');
       $user->name_last  = Input::get('name_last');
       $user->save();
+      
+      $sec = new UserSecurityQuestion;
+      $sec->user_id  = $user->id;
+      $sec->question = Input::get('question1');
+      $sec->answer   = Hash::make(Input::get('answer1'));
+      $sec->save();
+      
+      $sec = new UserSecurityQuestion;
+      $sec->user_id  = $user->id;
+      $sec->question = Input::get('question2');
+      $sec->answer   = Hash::make(Input::get('answer2'));
+      $sec->save();
+      
+      $sec = new UserSecurityQuestion;
+      $sec->user_id  = $user->id;
+      $sec->question = Input::get('question3');
+      $sec->answer   = Hash::make(Input::get('answer3'));
+      $sec->save();
       
       $userInfo = new UserInfo;
       $userInfo->user_id = $user->id;
