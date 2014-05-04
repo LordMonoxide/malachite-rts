@@ -163,7 +163,9 @@ public class Lang<T> {
     MENU_BUILDINGS_TITLE("menu.buildings.title"), //$NON-NLS-1$
     MENU_PAUSE_TITLE    ("menu.pause.title"),     //$NON-NLS-1$
     MENU_PAUSE_RETURN   ("menu.pause.return"),    //$NON-NLS-1$
-    MENU_PAUSE_QUIT     ("menu.pause.quit");      //$NON-NLS-1$
+    MENU_PAUSE_QUIT     ("menu.pause.quit"),      //$NON-NLS-1$
+    
+    BUILDING_CAMP       ("building.camp");        //$NON-NLS-1$
     
     String _text;
     

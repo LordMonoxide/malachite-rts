@@ -11,11 +11,10 @@ import malachite.api.APIFuture;
 import malachite.api.Lang;
 import malachite.api.Lang.AppKeys;
 import malachite.api.Lang.MenuKeys;
-import malachite.api.models.Building;
 import malachite.api.models.News;
-import malachite.api.models.Research;
 import malachite.api.models.Settings;
-import malachite.buildings.AbstractBuilding;
+import malachite.buildings.Building;
+import malachite.buildings.Buildings;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
 import malachite.engine.gfx.Loader;
@@ -42,16 +41,10 @@ public class Game {
   
   private static Random _random = new Random(); //TODO: seed
   
-  private Game _this = this;
-  
   private AbstractContext _context;
   
   private MenuInterface _menu;
   private GameInterface _game;
-  
-  private Building[] _building;
-  private Research[] _research;
-  private Unit    [] _unit;
   
   private Settings _settings;
   private World _world;
@@ -108,30 +101,6 @@ public class Game {
     API.Auth.check(new R());
   }
   
-  private APIFuture loadBuildings() {
-    class R extends GenericResponse implements API.BuildingsResponse {
-      R() { super(null); }
-      
-      @Override public void success(Building[] buildings) {
-        _building = buildings;
-      }
-    }
-    
-    return API.Storage.Tech.buildings(new R());
-  }
-  
-  private APIFuture loadResearch() {
-    class R extends GenericResponse implements API.ResearchResponse {
-      R() { super(null); }
-      
-      @Override public void success(Research[] research) {
-        _research = research;
-      }
-    }
-    
-    return API.Storage.Tech.research(new R());
-  }
-  
   private APIFuture loadSettings() {
     class R extends GenericResponse implements API.SettingsResponse {
       R() { super(null); }
@@ -144,47 +113,36 @@ public class Game {
     return API.Storage.Settings.all(new R());
   }
   
-  private Building buildingByID(int id) {
-    for(Building b : _building) {
-      if(b.id == id) { return b; }
-    }
-    
-    return null;
-  }
-  
-  private Research researchByID(int id) {
-    for(Research r : _research) {
-      if(r.id == id) { return r; }
-    }
-    
-    return null;
-  }
-  
   private void initGame() {
     ((AbstractGUI)_menu).pop();
     ((AbstractGUI)_menu).destroy();
     _menu = null;
     
+    Player p = addPlayer();
     _world = new Rivers().generate();
-    _game  = new malachite.gui.Game(new GameProxy(), _world);
+    _game  = new malachite.gui.Game(new GameProxy(p), _world);
     
     ((AbstractGUI)_game).push();
     ((AbstractGUI)_game).events().addLoadHandler(() -> {
       _sandbox.start();
-      addPlayer();
+      initPlayer(p);
     });
   }
   
-  private void addPlayer() {
+  private Player addPlayer() {
     Player p = new Player();
-    
+    _player.add(p);
+    return p;
+  }
+  
+  private void initPlayer(Player p) {
     int startX = _random.nextInt(640) + 320;
     int startY = _random.nextInt(360) + 180;
     
     for(Settings.Building building : _settings.building) {
       for(int i = 0; i < building.count; i++) {
         //TODO: each building starts at the same loc
-        addBuilding(p, AbstractBuilding.Create(buildingByID(building.id), startX, startY));
+        addBuilding(p, Buildings.get(building.id), startX, startY);
       }
     }
     
@@ -196,7 +154,6 @@ public class Game {
       addUnit(p, new Unit(unitX, unitY));
     }
     
-    _player.add(p);
   }
   
   private void addUnit(Player p, Unit u) {
@@ -207,7 +164,7 @@ public class Game {
     _sandbox.add(e);
   }
   
-  private void addBuilding(Player p, malachite.buildings.AbstractBuilding b) {
+  private void addBuilding(Player p, Building b, int startX, int startY) {
     p.addBuilding(b);
     Entity e = b.createEntity();
     _world.addEntity(e);
@@ -343,8 +300,6 @@ public class Game {
       APIFuture.await(() -> {
         initGame();
       },
-        loadBuildings(),
-        loadResearch(),
         loadSettings()
       );
     }
@@ -378,50 +333,22 @@ public class Game {
   }
   
   public class GameProxy {
+    public final Player player;
+    
+    private GameProxy(Player player) {
+      this.player = player;
+    }
+    
     public void quit() {
       _context.destroy();
     }
     
-    public Building buildingByID(int id) {
-      return _this.buildingByID(id);
-    }
-    
-    public Research researchByID(int id) {
-      return _this.researchByID(id);
-    }
-    
-    public int buildingCount() {
-      return _building.length;
-    }
-    
-    public int researchCount() {
-      return _research.length;
-    }
-    
-    public int unitCount() {
-      return _unit.length;
-    }
-    
-    public void eachBuilding(BuildingIterator it) {
-      for(Building building : _building) {
-        it.next(building);
-      }
-    }
-    
-    public void eachResearch(ResearchIterator it) {
-      for(Research research : _research) {
-        it.next(research);
-      }
-    }
-    
-    public void eachUnit(UnitIterator it) {
-      for(Unit unit : _unit) {
-        it.next(unit);
-      }
-    }
-    
     public void moveEntity(Entity entity, Point destination) {
       entity.moveAlong(_pathfinder.findPath(new Point(entity.getX(), entity.getY()), destination));
+    }
+    
+    public void placeFoundation(Building building, float x, float y) {
+      
     }
   }
   
@@ -461,17 +388,5 @@ public class Game {
       _message.hide();
       _menu.showSecurity(questions);
     }
-  }
-  
-  public interface BuildingIterator {
-    void next(Building building);
-  }
-  
-  public interface ResearchIterator {
-    void next(Research research);
-  }
-  
-  public interface UnitIterator {
-    void next(Unit unit);
   }
 }

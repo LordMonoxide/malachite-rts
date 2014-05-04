@@ -2,14 +2,14 @@ package malachite;
 
 import java.util.ArrayList;
 
-import malachite.buildings.AbstractBuilding;
+import malachite.buildings.Building;
 import malachite.units.Unit;
 
 public class Player {
-  private ArrayList<AbstractBuilding> _building = new ArrayList<>();
+  private ArrayList<Building> _building = new ArrayList<>();
   private ArrayList<Unit>     _unit = new ArrayList<>();
   
-  public void addBuilding(AbstractBuilding building) {
+  public void addBuilding(Building building) {
     _building.add(building);
   }
   

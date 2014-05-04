@@ -1,8 +1,6 @@
 package malachite.api;
 
-import malachite.api.models.Building;
 import malachite.api.models.News;
-import malachite.api.models.Research;
 import malachite.api.models.Settings;
 import malachite.api.models.User;
 import malachite.engine.net.http.Request;
@@ -323,68 +321,6 @@ public final class API {
         return f;
       }
     }
-    
-    public static final class Tech {
-      private Tech() { }
-      
-      public static final APIFuture buildings(BuildingsResponse cb) {
-        APIFuture f = new APIFuture();
-        
-        dispatch(Route.Storage.Tech.Buildings, resp -> {
-          try {
-            if(resp.succeeded()) {
-              JSONArray j = resp.toJSONArray();
-              
-              Building[] buildings = new Building[j.length()];
-              
-              for(int i = 0; i < j.length(); i++) {
-                JSONObject r = j.getJSONObject(i);
-                buildings[i] = new Building(r.getInt(Building.DB_ID), r.getString(Building.DB_NAME), Building.TYPE.fromString(r.getString(Building.DB_TYPE)));
-              }
-              
-              cb.success(buildings);
-            } else {
-              checkGeneric(resp, cb);
-            }
-          } catch(JSONException e) {
-            cb.jsonError(resp, e);
-          }
-          
-          f.complete();
-        });
-        
-        return f;
-      }
-      
-      public static final APIFuture research(ResearchResponse cb) {
-        APIFuture f = new APIFuture();
-        
-        dispatch(Route.Storage.Tech.Research, resp -> {
-          try {
-            if(resp.succeeded()) {
-              JSONArray j = resp.toJSONArray();
-              
-              Research[] research = new Research[j.length()];
-              
-              for(int i = 0; i < j.length(); i++) {
-                JSONObject r = j.getJSONObject(i);
-                research[i] = new Research(r.getInt(Research.DB_ID), r.getInt(Research.DB_BUILDING_ID), r.getString(Research.DB_NAME));
-              }
-              
-              cb.success(research);
-            } else {
-              checkGeneric(resp, cb);
-            }
-          } catch(JSONException e) {
-            cb.jsonError(resp, e);
-          }
-          
-          f.complete();
-        });
-        
-        return f;
-      }
-    }
   }
   
   public static APIFuture lang(Route route, LangResponse cb) {
@@ -468,14 +404,6 @@ public final class API {
     public abstract void success(Settings[] settings);
   }
   
-  public interface BuildingsResponse extends GenericResponse {
-    public abstract void success(Building[] buildings);
-  }
-  
-  public interface ResearchResponse extends GenericResponse {
-    public abstract void success(Research[] research);
-  }
-  
   public static abstract class LangResponse {
     public abstract void success(Map<String, String> lang);
     public abstract void error(Response r);
@@ -556,13 +484,6 @@ public final class API {
         private Settings() { }
         
         public static final Route All = new Route("/storage/settings", HttpMethod.GET); //$NON-NLS-1$
-      }
-      
-      public static final class Tech {
-        private Tech() { }
-        
-        public static final Route Buildings = new Route("/storage/tech/buildings", HttpMethod.GET); //$NON-NLS-1$
-        public static final Route Research  = new Route("/storage/tech/research",  HttpMethod.GET); //$NON-NLS-1$
       }
     }
   }

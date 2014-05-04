@@ -7,7 +7,8 @@ import org.lwjgl.input.Keyboard;
 import malachite.Game.GameInterface;
 import malachite.Game.GameProxy;
 import malachite.api.Lang;
-import malachite.buildings.AbstractBuilding;
+import malachite.buildings.Building;
+import malachite.buildings.Buildings;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.control.Button;
@@ -67,10 +68,10 @@ public class Game extends AbstractGUI implements GameInterface {
     _lblBuildingsMenuTitle.setAutoSize(true);
     _lblBuildingsMenuTitle.setText(Lang.Game.get(Lang.GameKeys.MENU_BUILDINGS_TITLE));
     
-    _btnBuildingsMenuBuilding = new Button[_proxy.buildingCount()];
+    _btnBuildingsMenuBuilding = new Button[Buildings.count()];
     
     int i = 0;
-    _proxy.eachBuilding((building) -> {
+    Buildings.each((building) -> {
       _btnBuildingsMenuBuilding[i] = new Button();
       _btnBuildingsMenuBuilding[i].setText(building.name);
       _btnBuildingsMenuBuilding[i].setWH(48, 48);
@@ -82,7 +83,7 @@ public class Game extends AbstractGUI implements GameInterface {
           clearSelection();
           hidePanel();
           
-          _pseudo = new PseudoRenderer(AbstractBuilding.Create(building, 0, 0).createEntity());
+          _pseudo = new PseudoRenderer(Building.Create(building, 0, 0).createEntity());
           _fraGame.controls().add(_pseudo);
         }
       });
@@ -158,8 +159,8 @@ public class Game extends AbstractGUI implements GameInterface {
   public void clickEntity(Entity entity, EntityRenderer renderer) {
     selectEntities(entity);
     
-    if(entity.source instanceof AbstractBuilding) {
-      showBuildingPanel((AbstractBuilding)entity.source);
+    if(entity.source instanceof Building) {
+      showBuildingPanel((Building<?>)entity.source);
     }
     
     if(entity.source instanceof Unit) {
@@ -167,7 +168,7 @@ public class Game extends AbstractGUI implements GameInterface {
     }
   }
   
-  public void showBuildingPanel(AbstractBuilding building) {
+  public void showBuildingPanel(Building<?> building) {
     _fraPanel.show();
     resize();
   }
@@ -230,22 +231,27 @@ public class Game extends AbstractGUI implements GameInterface {
     }
     
     @Override public void up(int x, int y, int button) {
-      switch(button) {
-        case 0:
-          hidePanel();
-          clearSelection();
-          break;
-          
-        case 1:
-          if(_selectedEntities != null) {
-            for(Entity e : _selectedEntities) {
-              if(e.source instanceof Unit) {
-                _proxy.moveEntity(e, new Point(x + _viewX, y + _viewY));
+      if(_pseudo == null) {
+        switch(button) {
+          case 0:
+            hidePanel();
+            clearSelection();
+            break;
+            
+          case 1:
+            if(_selectedEntities != null) {
+              for(Entity e : _selectedEntities) {
+                if(e.source instanceof Unit) {
+                  _proxy.moveEntity(e, new Point(x + _viewX, y + _viewY));
+                }
               }
             }
-          }
-          
-          break;
+            
+            break;
+        }
+      } else {
+        _fraGame.controls().remove(_pseudo);
+        
       }
     }
   }
