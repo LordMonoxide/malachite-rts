@@ -36,6 +36,7 @@ public class Game extends AbstractGUI implements GameInterface {
   private Button[] _btnBuildingsMenuBuilding;
   
   private ArrayList<EntityRenderer> _entities = new ArrayList<>();
+  private PseudoRenderer _pseudo;
   
   private Entity[] _selectedEntities;
   
@@ -76,6 +77,16 @@ public class Game extends AbstractGUI implements GameInterface {
       _btnBuildingsMenuBuilding[i].setWH(48, 48);
       _btnBuildingsMenuBuilding[i].setXY(i * 56 + 8, _lblBuildingsMenuTitle.getY() + _lblBuildingsMenuTitle.getH() + 8);
       _fraBuildingsMenu.controls().add(_btnBuildingsMenuBuilding[i]);
+      _btnBuildingsMenuBuilding[i].events().addClickHandler(new ControlEvents.Click() {
+        @Override public void clickDbl() { }
+        @Override public void click() {
+          clearSelection();
+          hidePanel();
+          
+          _pseudo = new PseudoRenderer(AbstractBuilding.Create(building, 0, 0).createEntity());
+          _fraGame.controls().add(_pseudo);
+        }
+      });
     });
     
     _fraBuildingsMenu.controls().add(_lblBuildingsMenuTitle);
@@ -244,7 +255,7 @@ public class Game extends AbstractGUI implements GameInterface {
   }
   
   private class EntityRenderer extends Image {
-    private final Entity entity;
+    protected final Entity entity;
     
     private EntityRenderer(Entity entity) {
       super(
@@ -272,6 +283,18 @@ public class Game extends AbstractGUI implements GameInterface {
       drawBegin();
       drawEnd();
       drawNext();
+    }
+  }
+  
+  private class PseudoRenderer extends EntityRenderer {
+    private PseudoRenderer(Entity entity) {
+      super(entity);
+    }
+    
+    @Override public void draw() {
+      entity.setX(_context.getMouseX() + _viewX);
+      entity.setY(_context.getMouseY() + _viewY);
+      super.draw();
     }
   }
 }
