@@ -4,7 +4,6 @@ import malachite.api.models.Building;
 import malachite.api.models.News;
 import malachite.api.models.Research;
 import malachite.api.models.Settings;
-import malachite.api.models.Unit;
 import malachite.api.models.User;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
@@ -385,35 +384,6 @@ public final class API {
         
         return f;
       }
-      
-      public static final APIFuture units(UnitsResponse cb) {
-        APIFuture f = new APIFuture();
-        
-        dispatch(Route.Storage.Tech.Units, resp -> {
-          try {
-            if(resp.succeeded()) {
-              JSONArray j = resp.toJSONArray();
-              
-              Unit[] units = new Unit[j.length()];
-              
-              for(int i = 0; i < j.length(); i++) {
-                JSONObject r = j.getJSONObject(i);
-                units[i] = new Unit(r.getInt(Unit.DB_ID), r.getInt(Unit.DB_BUILDING_ID), r.getString(Unit.DB_NAME), Unit.TYPE.fromString(r.getString(Unit.DB_TYPE)));
-              }
-              
-              cb.success(units);
-            } else {
-              checkGeneric(resp, cb);
-            }
-          } catch(JSONException e) {
-            cb.jsonError(resp, e);
-          }
-          
-          f.complete();
-        });
-        
-        return f;
-      }
     }
   }
   
@@ -506,10 +476,6 @@ public final class API {
     public abstract void success(Research[] research);
   }
   
-  public interface UnitsResponse extends GenericResponse {
-    public abstract void success(Unit[] units);
-  }
-  
   public static abstract class LangResponse {
     public abstract void success(Map<String, String> lang);
     public abstract void error(Response r);
@@ -597,7 +563,6 @@ public final class API {
         
         public static final Route Buildings = new Route("/storage/tech/buildings", HttpMethod.GET); //$NON-NLS-1$
         public static final Route Research  = new Route("/storage/tech/research",  HttpMethod.GET); //$NON-NLS-1$
-        public static final Route Units     = new Route("/storage/tech/units",     HttpMethod.GET); //$NON-NLS-1$
       }
     }
   }

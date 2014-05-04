@@ -8,6 +8,7 @@ class CreateTableGameSettings extends Migration {
     Schema::create('game_settings', function($table) {
       $table->increments('id');
       $table->string('name');
+      $table->integer('units')->unsigned();
       
       $table->timestamps();
     });

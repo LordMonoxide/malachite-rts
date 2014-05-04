@@ -15,8 +15,7 @@ import malachite.engine.gfx.gui.control.Frame;
 import malachite.engine.gfx.gui.control.Image;
 import malachite.engine.gfx.gui.control.Label;
 import malachite.pathfinding.Point;
-import malachite.units.AbstractUnit;
-import malachite.units.Villager;
+import malachite.units.Unit;
 import malachite.world.Entity;
 import malachite.world.World;
 
@@ -163,8 +162,8 @@ public class Game extends AbstractGUI implements GameInterface {
       showBuildingPanel((AbstractBuilding)entity.source);
     }
     
-    if(entity.source instanceof AbstractUnit) {
-      showUnitPanel((AbstractUnit)entity.source);
+    if(entity.source instanceof Unit) {
+      showUnitPanel((Unit)entity.source);
     }
   }
   
@@ -173,12 +172,9 @@ public class Game extends AbstractGUI implements GameInterface {
     resize();
   }
   
-  public void showUnitPanel(AbstractUnit unit) {
+  public void showUnitPanel(Unit unit) {
     _fraPanel.show();
-    
-    if(unit instanceof Villager) {
-      _fraBuildingsMenu.show();
-    }
+    _fraBuildingsMenu.show();
     
     resize();
   }
@@ -243,7 +239,7 @@ public class Game extends AbstractGUI implements GameInterface {
         case 1:
           if(_selectedEntities != null) {
             for(Entity e : _selectedEntities) {
-              if(e.source instanceof AbstractUnit) {
+              if(e.source instanceof Unit) {
                 _proxy.moveEntity(e, new Point(x + _viewX, y + _viewY));
               }
             }

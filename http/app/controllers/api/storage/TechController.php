@@ -5,7 +5,6 @@ use Response;
 
 use Building;
 use Research;
-use Unit;
 
 class TechController extends Controller {
   public function __construct() {
@@ -18,9 +17,5 @@ class TechController extends Controller {
   
   public function research() {
     return Response::json(Research::all(), 200);
-  }
-  
-  public function units() {
-    return Response::json(Unit::all(), 200);
   }
 }

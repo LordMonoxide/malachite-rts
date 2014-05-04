@@ -46,18 +46,4 @@
               <p>@lang('tech.noresearch')</p>
             @endif
           </div>
-          
-          <div class="building-units pure-u-1-4">
-            <h4>@lang('tech.units')</h4>
-            
-            @if(count($data->units) > 0)
-              <ul>
-                @foreach($data->units as $unit)
-                  <li>{{ HTML::linkAction('tech.units.view',  Lang::get('tech.unit.' . $unit->name . '.name'), $unit->id) }}</li>
-                @endforeach
-              </ul>
-            @else
-              <p>@lang('tech.nounits')</p>
-            @endif
-          </div>
         </div>

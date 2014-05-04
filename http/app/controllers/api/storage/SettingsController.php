@@ -5,6 +5,6 @@ use GameSetting;
 
 class SettingsController extends BaseController {
   public function all() {
-    return GameSetting::with('buildings')->with('units')->get();
+    return GameSetting::with('buildings')->get();
   }
 }

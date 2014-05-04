@@ -29,7 +29,7 @@ class TableSeeder extends Seeder {
       'email'      => 'Mitchcfergus@gmail.com',
       'password'   => Hash::make('Longbow17'),
       'name_first' => 'Remus',
-      'name_last'  => 'De Smet'
+      'name_last'  => 'Ferguson'
     ]);
     
     foreach($user as $u) {
@@ -83,26 +83,15 @@ class TechSeeder extends Seeder {
       'type' => 'base'
     ]);
     
-    $villager = Unit::create([
-      'building_id' => $camp->id,
-      'name'        => 'villager',
-      'type'        => 'villager'
-    ]);
-    
     $settings = GameSetting::create([
-      'name' => 'Test Settings'
+      'name' => 'Test Settings',
+      'units' => 3
     ]);
     
     GameSettingsBuilding::create([
       'game_setting_id' => $settings->id,
       'building_id'     => $camp->id,
       'count'           => 1
-    ]);
-    
-    GameSettingsUnit::create([
-      'game_setting_id' => $settings->id,
-      'unit_id'         => $villager->id,
-      'count'           => 3
     ]);
   }
 }

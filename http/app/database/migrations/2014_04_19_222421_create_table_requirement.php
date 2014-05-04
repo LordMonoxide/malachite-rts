@@ -8,7 +8,7 @@ class CreateTableRequirement extends Migration {
     Schema::create('requirements', function($table) {
       $table->increments('id');
       $table->integer('unlock_id')->unsigned();
-      $table->enum('unlock_type', ['building', 'research', 'unit']);
+      $table->enum('unlock_type', ['building', 'research']);
       $table->integer('research_id')->unsigned();
       
       $table->timestamps();

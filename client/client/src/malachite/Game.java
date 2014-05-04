@@ -15,7 +15,6 @@ import malachite.api.models.Building;
 import malachite.api.models.News;
 import malachite.api.models.Research;
 import malachite.api.models.Settings;
-import malachite.api.models.Unit;
 import malachite.buildings.AbstractBuilding;
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.ContextListenerAdapter;
@@ -31,7 +30,7 @@ import malachite.engine.physics.Sandbox;
 import malachite.gui.MainMenu;
 import malachite.pathfinding.Pathfinder;
 import malachite.pathfinding.Point;
-import malachite.units.AbstractUnit;
+import malachite.units.Unit;
 import malachite.world.Entity;
 import malachite.world.World;
 import malachite.world.generators.Rivers;
@@ -133,18 +132,6 @@ public class Game {
     return API.Storage.Tech.research(new R());
   }
   
-  private APIFuture loadUnits() {
-    class R extends GenericResponse implements API.UnitsResponse {
-      R() { super(null); }
-      
-      @Override public void success(Unit[] units) {
-        _unit = units;
-      }
-    }
-    
-    return API.Storage.Tech.units(new R());
-  }
-  
   private APIFuture loadSettings() {
     class R extends GenericResponse implements API.SettingsResponse {
       R() { super(null); }
@@ -168,14 +155,6 @@ public class Game {
   private Research researchByID(int id) {
     for(Research r : _research) {
       if(r.id == id) { return r; }
-    }
-    
-    return null;
-  }
-  
-  private Unit unitByID(int id) {
-    for(Unit u : _unit) {
-      if(u.id == id) { return u; }
     }
     
     return null;
@@ -209,20 +188,18 @@ public class Game {
       }
     }
     
-    for(Settings.Unit unit : _settings.unit) {
-      for(int i = 0; i < unit.count; i++) {
-        double theta = _random.nextDouble() * Math.PI * 2;
-        double dist  = _random.nextDouble() * 150 + 100;
-        float unitX = (float)(startX + Math.cos(theta) * dist);
-        float unitY = (float)(startY + Math.sin(theta) * dist);
-        addUnit(p, AbstractUnit.Create(unitByID(unit.id), unitX, unitY));
-      }
+    for(int i = 0; i < _settings.units; i++) {
+      double theta = _random.nextDouble() * Math.PI * 2;
+      double dist  = _random.nextDouble() * 150 + 100;
+      float unitX = (float)(startX + Math.cos(theta) * dist);
+      float unitY = (float)(startY + Math.sin(theta) * dist);
+      addUnit(p, new Unit(unitX, unitY));
     }
     
     _player.add(p);
   }
   
-  private void addUnit(Player p, malachite.units.AbstractUnit u) {
+  private void addUnit(Player p, Unit u) {
     p.addUnit(u);
     Entity e = u.createEntity();
     _world.addEntity(e);
@@ -368,7 +345,6 @@ public class Game {
       },
         loadBuildings(),
         loadResearch(),
-        loadUnits(),
         loadSettings()
       );
     }
@@ -412,10 +388,6 @@ public class Game {
     
     public Research researchByID(int id) {
       return _this.researchByID(id);
-    }
-    
-    public Unit unitByID(int id) {
-      return _this.unitByID(id);
     }
     
     public int buildingCount() {
