@@ -266,10 +266,13 @@ public class Game extends AbstractGUI implements GameInterface {
       setBackgroundColour(1, 0, 1, 1);
       
       EntityRenderer t = this;
-      events().addClickHandler(new ControlEvents.Click() {
-        @Override public void clickDbl() { }
-        @Override public void click() {
-          clickEntity(entity, t);
+      events().addMouseHandler(new ControlEvents.Mouse() {
+        @Override public void move(int x, int y, int button) { }
+        @Override public void down(int x, int y, int button) { }
+        @Override public void up(int x, int y, int button) {
+          if(button == 0) {
+            clickEntity(entity, t);
+          }
         }
       });
     }
