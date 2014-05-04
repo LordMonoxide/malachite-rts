@@ -1,5 +1,7 @@
 <?php namespace forum;
 
+use View;
+
 use BaseController;
 
 class SettingsController extends BaseController {
@@ -8,6 +10,6 @@ class SettingsController extends BaseController {
   }
   
   public function settings() {
-    
+    return View::make('forum.settings');
   }
 }
