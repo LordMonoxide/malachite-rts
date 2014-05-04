@@ -82,6 +82,31 @@ Route::filter('user.security', function() {
     ], 401);
   }
   
+  $ip = Auth::user()->ips()->where('ip', '=', ip2long(Request::getClientIp()))->first();
+  if($ip === null) {
+    // Create a new one if none exists
+    $ip = new UserIP;
+    $ip->user()->associate(Auth::user());
+    $ip->ip = ip2long(Request::getClientIp());
+    
+    // Automatically auth the IP if it's the
+    // first one that they've logged in with
+    if(Auth::user()->ips->count() === 0) {
+      $ip->authorised = true;
+    } else {
+      Auth::user()->suspend = true;
+      Auth::user()->save();
+    }
+    
+    $ip->save();
+  } else {
+    // De-auth user if the IP isn't authed
+    if(!$ip->authorised) {
+      Auth::user()->suspend = true;
+      Auth::user()->save();
+    }
+  }
+  
   if(Auth::user()->suspend) {
     $q = [];
     Auth::user()->securityQuestions()->get()->each(function($question) use(&$q) {

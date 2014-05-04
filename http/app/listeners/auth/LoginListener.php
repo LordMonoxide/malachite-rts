@@ -22,13 +22,17 @@ class LoginListener {
       // first one that they've logged in with
       if($user->ips->count() === 0) {
         $ip->authorised = true;
+      } else {
+        $user->suspend = true;
+        $user->save();
+        Auth::logout();
       }
       
       $ip->save();
     } else {
       // De-auth user if the IP isn't authed
-      if($ip->authorised === false) {
-        $user->authorised = false;
+      if(!$ip->authorised) {
+        $user->suspend = true;
         $user->save();
         Auth::logout();
       }
