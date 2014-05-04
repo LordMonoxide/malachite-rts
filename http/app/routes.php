@@ -43,6 +43,10 @@ Route::group(['prefix' => 'forum'], function() {
   Route::model('topic', 'Topic');
   Route::model('post',  'Post');
   
+  Route::group(['prefix' => 'settings'], function() {
+    Route::get('/', ['as' => 'forum.settings', 'uses' => 'forum\SettingsController@settings']);
+  });
+  
   Route::get('/',                             ['as' => 'forum.index',              'uses' => 'forum\ForumController@index']);
   Route::get('/f{forum}',                     ['as' => 'forum.forum',              'uses' => 'forum\ForumController@forum']);
   Route::get('/f{forum}/newtopic',            ['as' => 'forum.topic.new',          'uses' => 'forum\ForumController@newtopic']);

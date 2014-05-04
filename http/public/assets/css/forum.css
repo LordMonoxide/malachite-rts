@@ -83,3 +83,9 @@ table {
 .post-rep-negative {
   background-color: rgb(202, 60, 60);
 }
+
+img.settings {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
