@@ -50,8 +50,17 @@ public final class API {
       JSONObject j = resp.toJSON();
       switch(j.getString(NOT_AUTHED_SHOW)) {
         case NOT_AUTHED_SHOW_LOGIN:    cb.loginRequired();    break;
-        case NOT_AUTHED_SHOW_SECURITY: cb.securityRequired(); break;
-        default:         cb.error(resp);
+        case NOT_AUTHED_SHOW_SECURITY:
+          JSONArray a = j.getJSONArray("questions");
+          String[] questions = new String[a.length()];
+          for(int i = 0; i < a.length(); i++) {
+            questions[i] = a.getString(i);
+          }
+          
+          cb.securityRequired(questions);
+          break;
+        
+        default: cb.error(resp);
       }
     } else {
       cb.error(resp);
@@ -156,6 +165,57 @@ public final class API {
             cb.success();
           } else {
             checkGeneric(resp, cb);
+          }
+        } catch(JSONException e) {
+          cb.jsonError(resp, e);
+        }
+        
+        f.complete();
+      });
+      
+      return f;
+    }
+    
+    public static APIFuture security(SecurityResponse cb) {
+      APIFuture f = new APIFuture();
+      
+      dispatch(Route.Auth.Security, resp -> {
+        try {
+          if(resp.succeeded()) {
+            cb.success();
+          } else {
+            checkGeneric(resp, cb);
+          }
+        } catch(JSONException e) {
+          cb.jsonError(resp, e);
+        }
+        
+        f.complete();
+      });
+      
+      return f;
+    }
+    
+    public static APIFuture unlock(UnlockResponse cb, String... security) {
+      APIFuture f = new APIFuture();
+      
+      Map<String, String> data = new HashMap<>();
+      
+      int i = 1;
+      for(String s : security) {
+        data.put(User.DB_ANSWER + i++, s);
+      }
+      
+      dispatch(Route.Auth.Unlock, data, resp -> {
+        try {
+          if(resp.succeeded()) {
+            cb.success();
+          } else {
+            if(resp.response().getStatus().code() == 409) {
+              cb.invalid(resp.toJSON());
+            } else {
+              checkGeneric(resp, cb);
+            }
           }
         } catch(JSONException e) {
           cb.jsonError(resp, e);
@@ -392,7 +452,7 @@ public final class API {
   
   public interface GenericResponse extends ErrorResponse {
     public abstract void loginRequired();
-    public abstract void securityRequired();
+    public abstract void securityRequired(String[] question);
   }
   
   public interface CheckResponse extends GenericResponse {
@@ -405,6 +465,15 @@ public final class API {
   }
   
   public interface LoginResponse extends GenericResponse {
+    public abstract void success();
+    public abstract void invalid(JSONObject errors);
+  }
+  
+  public interface SecurityResponse extends GenericResponse {
+    public abstract void success();
+  }
+  
+  public interface UnlockResponse extends GenericResponse {
     public abstract void success();
     public abstract void invalid(JSONObject errors);
   }

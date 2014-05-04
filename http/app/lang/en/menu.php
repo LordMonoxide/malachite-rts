@@ -7,6 +7,7 @@ return [
   'status.registering'  => 'Registering...',
   'status.loggingin'    => 'Logging in...',
   'status.loggingout'   => 'Logging out...',
+  'status.unlocking'    => 'Unlocking account...',
   'status.gettingchars' => 'Getting characters...',
   'status.gettingraces' => 'Getting races...',
   'status.creatingchar' => 'Creating character...',
@@ -38,6 +39,13 @@ return [
   'register.question'  => 'Security Question :num',
   'register.answer'    => 'Security Question Answer :num',
   'register.submit'    => 'Register',
+  
+  // Security menu
+  'security.title'    => 'Account Security',
+  'security.why'      => 'Your account is locked because... something!',
+  'security.security' => 'Security Question :num of :total',
+  'security.answer'   => 'Security Question Answer :num',
+  'security.submit'   => 'Unlock',
   
   // Main menu
   'mainmenu.title'  => 'Main Menu',

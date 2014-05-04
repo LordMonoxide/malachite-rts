@@ -14,7 +14,8 @@ use UserSecurityQuestion;
 
 class AuthController extends Controller {
   public function __construct() {
-    $this->beforeFilter('user.security',  ['only'   => ['check', 'logout', 'security', 'unlock']]);
+    $this->beforeFilter('user.security',  ['only'   => ['check', 'logout', 'security']]);
+    $this->beforeFilter('auth.401',       ['only'   => ['unlock']]);
     $this->beforeFilter('nauth.409',      ['except' => ['check', 'logout', 'security', 'unlock']]);
   }
   
@@ -48,19 +49,19 @@ class AuthController extends Controller {
       $sec = new UserSecurityQuestion;
       $sec->user_id  = $user->id;
       $sec->question = Input::get('question1');
-      $sec->answer   = Hash::make(Input::get('answer1'));
+      $sec->answer   = Input::get('answer1');
       $sec->save();
       
       $sec = new UserSecurityQuestion;
       $sec->user_id  = $user->id;
       $sec->question = Input::get('question2');
-      $sec->answer   = Hash::make(Input::get('answer2'));
+      $sec->answer   = Input::get('answer2');
       $sec->save();
       
       $sec = new UserSecurityQuestion;
       $sec->user_id  = $user->id;
       $sec->question = Input::get('question3');
-      $sec->answer   = Hash::make(Input::get('answer3'));
+      $sec->answer   = Input::get('answer3');
       $sec->save();
       
       $userInfo = new UserInfo;
@@ -117,7 +118,7 @@ class AuthController extends Controller {
   }
   
   public function unlock() {
-    $i = 0;
+    $i = 1;
     foreach(Auth::user()->securityQuestions as $s) {
       $rules['answer' . $i++] = ['required', 'in:' . $s->answer];
     }

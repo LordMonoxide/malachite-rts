@@ -43,6 +43,21 @@ Route::filter('nauth', function() {
   }
 });
 
+Route::filter('auth.401', function() {
+  if(Auth::check()) {
+    if(!Auth::user()->logged_in) {
+      Auth::logout();
+    }
+  }
+  
+  if(Auth::guest()) {
+    return Response::json([
+      'error' => 'loginrequired',
+      'show'  => 'login'
+    ], 401);
+  }
+});
+
 Route::filter('nauth.409', function() {
   if(Auth::check()) {
     return Response::json(['error' => ['Already logged in.']], 409);
@@ -68,9 +83,15 @@ Route::filter('user.security', function() {
   }
   
   if(Auth::user()->suspend) {
+    $q = [];
+    Auth::user()->securityQuestions()->get()->each(function($question) use(&$q) {
+      $q[] = $question->question;
+    });
+    
     return Response::json([
-      'error' => 'security',
-      'show'  => 'security'
+      'error'     => 'security',
+      'show'      => 'security',
+      'questions' => $q
     ], 401);
   }
 });

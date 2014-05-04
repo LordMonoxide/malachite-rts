@@ -308,6 +308,32 @@ public class Game {
       API.Auth.logout(new R());
     }
     
+    public void security() {
+      
+    }
+    
+    public void unlock(String... security) {
+      MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_UNLOCKING);
+      _menu.hideSecurity();
+      
+      class R extends GenericResponse implements API.UnlockResponse {
+        R() { super(m); }
+        
+        @Override public void success() {
+          m.hide();
+          _menu.showMainMenu();
+        }
+
+        @Override public void invalid(JSONObject errors) {
+          m.hide();
+          _menu.showSecurity(null);
+          System.err.println(errors); //TODO
+        }
+      }
+      
+      API.Auth.unlock(new R(), security);
+    }
+    
     public void requestNews() {
       _menu.gettingNews();
       
@@ -363,7 +389,7 @@ public class Game {
     public void showRegister();
     public void hideRegister();
     
-    public void showSecurity();
+    public void showSecurity(String[] questions);
     public void hideSecurity();
     
     public void showMainMenu();
@@ -459,9 +485,9 @@ public class Game {
     }
     
     @Override
-    public void securityRequired() {
+    public void securityRequired(String[] questions) {
       _message.hide();
-      _menu.showSecurity();
+      _menu.showSecurity(questions);
     }
   }
   

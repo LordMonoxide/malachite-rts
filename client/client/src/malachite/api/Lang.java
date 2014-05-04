@@ -104,6 +104,7 @@ public class Lang<T> {
     STATUS_LOGGINGIN   ("status.loggingin"),    //$NON-NLS-1$
     STATUS_LOGGINGOUT  ("status.loggingout"),   //$NON-NLS-1$
     STATUS_REGISTERING ("status.registering"),  //$NON-NLS-1$
+    STATUS_UNLOCKING   ("status.unlocking"),    //$NON-NLS-1$
     STATUS_GETTINGCHARS("status.gettingchars"), //$NON-NLS-1$
     STATUS_GETTINGRACES("status.gettingraces"), //$NON-NLS-1$
     STATUS_CREATINGCHAR("status.creatingchar"), //$NON-NLS-1$
@@ -132,6 +133,12 @@ public class Lang<T> {
     REGISTER_QUESTION ("register.question"),  //$NON-NLS-1$
     REGISTER_ANSWER   ("register.answer"),    //$NON-NLS-1$
     REGISTER_SUBMIT   ("register.submit"),    //$NON-NLS-1$
+    
+    SECURITY_TITLE   ("security.title"),    //$NON-NLS-1$
+    SECURITY_WHY     ("security.why"),      //$NON-NLS-1$
+    SECURITY_SECURITY("security.security"), //$NON-NLS-1$
+    SECURITY_ANSWER  ("security.answer"),   //$NON-NLS-1$
+    SECURITY_SUBMIT  ("security.submit"),   //$NON-NLS-1$
     
     MAINMENU_TITLE ("mainmenu.title"),  //$NON-NLS-1$
     MAINMENU_PLAY  ("mainmenu.play"),   //$NON-NLS-1$

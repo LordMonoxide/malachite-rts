@@ -48,6 +48,15 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   private Scrollbar _scrRegisterSecurity;
   private Button    _btnRegisterSubmit;
   
+  private Window    _wndSecurity;
+  private Frame     _fraSecurityTitle;
+  private Label     _lblSecurityTitle;
+  private Label     _lblSecuritySecurity;
+  private Label  [] _lblSecuritySecurityQuestion = new Label[3];
+  private Textbox[] _txtSecuritySecurityAnswer = new Textbox[3];
+  private Scrollbar _scrSecuritySecurity;
+  private Button    _btnSecuritySubmit;
+  
   private Window _wndMainMenu;
   private Button _btnPlay;
   private Button _btnLogout;
@@ -282,6 +291,104 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
       }
     });
     
+    _wndSecurity = new Window();
+    _wndSecurity.setWH(400, 300);
+    _wndSecurity.setXY((_context.getW() - _wndSecurity.getW()) / 2, (_context.getH() - _wndSecurity.getH()) / 2);
+    _wndSecurity.setText(Lang.Menu.get(MenuKeys.SECURITY_TITLE));
+    _wndSecurity.hide();
+    _wndSecurity.events().addResizeHandler(new ControlEvents.Resize() {
+      @Override
+      public void resize() {
+        _lblSecuritySecurity.setXY(_fraSecurityTitle.getX(), _fraSecurityTitle.getY() + _fraSecurityTitle.getH() + 8);
+        
+        int x = _lblSecuritySecurity.getX();
+        int y = _lblSecuritySecurity.getY() + _lblSecuritySecurity.getH() + 4;
+        for(int i = 0; i < _lblSecuritySecurityQuestion.length; i++) {
+          _lblSecuritySecurityQuestion[i].setXY(x, y);
+          _txtSecuritySecurityAnswer  [i].setXY(x, y + _lblSecuritySecurityQuestion[i].getH() + 6);
+        }
+        
+        _fraSecurityTitle.setW(_wndSecurity.getContentW() - _fraSecurityTitle.getX() * 2);
+        _lblSecurityTitle.setWH(_fraSecurityTitle.getW(), _fraSecurityTitle.getH());
+        
+        for(Label l : _lblSecuritySecurityQuestion) {
+          l.setW(_wndSecurity.getContentW() - l.getX() * 2 - _scrSecuritySecurity.getW());
+        }
+        
+        for(Textbox t : _txtSecuritySecurityAnswer) {
+          t.setW(_wndSecurity.getContentW() - t.getX() * 2 - _scrSecuritySecurity.getW());
+        }
+        
+        _scrSecuritySecurity.setXY(_lblSecuritySecurityQuestion[0].getX() + _lblSecuritySecurityQuestion[0].getW(), _lblSecuritySecurityQuestion[0].getY());
+        _btnSecuritySubmit.setXY(_scrSecuritySecurity.getX() + _scrSecuritySecurity.getW() - _btnSecuritySubmit.getW(), _txtSecuritySecurityAnswer[_txtSecuritySecurityAnswer.length - 1].getY() + _txtSecuritySecurityAnswer[_txtSecuritySecurityAnswer.length - 1].getH() + 8);
+      }
+    });
+    
+    _wndSecurity.events().addCloseHandler(new Window.Events.Close() {
+      @Override public void close() {
+        _proxy.quit();
+      }
+    });
+    
+    _fraSecurityTitle = new Frame();
+    _fraSecurityTitle.setXY(4, 4);
+    _fraSecurityTitle.setH(60);
+    
+    _lblSecurityTitle = new Label();
+    _lblSecurityTitle.setH(60);
+    _lblSecurityTitle.setVAlign(VAlign.ALIGN_TOP);
+    _lblSecurityTitle.setText(Lang.Menu.get(MenuKeys.SECURITY_WHY));
+    
+    _lblSecuritySecurity = new Label();
+    _lblSecuritySecurity.setAutoSize(true);
+    _lblSecuritySecurity.setText(Lang.Menu.get(MenuKeys.SECURITY_SECURITY, String.valueOf(1), String.valueOf(_lblSecuritySecurityQuestion.length)));
+    _lblSecuritySecurity.events().addResizeHandler(onResize);
+    
+    _scrSecuritySecurity = new Scrollbar();
+    _scrSecuritySecurity.setWH(20, 48);
+    _scrSecuritySecurity.setMax(_lblSecuritySecurityQuestion.length - 1);
+    _scrSecuritySecurity.events().addChangeHandler(new Scrollbar.Events.Change() {
+      @Override public void change(int val) {
+        for(int i = 0; i < _lblSecuritySecurityQuestion.length; i++) {
+          _lblSecuritySecurityQuestion[i].hide();
+          _txtSecuritySecurityAnswer  [i].hide();
+        }
+        
+        _lblSecuritySecurity.setText(Lang.Menu.get(MenuKeys.SECURITY_SECURITY, String.valueOf(val + 1), String.valueOf(_lblSecuritySecurityQuestion.length)));
+        
+        _lblSecuritySecurityQuestion[val].show();
+        _txtSecuritySecurityAnswer  [val].show();
+      }
+    });
+    
+    for(int i = 0; i < _lblSecuritySecurityQuestion.length; i++) {
+      _lblSecuritySecurityQuestion[i] = new Label();
+      _txtSecuritySecurityAnswer  [i] = new Textbox();
+      _lblSecuritySecurityQuestion[i].setH(20);
+      _txtSecuritySecurityAnswer  [i].setH(20);
+      _txtSecuritySecurityAnswer  [i].setTextPlaceholder(Lang.Menu.get(MenuKeys.SECURITY_ANSWER  , String.valueOf(i + 1)));
+      _lblSecuritySecurityQuestion[i].hide();
+      _txtSecuritySecurityAnswer  [i].hide();
+    }
+    
+    _lblSecuritySecurityQuestion[0].show();
+    _txtSecuritySecurityAnswer  [0].show();
+    
+    _btnSecuritySubmit = new Button();
+    _btnSecuritySubmit.setWH(_btnRegister.getW(), _btnRegister.getH());
+    _btnSecuritySubmit.setText(Lang.Menu.get(MenuKeys.SECURITY_SUBMIT));
+    _btnSecuritySubmit.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        String[] security = new String[_lblSecuritySecurityQuestion.length];
+        for(int i = 0; i < _lblSecuritySecurityQuestion.length; i++) {
+          security[i] = _txtSecuritySecurityAnswer[i].getText();
+        }
+        
+        _proxy.unlock(security);
+      }
+    });
+    
     _wndMainMenu = new Window();
     _wndMainMenu.setWH(400, 300);
     _wndMainMenu.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
@@ -328,6 +435,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     
     controls().add(_wndLogin);
     controls().add(_wndRegister);
+    controls().add(_wndSecurity);
     controls().add(_wndMainMenu);
     
     _fraInfo.controls().add(_lblInfo);
@@ -353,6 +461,18 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
       _wndRegister.controls().add(_txtRegisterSecurityQuestion[i]);
       _wndRegister.controls().add(_txtRegisterSecurityAnswer  [i]);
+    }
+    
+    _fraSecurityTitle.controls().add(_lblSecurityTitle);
+    
+    _wndSecurity.controls().add(_fraSecurityTitle);
+    _wndSecurity.controls().add(_lblSecuritySecurity);
+    _wndSecurity.controls().add(_scrSecuritySecurity);
+    _wndSecurity.controls().add(_btnSecuritySubmit);
+    
+    for(int i = 0; i < _lblSecuritySecurityQuestion.length; i++) {
+      _wndSecurity.controls().add(_lblSecuritySecurityQuestion[i]);
+      _wndSecurity.controls().add(_txtSecuritySecurityAnswer  [i]);
     }
     
     _wndMainMenu.controls().add(_btnPlay);
@@ -445,13 +565,19 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   }
   
   @Override
-  public void showSecurity() {
+  public void showSecurity(String[] questions) {
+    if(questions != null) {
+      for(int i = 0; i < questions.length; i++) {
+        _lblSecuritySecurityQuestion[i].setText(questions[i]);
+      }
+    }
     
+    _wndSecurity.show();
   }
   
   @Override
   public void hideSecurity() {
-    
+    _wndSecurity.hide();
   }
   
   @Override public void showMainMenu() {
