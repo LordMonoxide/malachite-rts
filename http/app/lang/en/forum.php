@@ -22,5 +22,16 @@ return [
   'topic.rep' => 'Was this post helpful?',
   'topic.rep.pos' => '+:rep',
   'topic.rep.neg' => '-:rep',
-  'topic.rep.vote' => '[-Inf,-1]You down-voted this post.|[1,Inf]You up-voted this post.'
+  'topic.rep.vote' => '[-Inf,-1]You down-voted this post.|[1,Inf]You up-voted this post.',
+  
+  'settings.title' => 'Settings',
+  'settings.userinfo.title' => 'User Info',
+  'settings.personalinfo.title' => 'Personal Information',
+  'settings.accountinfo.title' => 'Account Information',
+  'settings.admin.title' => 'Administration',
+  'settings.admin.forums.title' => 'Forums',
+  'settings.admin.forums.new.legend.root' => 'Create new root forum',
+  'settings.admin.forums.new.legend.parent' => 'Create new child of :parent',
+  'settings.admin.forums.new.name' => 'Name',
+  'settings.admin.forums.new.submit' => 'Create'
 ];

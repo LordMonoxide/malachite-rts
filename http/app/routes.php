@@ -44,7 +44,20 @@ Route::group(['prefix' => 'forum'], function() {
   Route::model('post',  'Post');
   
   Route::group(['prefix' => 'settings'], function() {
-    Route::get('/', ['as' => 'forum.settings', 'uses' => 'forum\SettingsController@settings']);
+    Route::get('/',         ['as' => 'forum.settings',          'uses' => 'forum\SettingsController@settings']);
+    Route::get('/personal', ['as' => 'forum.settings.personal', 'uses' => 'forum\SettingsController@personal']);
+    Route::get('/account',  ['as' => 'forum.settings.account',  'uses' => 'forum\SettingsController@account']);
+    
+    Route::group(['prefix' => 'admin'], function() {
+      Route::group(['prefix' => 'forums'], function() {
+        Route::get('/',               ['as' => 'forum.settings.admin.forums',            'uses' => 'forum\SettingsController@forums']);
+        Route::get('/new',            ['as' => 'forum.settings.admin.forums.new',        'uses' => 'forum\SettingsController@newForum']);
+        Route::put('/new',            ['as' => 'forum.settings.admin.forums.new.submit', 'uses' => 'forum\SettingsController@submitForum']);
+        Route::get('/{forum}/new',    ['as' => 'forum.settings.admin.forums.new2',       'uses' => 'forum\SettingsController@newForum']);
+        Route::get('/{forum}/edit',   ['as' => 'forum.settings.admin.forums.edit',       'uses' => 'forum\SettingsController@editForum']);
+        Route::get('/{forum}/delete', ['as' => 'forum.settings.admin.forums.delete',     'uses' => 'forum\SettingsController@deleteForum']);
+      });
+    });
   });
   
   Route::get('/',                             ['as' => 'forum.index',              'uses' => 'forum\ForumController@index']);

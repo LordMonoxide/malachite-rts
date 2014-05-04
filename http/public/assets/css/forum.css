@@ -84,8 +84,21 @@ table {
   background-color: rgb(202, 60, 60);
 }
 
-img.settings {
+.icon {
   width: 16px;
   height: 16px;
   vertical-align: middle;
+  margin-left: 4px;
+}
+
+.forum-title .icon {
+  float: right;
+}
+
+.settings-category {
+  margin-top: 8px;
+}
+
+.settings-body {
+  padding-left: 8px;
 }

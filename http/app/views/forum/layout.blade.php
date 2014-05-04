@@ -37,7 +37,7 @@
         </ul>
         
         <ul style="float:right;">
-          <li><a href="{{ URL::action('forum.settings') }}">{{ HTML::image('assets/img/forum/settings.png', Lang::get('forum.settings'), ['class' => 'settings']) }}</a></li>
+          <li><a href="{{ URL::action('forum.settings') }}">{{ HTML::image('assets/img/forum/settings.png', Lang::get('forum.settings'), ['class' => 'icon']) }}</a></li>
           <li>{{ HTML::linkAction('auth.logout', Lang::get('app.logout')) }}</li>
         </ul>
       </div>
