@@ -28,7 +28,6 @@ import malachite.engine.physics.Sandbox;
 import malachite.gui.MainMenu;
 import malachite.pathfinding.Pathfinder;
 import malachite.pathfinding.Point;
-import malachite.units.Unit;
 import malachite.world.BuildingEntity;
 import malachite.world.Entity;
 import malachite.world.UnitEntity;
@@ -127,19 +126,15 @@ public class Game {
     int startX = _random.nextInt(640) + 320;
     int startY = _random.nextInt(360) + 180;
     
-    addBuilding(p, Buildings.base, startX, startY).finish();
+    BuildingEntity b = addBuilding(p, Buildings.base, startX, startY);
+    b.finish();
     
     for(int i = 0; i < 3; i++) {
-      double theta = _random.nextDouble() * Math.PI * 2;
-      double dist  = _random.nextDouble() * 150 + 100;
-      float unitX = (float)(startX + Math.cos(theta) * dist);
-      float unitY = (float)(startY + Math.sin(theta) * dist);
-      addUnit(p, new Unit(unitX, unitY));
+      addUnit(p, b.trainUnit());
     }
   }
   
-  private UnitEntity addUnit(Player p, Unit u) {
-    UnitEntity e = (UnitEntity)u.createEntity();
+  private UnitEntity addUnit(Player p, UnitEntity e) {
     p.addUnit(e);
     _world.addEntity(e);
     _game.addEntity(e);
@@ -336,12 +331,16 @@ public class Game {
       entity.moveAlong(_pathfinder.findPath(new Point(entity.getX(), entity.getY()), destination), onReachDestination);
     }
     
-    public void placeFoundation(Building building, float x, float y, UnitEntity... builders) {
-      BuildingEntity e = addBuilding(player, building, x, y);
-      constructEntity(e, builders);
+    public void trainUnit(BuildingEntity building) {
+      addUnit(player, building.trainUnit());
     }
     
-    public void constructEntity(BuildingEntity building, UnitEntity... builders) {
+    public void placeFoundation(Building building, float x, float y, UnitEntity... builders) {
+      BuildingEntity e = addBuilding(player, building, x, y);
+      constructBuilding(e, builders);
+    }
+    
+    public void constructBuilding(BuildingEntity building, UnitEntity... builders) {
       for(UnitEntity builder : builders) {
         moveEntity(builder, new Point(building.getX(), building.getY()), () -> {
           builder.construct(building);

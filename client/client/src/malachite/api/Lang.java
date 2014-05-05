@@ -161,6 +161,10 @@ public class Lang<T> {
   
   public enum GameKeys {
     MENU_BUILDINGS_TITLE("menu.buildings.title"), //$NON-NLS-1$
+    
+    MENU_UNITS_TITLE    ("menu.units.title"),     //$NON-NLS-1$
+    MENU_UNITS_TRAIN    ("menu.units.train"),     //$NON-NLS-1$
+    
     MENU_PAUSE_TITLE    ("menu.pause.title"),     //$NON-NLS-1$
     MENU_PAUSE_RETURN   ("menu.pause.return"),    //$NON-NLS-1$
     MENU_PAUSE_QUIT     ("menu.pause.quit"),      //$NON-NLS-1$

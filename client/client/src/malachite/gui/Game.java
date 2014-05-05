@@ -20,7 +20,6 @@ import malachite.engine.gfx.gui.control.Frame;
 import malachite.engine.gfx.gui.control.Image;
 import malachite.engine.gfx.gui.control.Label;
 import malachite.pathfinding.Point;
-import malachite.units.Unit;
 import malachite.world.BuildingEntity;
 import malachite.world.Entity;
 import malachite.world.UnitEntity;
@@ -38,9 +37,14 @@ public class Game extends AbstractGUI implements GameInterface {
   
   private Frame    _fraGame;
   private Frame    _fraPanel;
+  
   private Frame    _fraBuildingsMenu;
   private Label    _lblBuildingsMenuTitle;
   private Button[] _btnBuildingsMenuBuilding;
+  
+  private Frame    _fraUnitsMenu;
+  private Label    _lblUnitsMenuTitle;
+  private Button   _btnUnitsMenuTrain;
   
   private ArrayList<EntityRenderer> _entities = new ArrayList<>();
   private PseudoRenderer _pseudo;
@@ -82,12 +86,30 @@ public class Game extends AbstractGUI implements GameInterface {
     
     _btnBuildingsMenuBuilding = new Button[Buildings.count()];
     
+    _fraUnitsMenu = new Frame();
+    _fraUnitsMenu.setH(_fraPanel.getH());
+    _fraUnitsMenu.hide();
+    
+    _lblUnitsMenuTitle = new Label();
+    _lblUnitsMenuTitle.setAutoSize(true);
+    _lblUnitsMenuTitle.setText(Lang.Game.get(Lang.GameKeys.MENU_UNITS_TITLE));
+    
+    _btnUnitsMenuTrain = new Button();
+    _btnUnitsMenuTrain.setXYWH(8, _lblUnitsMenuTitle.getY() + _lblUnitsMenuTitle.getH() + 4, 48, 48);
+    _btnUnitsMenuTrain.setText(Lang.Game.get(Lang.GameKeys.MENU_UNITS_TRAIN));
+    _btnUnitsMenuTrain.events().addClickHandler(new ControlEvents.Click() {
+      @Override public void clickDbl() { }
+      @Override public void click() {
+        _proxy.trainUnit((BuildingEntity)_selectedEntities[0]);
+      }
+    });
+    
     int i = 0;
     Buildings.each(building -> {
       _btnBuildingsMenuBuilding[i] = new Button();
       _btnBuildingsMenuBuilding[i].setText(Lang.Game.get(building.name()));
       _btnBuildingsMenuBuilding[i].setWH(48, 48);
-      _btnBuildingsMenuBuilding[i].setXY(i * 56 + 8, _lblBuildingsMenuTitle.getY() + _lblBuildingsMenuTitle.getH() + 8);
+      _btnBuildingsMenuBuilding[i].setXY(i * 56 + 8, _lblBuildingsMenuTitle.getY() + _lblBuildingsMenuTitle.getH() + 4);
       _fraBuildingsMenu.controls().add(_btnBuildingsMenuBuilding[i]);
       _btnBuildingsMenuBuilding[i].events().addClickHandler(new ControlEvents.Click() {
         @Override public void clickDbl() { }
@@ -108,9 +130,13 @@ public class Game extends AbstractGUI implements GameInterface {
       });
     });
     
+    _fraUnitsMenu.controls().add(_btnUnitsMenuTrain);
+    
     _fraBuildingsMenu.controls().add(_lblBuildingsMenuTitle);
+    _fraUnitsMenu.controls().add(_lblUnitsMenuTitle);
     
     _fraPanel.controls().add(_fraBuildingsMenu);
+    _fraPanel.controls().add(_fraUnitsMenu);
     
     controls().add(_fraGame);
     controls().add(_fraPanel);
@@ -137,6 +163,7 @@ public class Game extends AbstractGUI implements GameInterface {
     _fraPanel.setW(_context.getW());
     _fraPanel.setY(_fraGame.getH());
     _fraBuildingsMenu.setW(_fraPanel.getW());
+    _fraUnitsMenu.setW(_fraPanel.getW());
   }
   
   @Override
@@ -172,19 +199,20 @@ public class Game extends AbstractGUI implements GameInterface {
   
   public void showBuildingPanel(BuildingEntity building) {
     _fraPanel.show();
+    _fraUnitsMenu.show();
     resize();
   }
   
   public void showUnitPanel(Entity... unit) {
     _fraPanel.show();
     _fraBuildingsMenu.show();
-    
     resize();
   }
   
   public void hidePanel() {
     _fraPanel.hide();
     _fraBuildingsMenu.hide();
+    _fraUnitsMenu.hide();
     resize();
   }
   
@@ -197,9 +225,9 @@ public class Game extends AbstractGUI implements GameInterface {
     boolean onlyBuildings = true;
     
     for(Entity e : entities) {
-      if(e.source instanceof Unit) {
+      if(e instanceof UnitEntity) {
         onlyBuildings = false;
-      } else if(e.source instanceof Building) {
+      } else if(e instanceof BuildingEntity) {
         onlyUnits = false;
       }
     }
@@ -272,7 +300,7 @@ public class Game extends AbstractGUI implements GameInterface {
           case 1:
             if(_selectedEntities != null) {
               for(Entity e : _selectedEntities) {
-                if(e.source instanceof Unit) {
+                if(e instanceof UnitEntity) {
                   _proxy.moveEntity(e, new Point(x + _viewX, y + _viewY));
                 }
               }

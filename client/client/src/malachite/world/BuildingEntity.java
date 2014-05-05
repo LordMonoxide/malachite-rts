@@ -36,4 +36,8 @@ public class BuildingEntity extends Entity {
   public boolean unfinished() {
     return !finished();
   }
+  
+  public UnitEntity trainUnit() {
+    return new UnitEntity(_x, _y);
+  }
 }
