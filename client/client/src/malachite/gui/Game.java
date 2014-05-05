@@ -9,6 +9,8 @@ import malachite.Game.GameProxy;
 import malachite.api.Lang;
 import malachite.buildings.Building;
 import malachite.buildings.Buildings;
+import malachite.engine.gfx.AbstractContext;
+import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
 import malachite.engine.gfx.gui.AbstractGUI;
@@ -43,6 +45,7 @@ public class Game extends AbstractGUI implements GameInterface {
   private ArrayList<EntityRenderer> _entities = new ArrayList<>();
   private PseudoRenderer _pseudo;
   
+  private AbstractDrawable _selBox;
   private Entity[] _selectedEntities;
   
   public Game(GameProxy proxy, World world) {
@@ -56,6 +59,10 @@ public class Game extends AbstractGUI implements GameInterface {
     _context.setBackColour(0, 0, 0, 1);
     
     _pause = new PauseMenu(_proxy);
+    
+    _selBox = AbstractContext.newDrawable();
+    _selBox.setVisible(false);
+    _selBox.setColour(0, 0, 0, 1);
     
     _fraGame = new Frame();
     _fraGame.events().addDrawHandler (new GameDrawHandler ());
@@ -219,6 +226,7 @@ public class Game extends AbstractGUI implements GameInterface {
       int h1 = Math.min(y1 + _viewH + 1, _world.getH() - 1);
       
       _world.draw(x1, y1, w1, h1);
+      _selBox.draw();
       
       _matrix.pop();
     }
@@ -226,11 +234,15 @@ public class Game extends AbstractGUI implements GameInterface {
   
   private class GameMouseHandler extends ControlEvents.Mouse {
     @Override public void move(int x, int y, int button) {
-      
+      if(_selBox.getVisible()) {
+        _selBox.setWH((x + _viewX) - _selBox.getX(), (y + _viewY) - _selBox.getY());
+        _selBox.createBorder();
+      }
     }
     
     @Override public void down(int x, int y, int button) {
-      
+      _selBox.setXYWH(x + _viewX, y + _viewY, 0, 0);
+      _selBox.setVisible(true);
     }
     
     @Override public void up(int x, int y, int button) {
@@ -256,6 +268,10 @@ public class Game extends AbstractGUI implements GameInterface {
         _fraGame.controls().remove(_pseudo);
         _proxy.placeFoundation((Building)_pseudo.entity.source, x + _viewX, y + _viewY, _pseudo.builders);
         _pseudo = null;
+      }
+      
+      if(_selBox.getVisible()) {
+        _selBox.setVisible(false);
       }
     }
   }
