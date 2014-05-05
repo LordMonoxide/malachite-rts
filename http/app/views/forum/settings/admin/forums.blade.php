@@ -6,15 +6,10 @@
   foreach($fs as $f) {
     echo '          <tr>
             <td class="forum-title" style="padding-left:' . $nest . 'px">' .
-              HTML::linkAction('forum.forum', $f->name, $f->id);
-    
-    if($f->parent === null) {
-      echo '          <a href="' . URL::action('forum.settings.admin.forums.new') . '">';
-    } else {
-      echo '          <a href="' . URL::action('forum.settings.admin.forums.new2', [$f->id]) . '">';
-    }
-    
-    echo HTML::image('assets/img/forum/new.png', Lang::get('forum.settings.admin.forums.new.title'), ['class' => 'icon']) .
+              HTML::linkAction('forum.forum', $f->name, $f->id) .
+              
+              '<a href="' . URL::action('forum.settings.admin.forums.new.sub', [$f->id]) . '">' .
+                HTML::image('assets/img/forum/new.png', Lang::get('forum.settings.admin.forums.new.title'), ['class' => 'icon']) .
               '</a>' .
               '<a href="' . URL::action('forum.settings.admin.forums.edit', [$f->id]) . '">' .
                 HTML::image('assets/img/forum/settings.png', Lang::get('forum.settings.admin.forums.edit'), ['class' => 'icon']) .
@@ -39,6 +34,10 @@
     
     <tbody>
 <?php renderForum($forums); ?>
+      
+      <tr>
+        <td class="forum-title">{{ Lang::get('forum.settings.admin.forums.new.root') }}<a href="{{ URL::action('forum.settings.admin.forums.new') }}">{{ HTML::image('assets/img/forum/new.png', Lang::get('forum.settings.admin.forums.new.title'), ['class' => 'icon']) }}</a></td>
+      </tr>
     </tbody>
   </table>
 @stop

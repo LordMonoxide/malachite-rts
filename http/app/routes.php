@@ -53,7 +53,7 @@ Route::group(['prefix' => 'forum'], function() {
         Route::get('/',               ['as' => 'forum.settings.admin.forums',            'uses' => 'forum\SettingsController@forums']);
         Route::get('/new',            ['as' => 'forum.settings.admin.forums.new',        'uses' => 'forum\SettingsController@newForum']);
         Route::put('/new',            ['as' => 'forum.settings.admin.forums.new.submit', 'uses' => 'forum\SettingsController@submitForum']);
-        Route::get('/{forum}/new',    ['as' => 'forum.settings.admin.forums.new2',       'uses' => 'forum\SettingsController@newForum']);
+        Route::get('/{forum}/new',    ['as' => 'forum.settings.admin.forums.new.sub',    'uses' => 'forum\SettingsController@newForum']);
         Route::get('/{forum}/edit',   ['as' => 'forum.settings.admin.forums.edit',       'uses' => 'forum\SettingsController@editForum']);
         Route::get('/{forum}/delete', ['as' => 'forum.settings.admin.forums.delete',     'uses' => 'forum\SettingsController@deleteForum']);
       });
