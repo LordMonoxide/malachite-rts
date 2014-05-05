@@ -82,10 +82,17 @@ public class Game extends AbstractGUI implements GameInterface {
       _btnBuildingsMenuBuilding[i].events().addClickHandler(new ControlEvents.Click() {
         @Override public void clickDbl() { }
         @Override public void click() {
+          ArrayList<UnitEntity> units = new ArrayList<>();
+          for(Entity e : _selectedEntities) {
+            if(e instanceof UnitEntity) {
+              units.add((UnitEntity)e);
+            }
+          }
+          
           clearSelection();
           hidePanel();
           
-          ////_pseudo = new PseudoRenderer((BuildingEntity)building.createEntity(), _selectedEntities);
+          _pseudo = new PseudoRenderer((BuildingEntity)building.createEntity(), units.toArray(new UnitEntity[0]));
           _fraGame.controls().add(_pseudo);
         }
       });

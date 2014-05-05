@@ -19,7 +19,7 @@ public class UnitEntity extends Entity {
   public void logic() {
     switch(_task) {
       case BUILDING:
-        ((BuildingEntity)_target).construct(10); //TODO
+        ((BuildingEntity)_target).construct(1); //TODO
         break;
     }
   }

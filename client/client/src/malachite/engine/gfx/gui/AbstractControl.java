@@ -143,10 +143,12 @@ public abstract class AbstractControl<T extends ControlEvents> {
 
   public void setBackgroundColour(float[] c) {
     _background.setColour(c);
+    _needsUpdate = true;
   }
 
   public void setBackgroundColour(float r, float g, float b, float a) {
-    _background.setColour(new float[] {r, g, b, a});
+    _background.setColour(r, g, b, a);
+    _needsUpdate = true;
   }
 
   public final boolean acceptsFocus() {
@@ -167,27 +169,27 @@ public abstract class AbstractControl<T extends ControlEvents> {
   }
 
   public final void setW(int w) {
-    _needsUpdate = true;
     _w = w;
+    _needsUpdate = true;
   }
 
   public final void setH(int h) {
-    _needsUpdate = true;
     _h = h;
+    _needsUpdate = true;
   }
 
   public final void setWH(int w, int h) {
-    _needsUpdate = true;
     _w = w;
     _h = h;
+    _needsUpdate = true;
   }
 
   public final void setXYWH(int x, int y, int w, int h) {
-    _needsUpdate = true;
     _x = x;
     _y = y;
     _w = w;
     _h = h;
+    _needsUpdate = true;
   }
 
   public void setHAlign(HAlign align) {
