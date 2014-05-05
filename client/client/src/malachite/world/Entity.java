@@ -2,11 +2,12 @@ package malachite.world;
 
 import malachite.engine.physics.Movable;
 
-public class Entity extends Movable {
+public abstract class Entity extends Movable {
   public final Source source;
   
   private int _w, _h;
   
+  public Entity(Source source, int w, int h) { this(source, 0, 0, w, h); }
   public Entity(Source source, float x, float y, int w, int h) {
     this.source = source;
     _x = x;
@@ -17,6 +18,10 @@ public class Entity extends Movable {
   
   public int getW() { return _w; }
   public int getH() { return _h; }
+  
+  public boolean isBeside(Entity e) {
+    return Math.hypot(_x - e._x, _y - e._y) <= 20;
+  }
   
   @Override
   public String toString() {

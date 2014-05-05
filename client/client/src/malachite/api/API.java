@@ -1,7 +1,6 @@
 package malachite.api;
 
 import malachite.api.models.News;
-import malachite.api.models.Settings;
 import malachite.api.models.User;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
@@ -288,39 +287,6 @@ public final class API {
         return f;
       }
     }
-    
-    public static final class Settings {
-      private Settings() { }
-      
-      public static final APIFuture all(SettingsResponse cb) {
-        APIFuture f = new APIFuture();
-        
-        dispatch(Route.Storage.Settings.All, resp -> {
-          try {
-            if(resp.succeeded()) {
-              JSONArray j = resp.toJSONArray();
-              
-              malachite.api.models.Settings[] settings = new malachite.api.models.Settings[j.length()];
-              
-              for(int i = 0; i < j.length(); i++) {
-                JSONObject r = j.getJSONObject(i);
-                settings[i] = new malachite.api.models.Settings(r);
-              }
-              
-              cb.success(settings);
-            } else {
-              checkGeneric(resp, cb);
-            }
-          } catch(JSONException e) {
-            cb.jsonError(resp, e);
-          }
-          
-          f.complete();
-        });
-        
-        return f;
-      }
-    }
   }
   
   public static APIFuture lang(Route route, LangResponse cb) {
@@ -400,10 +366,6 @@ public final class API {
     public abstract void jsonError(Response r, JSONException e);
   }
   
-  public interface SettingsResponse extends GenericResponse {
-    public abstract void success(Settings[] settings);
-  }
-  
   public static abstract class LangResponse {
     public abstract void success(Map<String, String> lang);
     public abstract void error(Response r);
@@ -478,12 +440,6 @@ public final class API {
         private News(String route) {
           super("/storage/news" + route, HttpMethod.GET); //$NON-NLS-1$
         }
-      }
-      
-      public static final class Settings {
-        private Settings() { }
-        
-        public static final Route All = new Route("/storage/settings", HttpMethod.GET); //$NON-NLS-1$
       }
     }
   }

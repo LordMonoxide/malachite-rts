@@ -17,7 +17,9 @@ import malachite.engine.gfx.gui.control.Image;
 import malachite.engine.gfx.gui.control.Label;
 import malachite.pathfinding.Point;
 import malachite.units.Unit;
+import malachite.world.BuildingEntity;
 import malachite.world.Entity;
+import malachite.world.UnitEntity;
 import malachite.world.World;
 
 public class Game extends AbstractGUI implements GameInterface {
@@ -71,9 +73,9 @@ public class Game extends AbstractGUI implements GameInterface {
     _btnBuildingsMenuBuilding = new Button[Buildings.count()];
     
     int i = 0;
-    Buildings.each((building) -> {
+    Buildings.each(building -> {
       _btnBuildingsMenuBuilding[i] = new Button();
-      _btnBuildingsMenuBuilding[i].setText(building.name);
+      _btnBuildingsMenuBuilding[i].setText(Lang.Game.get(building.name()));
       _btnBuildingsMenuBuilding[i].setWH(48, 48);
       _btnBuildingsMenuBuilding[i].setXY(i * 56 + 8, _lblBuildingsMenuTitle.getY() + _lblBuildingsMenuTitle.getH() + 8);
       _fraBuildingsMenu.controls().add(_btnBuildingsMenuBuilding[i]);
@@ -83,7 +85,7 @@ public class Game extends AbstractGUI implements GameInterface {
           clearSelection();
           hidePanel();
           
-          _pseudo = new PseudoRenderer(Building.Create(building, 0, 0).createEntity());
+          ////_pseudo = new PseudoRenderer((BuildingEntity)building.createEntity(), _selectedEntities);
           _fraGame.controls().add(_pseudo);
         }
       });
@@ -130,21 +132,12 @@ public class Game extends AbstractGUI implements GameInterface {
     int x = _context.getMouseX();
     int y = _context.getMouseY();
     
-    if(x < 64) {
-      _viewX -= 3;
-    }
+    if(x < 64) { _viewX -= 3; }
+    if(y < 64) { _viewY -= 3; }
+    if(x > _context.getW() - 64) { _viewX += 3; }
+    if(y > _context.getH() - 64) { _viewY += 3; }
     
-    if(y < 64) {
-      _viewY -= 3;
-    }
-    
-    if(x > _context.getW() - 64) {
-      _viewX += 3;
-    }
-    
-    if(y > _context.getH() - 64) {
-      _viewY += 3;
-    }
+    _proxy.logic();
     
     return false;
   }
@@ -160,7 +153,7 @@ public class Game extends AbstractGUI implements GameInterface {
     selectEntities(entity);
     
     if(entity.source instanceof Building) {
-      showBuildingPanel((Building<?>)entity.source);
+      showBuildingPanel((Building)entity.source);
     }
     
     if(entity.source instanceof Unit) {
@@ -168,7 +161,7 @@ public class Game extends AbstractGUI implements GameInterface {
     }
   }
   
-  public void showBuildingPanel(Building<?> building) {
+  public void showBuildingPanel(Building building) {
     _fraPanel.show();
     resize();
   }
@@ -251,7 +244,8 @@ public class Game extends AbstractGUI implements GameInterface {
         }
       } else {
         _fraGame.controls().remove(_pseudo);
-        
+        _proxy.placeFoundation((Building)_pseudo.entity.source, x + _viewX, y + _viewY, _pseudo.builders);
+        _pseudo = null;
       }
     }
   }
@@ -284,6 +278,10 @@ public class Game extends AbstractGUI implements GameInterface {
     }
     
     @Override public void draw() {
+      if(entity instanceof BuildingEntity) {
+        setBackgroundColour(1, 0, 1, ((BuildingEntity)entity).completion());
+      }
+      
       setXY((int)(entity.getX() - _viewX), (int)(entity.getY() - _viewY));
       drawBegin();
       drawEnd();
@@ -291,15 +289,26 @@ public class Game extends AbstractGUI implements GameInterface {
     }
   }
   
-  private class PseudoRenderer extends EntityRenderer {
-    private PseudoRenderer(Entity entity) {
-      super(entity);
+  private class PseudoRenderer extends Image {
+    private final BuildingEntity entity;
+    private final UnitEntity[] builders;
+    
+    private PseudoRenderer(BuildingEntity entity, UnitEntity... builders) {
+      super(
+        InitFlags.WITH_BACKGROUND
+      );
+      
+      this.entity = entity;
+      this.builders = builders;
+      setWH(entity.getW(), entity.getH());
+      setBackgroundColour(1, 0, 1, 1);
     }
     
     @Override public void draw() {
-      entity.setX(_context.getMouseX() + _viewX);
-      entity.setY(_context.getMouseY() + _viewY);
-      super.draw();
+      setXY(_context.getMouseX(), _context.getMouseY());
+      drawBegin();
+      drawEnd();
+      drawNext();
     }
   }
 }

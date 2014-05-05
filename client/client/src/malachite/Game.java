@@ -7,12 +7,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import malachite.api.API;
-import malachite.api.APIFuture;
 import malachite.api.Lang;
 import malachite.api.Lang.AppKeys;
 import malachite.api.Lang.MenuKeys;
 import malachite.api.models.News;
-import malachite.api.models.Settings;
 import malachite.buildings.Building;
 import malachite.buildings.Buildings;
 import malachite.engine.gfx.AbstractContext;
@@ -25,12 +23,15 @@ import malachite.engine.gfx.gl14.Context;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.net.http.Request;
 import malachite.engine.net.http.Response;
+import malachite.engine.physics.Movable;
 import malachite.engine.physics.Sandbox;
 import malachite.gui.MainMenu;
 import malachite.pathfinding.Pathfinder;
 import malachite.pathfinding.Point;
 import malachite.units.Unit;
+import malachite.world.BuildingEntity;
 import malachite.world.Entity;
+import malachite.world.UnitEntity;
 import malachite.world.World;
 import malachite.world.generators.Rivers;
 
@@ -46,7 +47,6 @@ public class Game {
   private MenuInterface _menu;
   private GameInterface _game;
   
-  private Settings _settings;
   private World _world;
   private ArrayList<Player> _player = new ArrayList<>();
   
@@ -101,18 +101,6 @@ public class Game {
     API.Auth.check(new R());
   }
   
-  private APIFuture loadSettings() {
-    class R extends GenericResponse implements API.SettingsResponse {
-      R() { super(null); }
-        
-      @Override public void success(Settings[] settings) {
-        _settings = settings[0]; //TODO: not this
-      }
-    }
-    
-    return API.Storage.Settings.all(new R());
-  }
-  
   private void initGame() {
     ((AbstractGUI)_menu).pop();
     ((AbstractGUI)_menu).destroy();
@@ -139,36 +127,34 @@ public class Game {
     int startX = _random.nextInt(640) + 320;
     int startY = _random.nextInt(360) + 180;
     
-    for(Settings.Building building : _settings.building) {
-      for(int i = 0; i < building.count; i++) {
-        //TODO: each building starts at the same loc
-        addBuilding(p, Buildings.get(building.id), startX, startY);
-      }
-    }
+    addBuilding(p, Buildings.base, startX, startY).finish();
     
-    for(int i = 0; i < _settings.units; i++) {
+    for(int i = 0; i < 3; i++) {
       double theta = _random.nextDouble() * Math.PI * 2;
       double dist  = _random.nextDouble() * 150 + 100;
       float unitX = (float)(startX + Math.cos(theta) * dist);
       float unitY = (float)(startY + Math.sin(theta) * dist);
       addUnit(p, new Unit(unitX, unitY));
     }
-    
   }
   
-  private void addUnit(Player p, Unit u) {
-    p.addUnit(u);
-    Entity e = u.createEntity();
+  private UnitEntity addUnit(Player p, Unit u) {
+    UnitEntity e = (UnitEntity)u.createEntity();
+    p.addUnit(e);
     _world.addEntity(e);
     _game.addEntity(e);
     _sandbox.add(e);
+    return e;
   }
   
-  private void addBuilding(Player p, Building b, int startX, int startY) {
-    p.addBuilding(b);
-    Entity e = b.createEntity();
+  private BuildingEntity addBuilding(Player p, Building b, float x, float y) {
+    BuildingEntity e = (BuildingEntity)b.createEntity();
+    p.addBuilding(e);
+    e.setX(x);
+    e.setY(y);
     _world.addEntity(e);
     _game.addEntity(e);
+    return e;
   }
   
   public interface MessageInterface {
@@ -296,12 +282,7 @@ public class Game {
     
     public void play() {
       _menu.loadingGame();
-      
-      APIFuture.await(() -> {
-        initGame();
-      },
-        loadSettings()
-      );
+      initGame();
     }
   }
   
@@ -343,12 +324,29 @@ public class Game {
       _context.destroy();
     }
     
-    public void moveEntity(Entity entity, Point destination) {
-      entity.moveAlong(_pathfinder.findPath(new Point(entity.getX(), entity.getY()), destination));
+    //TODO: This should be a logic callback
+    public void logic() {
+      for(UnitEntity unit : player.units) {
+        unit.logic();
+      }
     }
     
-    public void placeFoundation(Building building, float x, float y) {
-      
+    public void moveEntity(Entity entity, Point destination) { moveEntity(entity, destination, null); }
+    public void moveEntity(Entity entity, Point destination, Movable.Callback onReachDestination) {
+      entity.moveAlong(_pathfinder.findPath(new Point(entity.getX(), entity.getY()), destination), onReachDestination);
+    }
+    
+    public void placeFoundation(Building building, float x, float y, UnitEntity... builders) {
+      BuildingEntity e = addBuilding(player, building, x, y);
+      constructEntity(e, builders);
+    }
+    
+    public void constructEntity(BuildingEntity building, UnitEntity... builders) {
+      for(UnitEntity builder : builders) {
+        moveEntity(builder, new Point(building.getX(), building.getY()), () -> {
+          builder.construct(building);
+        });
+      }
     }
   }
   

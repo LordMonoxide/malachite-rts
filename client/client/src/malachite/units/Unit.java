@@ -1,6 +1,7 @@
 package malachite.units;
 
 import malachite.world.Entity;
+import malachite.world.UnitEntity;
 
 public class Unit implements Entity.Source {
   private float _x, _y;
@@ -15,6 +16,6 @@ public class Unit implements Entity.Source {
   
   @Override
   public Entity createEntity() {
-    return new Entity(this, _x, _y, 32, 32);
+    return new UnitEntity(this, _x, _y, 32, 32);
   }
 }

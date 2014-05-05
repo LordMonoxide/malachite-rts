@@ -15,6 +15,9 @@ public class Movable {
   
   private ConcurrentLinkedDeque<Point> _path = new ConcurrentLinkedDeque<>();
   
+  private Callback _onReachDestination;
+  private boolean  _updatingPath;
+  
   public final float getAcc() {
     return _acc;
   }
@@ -97,16 +100,27 @@ public class Movable {
     return _velTarget == 0;
   }
   
-  public void moveAlong(Point[] path) {
+  public void moveAlong(Point[] path, Callback onReachDestination) {
+    _updatingPath = true;
     _path.clear();
     
     for(Point p : path) {
       _path.add(p);
     }
+    
+    _onReachDestination = onReachDestination;
+    _updatingPath = false;
   }
   
   public Point nextDest() {
+    if(_updatingPath) { return null; }
+    
     if(_path.isEmpty()) {
+      if(_onReachDestination != null) {
+        _onReachDestination.execute();
+        _onReachDestination = null;
+      }
+      
       return null;
     }
     
@@ -115,5 +129,9 @@ public class Movable {
   
   public boolean removeDest(Point p) {
     return _path.remove(p);
+  }
+  
+  public interface Callback {
+    public void execute();
   }
 }

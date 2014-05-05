@@ -7,8 +7,11 @@ public final class Buildings {
   
   private static ArrayList<Building> _building = new ArrayList<>();
   
-  static void register(Building building) {
+  public static final Building base = register(new Base());
+  
+  static Building register(Building building) {
     _building.add(building);
+    return building;
   }
   
   public static int count() {
