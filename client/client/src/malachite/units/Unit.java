@@ -1,5 +1,6 @@
 package malachite.units;
 
+import malachite.api.Lang.GameKeys;
 import malachite.world.Entity;
 import malachite.world.UnitEntity;
 
@@ -14,8 +15,11 @@ public class Unit implements Entity.Source {
   public float getX() { return _x; }
   public float getY() { return _y; }
   
-  @Override
-  public Entity createEntity() {
+  @Override public Entity createEntity() {
     return new UnitEntity(this, _x, _y, 32, 32);
+  }
+  
+  @Override public GameKeys name() {
+    return GameKeys.UNIT_VILLAGER;
   }
 }

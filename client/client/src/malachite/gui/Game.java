@@ -9,6 +9,8 @@ import malachite.Game.GameProxy;
 import malachite.api.Lang;
 import malachite.buildings.Building;
 import malachite.buildings.Buildings;
+import malachite.engine.gfx.fonts.Font;
+import malachite.engine.gfx.fonts.FontBuilder;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.control.Button;
@@ -24,8 +26,9 @@ import malachite.world.World;
 
 public class Game extends AbstractGUI implements GameInterface {
   private GameProxy _proxy;
-  
   private PauseMenu _pause;
+  
+  private Font _font = FontBuilder.getInstance().getDefault();
   
   World _world;
   float _viewX, _viewY;
@@ -291,6 +294,7 @@ public class Game extends AbstractGUI implements GameInterface {
       
       setXY((int)(entity.getX() - _viewX), (int)(entity.getY() - _viewY));
       drawBegin();
+      _font.draw(0, 0, entity.name());
       drawEnd();
       drawNext();
     }

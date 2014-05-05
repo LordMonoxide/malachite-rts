@@ -1,9 +1,15 @@
 package malachite.world;
 
+import malachite.api.Lang;
+import malachite.api.Lang.GameKeys;
+import malachite.engine.gfx.fonts.Font.FONT_FACE;
+import malachite.engine.gfx.fonts.TextStream;
 import malachite.engine.physics.Movable;
 
 public abstract class Entity extends Movable {
   public final Source source;
+  
+  private TextStream _name;
   
   private int _w, _h;
   
@@ -14,6 +20,13 @@ public abstract class Entity extends Movable {
     _y = y;
     _w = w;
     _h = h;
+    
+    _name = new TextStream();
+    _name.insert(_name.face(FONT_FACE.BOLD), _name.text(Lang.Game.get(source.name())));
+  }
+  
+  public TextStream name() {
+    return _name;
   }
   
   public int getW() { return _w; }
@@ -30,5 +43,6 @@ public abstract class Entity extends Movable {
   
   public interface Source {
     public Entity createEntity();
+    public GameKeys name();
   }
 }
