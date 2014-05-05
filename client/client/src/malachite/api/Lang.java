@@ -166,7 +166,9 @@ public class Lang<T> {
     MENU_PAUSE_QUIT     ("menu.pause.quit"),      //$NON-NLS-1$
     
     BUILDING_CAMP_NAME  ("building.camp.name"),   //$NON-NLS-1$
-    BUILDING_CAMP_DESC  ("building.camp.desc");   //$NON-NLS-1$
+    BUILDING_CAMP_DESC  ("building.camp.desc"),   //$NON-NLS-1$
+    
+    UNIT_VILLAGER       ("unit.villager");        //$NON-NLS-1$
     
     String _text;
     

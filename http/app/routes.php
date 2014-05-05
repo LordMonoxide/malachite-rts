@@ -4,6 +4,7 @@ Route::group(['prefix' => 'api'], function() {
   Route::group(['prefix' => 'lang'], function() {
     Route::get('/app',  ['as' => 'api.lang.app',  'uses' => 'api\lang\LanguageController@app']);
     Route::get('/menu', ['as' => 'api.lang.menu', 'uses' => 'api\lang\LanguageController@menu']);
+    Route::get('/game', ['as' => 'api.lang.game', 'uses' => 'api\lang\LanguageController@game']);
   });
 
   Route::group(['prefix' => 'auth'], function() {

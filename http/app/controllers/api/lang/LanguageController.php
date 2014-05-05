@@ -12,4 +12,8 @@ class LanguageController extends Controller {
   public function menu() {
     return Response::json(Lang::get('menu'), 200);
   }
+  
+  public function game() {
+    return Response::json(Lang::get('game'), 200);
+  }
 }
