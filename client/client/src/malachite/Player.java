@@ -1,14 +1,14 @@
 package malachite;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import malachite.world.BuildingEntity;
 import malachite.world.UnitEntity;
 
 public class Player {
-  private ArrayList<BuildingEntity> _building = new ArrayList<>();
-  private ArrayList<UnitEntity>     _unit = new ArrayList<>();
+  private ConcurrentLinkedDeque<BuildingEntity> _building = new ConcurrentLinkedDeque<>();
+  private ConcurrentLinkedDeque<UnitEntity>     _unit     = new ConcurrentLinkedDeque<>();
   
   public void addBuilding(BuildingEntity building) {
     _building.add(building);
@@ -22,27 +22,11 @@ public class Player {
     @Override public Iterator<BuildingEntity> iterator() {
       return _building.iterator();
     }
-    
-    public BuildingEntity get(int index) {
-      return _building.get(index);
-    }
-    
-    public int count() {
-      return _building.size();
-    }
   };
   
   public final Iterable<UnitEntity> units = new Iterable<UnitEntity>() {
     @Override public Iterator<UnitEntity> iterator() {
       return _unit.iterator();
-    }
-    
-    public UnitEntity get(int index) {
-      return _unit.get(index);
-    }
-    
-    public int count() {
-      return _unit.size();
     }
   };
 }

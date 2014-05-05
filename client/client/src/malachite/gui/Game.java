@@ -168,22 +168,14 @@ public class Game extends AbstractGUI implements GameInterface {
   
   public void clickEntity(Entity entity, EntityRenderer renderer) {
     selectEntities(entity);
-    
-    if(entity.source instanceof Building) {
-      showBuildingPanel((Building)entity.source);
-    }
-    
-    if(entity.source instanceof Unit) {
-      showUnitPanel((Unit)entity.source);
-    }
   }
   
-  public void showBuildingPanel(Building building) {
+  public void showBuildingPanel(BuildingEntity building) {
     _fraPanel.show();
     resize();
   }
   
-  public void showUnitPanel(Unit unit) {
+  public void showUnitPanel(Entity... unit) {
     _fraPanel.show();
     _fraBuildingsMenu.show();
     
@@ -197,10 +189,32 @@ public class Game extends AbstractGUI implements GameInterface {
   }
   
   public void selectEntities(Entity... entities) {
+    clearSelection();
+    
     _selectedEntities = entities;
+    
+    boolean onlyUnits = true;
+    boolean onlyBuildings = true;
+    
+    for(Entity e : entities) {
+      if(e.source instanceof Unit) {
+        onlyBuildings = false;
+      } else if(e.source instanceof Building) {
+        onlyUnits = false;
+      }
+    }
+    
+    if(onlyUnits) {
+      showUnitPanel(entities);
+    } else if(onlyBuildings) {
+      if(entities.length == 1) {
+        showBuildingPanel((BuildingEntity)entities[0]);
+      }
+    }
   }
   
   public void clearSelection() {
+    hidePanel();
     _selectedEntities = null;
   }
   
@@ -241,15 +255,17 @@ public class Game extends AbstractGUI implements GameInterface {
     }
     
     @Override public void down(int x, int y, int button) {
-      _selBox.setXYWH(x + _viewX, y + _viewY, 0, 0);
-      _selBox.setVisible(true);
+      if(button == 0) {
+        _selBox.setXYWH(x + _viewX, y + _viewY, 0, 0);
+        _selBox.setVisible(true);
+        _selBox.createBorder();
+      }
     }
     
     @Override public void up(int x, int y, int button) {
       if(_pseudo == null) {
         switch(button) {
           case 0:
-            hidePanel();
             clearSelection();
             break;
             
@@ -272,6 +288,22 @@ public class Game extends AbstractGUI implements GameInterface {
       
       if(_selBox.getVisible()) {
         _selBox.setVisible(false);
+        
+        ArrayList<Entity> entities = new ArrayList<>();
+        for(EntityRenderer e : _entities) {
+          float sx = _selBox.getX() - _viewX;
+          float sy = _selBox.getY() - _viewY;
+          if(e.getX() >= sx && e.getX() <= sx + _selBox.getW() &&
+             e.getY() >= sy && e.getY() <= sy + _selBox.getH()) {
+            if(e.entity instanceof UnitEntity) {
+              entities.add(e.entity);
+            }
+          }
+        }
+        
+        if(!entities.isEmpty()) {
+          selectEntities(entities.toArray(new Entity[0])); //TODO
+        }
       }
     }
   }
