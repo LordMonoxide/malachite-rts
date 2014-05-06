@@ -50,7 +50,7 @@ public class Game extends AbstractGUI implements GameInterface {
   private PseudoRenderer _pseudo;
   
   private AbstractDrawable _selBox;
-  private Entity[] _selectedEntities;
+  private EntityRenderer[] _selectedEntities;
   
   public Game(GameProxy proxy, World world) {
     _proxy = proxy;
@@ -100,7 +100,7 @@ public class Game extends AbstractGUI implements GameInterface {
     _btnUnitsMenuTrain.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
-        _proxy.trainUnit((BuildingEntity)_selectedEntities[0]);
+        _proxy.trainUnit((BuildingEntity)_selectedEntities[0].entity);
       }
     });
     
@@ -115,9 +115,9 @@ public class Game extends AbstractGUI implements GameInterface {
         @Override public void clickDbl() { }
         @Override public void click() {
           ArrayList<UnitEntity> units = new ArrayList<>();
-          for(Entity e : _selectedEntities) {
-            if(e instanceof UnitEntity) {
-              units.add((UnitEntity)e);
+          for(EntityRenderer e : _selectedEntities) {
+            if(e.entity instanceof UnitEntity) {
+              units.add((UnitEntity)e.entity);
             }
           }
           
@@ -194,7 +194,7 @@ public class Game extends AbstractGUI implements GameInterface {
   }
   
   public void clickEntity(Entity entity, EntityRenderer renderer) {
-    selectEntities(entity);
+    selectEntities(renderer);
   }
   
   public void showBuildingPanel(BuildingEntity building) {
@@ -203,7 +203,7 @@ public class Game extends AbstractGUI implements GameInterface {
     resize();
   }
   
-  public void showUnitPanel(Entity... unit) {
+  public void showUnitPanel(EntityRenderer... unit) {
     _fraPanel.show();
     _fraBuildingsMenu.show();
     resize();
@@ -216,7 +216,7 @@ public class Game extends AbstractGUI implements GameInterface {
     resize();
   }
   
-  public void selectEntities(Entity... entities) {
+  public void selectEntities(EntityRenderer... entities) {
     clearSelection();
     
     _selectedEntities = entities;
@@ -224,10 +224,12 @@ public class Game extends AbstractGUI implements GameInterface {
     boolean onlyUnits = true;
     boolean onlyBuildings = true;
     
-    for(Entity e : entities) {
-      if(e instanceof UnitEntity) {
+    for(EntityRenderer e : entities) {
+      e.setBorderColour(1, 1, 1, 1);
+      
+      if(e.entity instanceof UnitEntity) {
         onlyBuildings = false;
-      } else if(e instanceof BuildingEntity) {
+      } else if(e.entity instanceof BuildingEntity) {
         onlyUnits = false;
       }
     }
@@ -236,12 +238,18 @@ public class Game extends AbstractGUI implements GameInterface {
       showUnitPanel(entities);
     } else if(onlyBuildings) {
       if(entities.length == 1) {
-        showBuildingPanel((BuildingEntity)entities[0]);
+        showBuildingPanel((BuildingEntity)entities[0].entity);
       }
     }
   }
   
   public void clearSelection() {
+    if(_selectedEntities != null) {
+      for(EntityRenderer e : _selectedEntities) {
+        e.setBorderColour(0, 0, 0, 1);
+      }
+    }
+    
     hidePanel();
     _selectedEntities = null;
   }
@@ -299,9 +307,9 @@ public class Game extends AbstractGUI implements GameInterface {
             
           case 1:
             if(_selectedEntities != null) {
-              for(Entity e : _selectedEntities) {
-                if(e instanceof UnitEntity) {
-                  _proxy.moveEntity(e, new Point(x + _viewX, y + _viewY));
+              for(EntityRenderer e : _selectedEntities) {
+                if(e.entity instanceof UnitEntity) {
+                  _proxy.moveEntity(e.entity, new Point(x + _viewX, y + _viewY));
                 }
               }
             }
@@ -317,20 +325,20 @@ public class Game extends AbstractGUI implements GameInterface {
       if(_selBox.getVisible()) {
         _selBox.setVisible(false);
         
-        ArrayList<Entity> entities = new ArrayList<>();
+        ArrayList<EntityRenderer> entities = new ArrayList<>();
         for(EntityRenderer e : _entities) {
           float sx = _selBox.getX() - _viewX;
           float sy = _selBox.getY() - _viewY;
           if(e.getX() >= sx && e.getX() <= sx + _selBox.getW() &&
              e.getY() >= sy && e.getY() <= sy + _selBox.getH()) {
             if(e.entity instanceof UnitEntity) {
-              entities.add(e.entity);
+              entities.add(e);
             }
           }
         }
         
         if(!entities.isEmpty()) {
-          selectEntities(entities.toArray(new Entity[0])); //TODO
+          selectEntities(entities.toArray(new EntityRenderer[0])); //TODO
         }
       }
     }

@@ -141,6 +141,16 @@ public abstract class AbstractControl<T extends ControlEvents> {
     return _background;
   }
 
+  public void setBorderColour(float[] c) {
+    _border.setColour(c);
+    _needsUpdate = true;
+  }
+
+  public void setBorderColour(float r, float g, float b, float a) {
+    _border.setColour(r, g, b, a);
+    _needsUpdate = true;
+  }
+
   public void setBackgroundColour(float[] c) {
     _background.setColour(c);
     _needsUpdate = true;
