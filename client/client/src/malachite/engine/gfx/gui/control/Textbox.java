@@ -230,6 +230,14 @@ public class Textbox extends AbstractControl<Textbox.Events> {
           
           break;
           
+        case Keyboard.KEY_HOME:
+          updateText(EMPTY, EMPTY, _text[0] + _text[1] + _text[2]);
+          break;
+          
+        case Keyboard.KEY_END:
+          updateText(_text[0] + _text[1] + _text[2], EMPTY, EMPTY);
+          break;
+          
         case Keyboard.KEY_LEFT:
           String[] s = new String[] {_text[0] + _text[1], _text[2]};
           if(!s[0].isEmpty()) {
