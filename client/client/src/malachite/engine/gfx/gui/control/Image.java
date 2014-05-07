@@ -21,11 +21,15 @@ public class Image extends AbstractControl<ControlEvents> {
   }
 
   public void setTexture(Texture texture) {
-    texture.events().addLoadHandler(() -> {
-      _image.setTexture(texture);
-      _image.createQuad();
-      setWH(texture.getW(), texture.getH());
-    });
+    if(texture != null) {
+      texture.events().addLoadHandler(() -> {
+        _image.setTexture(texture);
+        _image.createQuad();
+        setWH(texture.getW(), texture.getH());
+      });
+    } else {
+      setWH(0, 0);
+    }
   }
 
   public Texture getTexture() {
