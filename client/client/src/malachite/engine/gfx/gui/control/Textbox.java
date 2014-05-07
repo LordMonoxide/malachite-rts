@@ -17,7 +17,7 @@ import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Textbox extends AbstractControl<Textbox.Events> {
-  private static String EMPTY = ""; //$NON-NLS-1$
+  private static final String EMPTY = ""; //$NON-NLS-1$
   
   private Font _font = FontBuilder.getInstance().getDefault();
   private TextStream _textPlaceholderStream = new TextStream();
