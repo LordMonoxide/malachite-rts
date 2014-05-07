@@ -91,11 +91,11 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   public void setText(String text) {
     if(_font.loaded()) {
-      updateText(text, EMPTY, EMPTY);
+      updateText(text == null ? EMPTY : text, EMPTY, EMPTY);
       _selectDirection = 0;
     } else {
       _font.events().addLoadHandler(() -> {
-        updateText(text, EMPTY, EMPTY);
+        updateText(text == null ? EMPTY : text, EMPTY, EMPTY);
         _selectDirection = 0;
       });
     }
