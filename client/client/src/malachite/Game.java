@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import malachite.api.API;
 import malachite.api.Lang;
 import malachite.api.Lang.AppKeys;
-import malachite.api.Lang.MenuKeys;
 import malachite.api.models.News;
 import malachite.buildings.Building;
 import malachite.buildings.Buildings;
@@ -86,17 +85,13 @@ public class Game {
   }
   
   private void checkLogin() {
-    MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_CONNECTING);
-    
     class R extends GenericResponse implements API.CheckResponse {
-      R() { super(m); }
-      
       @Override public void loggedIn() {
-        m.hide();
-        _menu.showMainMenu();
+        _menu.loginSuccess();
       }
     }
     
+    _menu.checkingLogin();
     API.Auth.check(new R());
   }
   
@@ -152,109 +147,70 @@ public class Game {
     return e;
   }
   
-  public interface MessageInterface {
-    public void update(MenuKeys title, MenuKeys text);
-    public void hide();
-  }
-  
   public class MenuProxy {
     public void quit() {
       _context.destroy();
     }
     
     public void register(String email, String pass, String pass2, String nameFirst, String nameLast, API.SecurityQuestion... security) {
-      MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_REGISTERING);
-      _menu.hideRegister();
-      
       class R extends GenericResponse implements API.RegisterResponse {
-        R() { super(m); }
-        
-        @Override
-        public void success() {
-          m.hide();
-          _menu.showMainMenu();
+        @Override public void success() {
+          _menu.registerSuccess();
+          _menu.loginSuccess();
         }
         
         @Override public void invalid(JSONObject errors) {
-          m.hide();
-          _menu.showRegister();
-          System.err.println(errors); //TODO
+          _menu.registerError(errors);
         }
       }
       
+      _menu.registering();
       API.Auth.register(email, pass, pass2, nameFirst, nameLast, new R(), security);
     }
     
     public void login(String email, String pass) {
-      MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_LOGGINGIN);
-      _menu.hideLogin();
-      
       class R extends GenericResponse implements API.LoginResponse {
-        R() { super(m); }
-        
         @Override public void success() {
-          m.hide();
-          _menu.showMainMenu();
+          _menu.loginSuccess();
         }
         
         @Override public void invalid(JSONObject errors) {
-          m.hide();
-          _menu.showLogin();
-          System.err.println(errors); //TODO
+          _menu.loginError(errors);
         }
       }
       
+      _menu.loggingIn();
       API.Auth.login(email, pass, new R());
     }
     
     public void logout() {
-      MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_LOGGINGOUT);
-      _menu.reset();
-      
       class R extends GenericResponse implements API.LogoutResponse {
-        R() { super(m); }
-        
         @Override public void success() {
-          m.hide();
           _menu.showLogin();
         }
       }
       
+      _menu.reset();
       API.Auth.logout(new R());
     }
     
-    public void security() {
-      
-    }
-    
     public void unlock(String... security) {
-      MessageInterface m = _menu.showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_UNLOCKING);
-      _menu.hideSecurity();
-      
       class R extends GenericResponse implements API.UnlockResponse {
-        R() { super(m); }
-        
         @Override public void success() {
-          m.hide();
-          _menu.showMainMenu();
+          _menu.securitySuccess();
         }
 
         @Override public void invalid(JSONObject errors) {
-          m.hide();
-          _menu.showSecurity(null);
-          System.err.println(errors); //TODO
+          _menu.securityError(errors);
         }
       }
       
+      _menu.securing();
       API.Auth.unlock(new R(), security);
     }
     
     public void requestNews() {
-      _menu.gettingNews();
-      
       class R extends ErrorResponse implements API.NewsLatestResponse {
-        R() { super(null); }
-        
         @Override public void success(News news) {
           if(news != null) {
             System.out.println(news.title + '\n' + news.body);
@@ -272,6 +228,7 @@ public class Game {
         }
       }
       
+      _menu.gettingNews();
       API.Storage.News.latest(new R());
     }
     
@@ -284,23 +241,26 @@ public class Game {
   public interface MenuInterface {
     public void reset();
     
-    public MessageInterface showMessage(MenuKeys title, MenuKeys text);
+    public void checkingLogin();
     
     public void gettingNews();
     public void showNews(TextStream news);
     public void noNews();
     
     public void showLogin();
-    public void hideLogin();
+    public void loggingIn();
+    public void loginSuccess();
+    public void loginError(JSONObject errors);
     
     public void showRegister();
-    public void hideRegister();
+    public void registering();
+    public void registerSuccess();
+    public void registerError(JSONObject errors);
     
     public void showSecurity(String[] questions);
-    public void hideSecurity();
-    
-    public void showMainMenu();
-    public void hideMainMenu();
+    public void securing();
+    public void securitySuccess();
+    public void securityError(JSONObject errors);
     
     public void loadingGame();
     
@@ -354,12 +314,6 @@ public class Game {
   }
   
   private class ErrorResponse implements API.ErrorResponse {
-    protected final MessageInterface _message;
-    
-    private ErrorResponse(MessageInterface message) {
-      _message = message;
-    }
-    
     @Override public void error(Response r) {
       _menu.showError(r);
     }
@@ -370,19 +324,13 @@ public class Game {
   }
   
   private class GenericResponse extends ErrorResponse implements API.GenericResponse {
-    private GenericResponse(MessageInterface message) {
-      super(message);
-    }
-    
-    @Override
+    @Override //TODO
     public void loginRequired() {
-      _message.hide();
       _menu.showLogin();
     }
     
     @Override
     public void securityRequired(String[] questions) {
-      _message.hide();
       _menu.showSecurity(questions);
     }
   }

@@ -1,11 +1,9 @@
 package malachite.gui;
 
-import java.util.ArrayList;
-
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import malachite.Game;
-import malachite.Game.MessageInterface;
 import malachite.api.API;
 import malachite.api.Lang;
 import malachite.api.Lang.MenuKeys;
@@ -14,7 +12,14 @@ import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.VAlign;
 import malachite.engine.gfx.gui.builtin.Message;
-import malachite.engine.gfx.gui.control.*;
+import malachite.engine.gfx.gui.control.Button;
+import malachite.engine.gfx.gui.control.Check;
+import malachite.engine.gfx.gui.control.Frame;
+import malachite.engine.gfx.gui.control.Image;
+import malachite.engine.gfx.gui.control.Label;
+import malachite.engine.gfx.gui.control.Scrollbar;
+import malachite.engine.gfx.gui.control.Textbox;
+import malachite.engine.gfx.gui.control.Window;
 import malachite.engine.gfx.textures.Texture;
 import malachite.engine.net.http.Response;
 
@@ -23,7 +28,12 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   
   private Game.MenuProxy _proxy;
   
-  private ArrayList<Message> _message = new ArrayList<>();
+  private Message _checkingLogin;
+  private Message _loggingIn;
+  private Message _registering;
+  private Message _securing;
+  private Message _loadingGame;
+  private Message _error;
   
   private Image[]   _imgBackground = new Image[15];
   private Window    _wndLogin;
@@ -66,8 +76,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     ready();
   }
   
-  @Override
-  protected void load() {
+  @Override protected void load() {
     for(int i = 0; i < _imgBackground.length; i++) {
       Texture t = _textures.getTexture("gui/menu/" + i + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
       _imgBackground[i] = new Image();
@@ -88,8 +97,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndLogin.setIcon(_textures.getTexture("gui/icons/key.png"));
     _wndLogin.hide();
     _wndLogin.events().addResizeHandler(new ControlEvents.Resize() {
-      @Override
-      public void resize() {
+      @Override public void resize() {
         _txtEmail.setW(_wndLogin.getContentW() - _txtEmail.getX() * 2);
         _txtPass.setW(_wndLogin.getContentW() - _txtPass.getX() * 2);
         _btnLogin.setX(_wndLogin.getContentW() - _btnLogin.getW() - _txtEmail.getX());
@@ -139,7 +147,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnRegister.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
-        hideLogin();
+        _wndLogin.hide();
         showRegister();
       }
     });
@@ -158,8 +166,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndRegister.setIcon(_textures.getTexture("gui/icons/hat.png"));
     _wndRegister.hide();
     _wndRegister.events().addResizeHandler(new ControlEvents.Resize() {
-      @Override
-      public void resize() {
+      @Override public void resize() {
         _txtRegisterEmail.setXY(_lblRegisterCreds.getX(), _lblRegisterCreds.getY() + _lblRegisterCreds.getH() + 4);
         _txtRegisterPass[0].setXY(_txtRegisterEmail.getX(), _txtRegisterEmail.getY() + _txtRegisterEmail.getH() + 8);
         _txtRegisterPass[1].setXY(_txtRegisterPass[0].getX(), _txtRegisterPass[0].getY() + _txtRegisterPass[0].getH() + 6);
@@ -198,7 +205,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     
     _wndRegister.events().addCloseHandler(new Window.Events.Close() {
       @Override public void close() {
-        hideRegister();
+        _wndRegister.hide();
         showLogin();
       }
     });
@@ -300,8 +307,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndSecurity.setIcon(_textures.getTexture("gui/icons/woodshield.png"));
     _wndSecurity.hide();
     _wndSecurity.events().addResizeHandler(new ControlEvents.Resize() {
-      @Override
-      public void resize() {
+      @Override public void resize() {
         _lblSecuritySecurity.setXY(_fraSecurityTitle.getX(), _fraSecurityTitle.getY() + _fraSecurityTitle.getH() + 8);
         
         int x = _lblSecuritySecurity.getX();
@@ -399,8 +405,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndMainMenu.setIcon(_textures.getTexture("gui/icons/map.png"));
     _wndMainMenu.hide();
     _wndMainMenu.events().addResizeHandler(new ControlEvents.Resize() {
-      @Override
-      public void resize() {
+      @Override public void resize() {
         _btnPlay  .setX((_wndMainMenu.getContentW() - _btnPlay  .getW()) / 2);
         _btnLogout.setX((_wndMainMenu.getContentW() - _btnLogout.getW()) / 2);
       }
@@ -485,74 +490,122 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _proxy.requestNews();
   }
   
-  @Override
-  public void destroy() {
-    for(Message m : _message) {
-      m.pop();
-    }
+  @Override public void destroy() {
+    hideCheckingLogin();
+    hideRegistering();
+    hideLoggingIn();
+    hideSecuring();
+    hideLoadingGame();
+    hideError();
+  }
+  
+  @Override protected void resize() {
     
-    _message.clear();
   }
   
-  @Override
-  protected void resize() {
+  @Override protected void draw() {
     
   }
   
-  @Override
-  protected void draw() {
-
-  }
-  
-  @Override
-  protected boolean logic() {
+  @Override protected boolean logic() {
     return false;
   }
   
-  @Override
-  public void reset() {
-    hideLogin();
-    hideRegister();
-    hideMainMenu();
+  private Message showMessage(Lang.MenuKeys title, Lang.MenuKeys text) {
+    Message m = Message.wait(Lang.Menu.get(title), Lang.Menu.get(text));
+    m.push();
+    return m;
   }
   
-  @Override
-  public MessageInterface showMessage(MenuKeys title, MenuKeys text) {
-    return new MessageHandler(title, text);
+  @Override public void reset() {
+    _wndLogin.hide();
+    _wndRegister.hide();
+    _wndMainMenu.hide();
+    hideCheckingLogin();
+    hideRegistering();
+    hideLoggingIn();
+    hideSecuring();
+    hideError();
   }
   
-  @Override
-  public void gettingNews() {
+  @Override public void checkingLogin() {
+    _checkingLogin = showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_CONNECTING);
+  }
+  
+  private void hideCheckingLogin() {
+    if(_checkingLogin != null) {
+      _checkingLogin.pop();
+      _checkingLogin = null;
+    }
+  }
+  
+  @Override public void gettingNews() {
     _lblInfo.setText(Lang.Menu.get(Lang.MenuKeys.NEWS_GETTINGNEWS));
   }
   
-  @Override
-  public void showNews(TextStream news) {
-    _lblInfo.setTextStream(news);
+  @Override public void showNews(TextStream news) {
+    _lblInfo.setText(news);
   }
   
-  @Override
-  public void noNews() {
+  @Override public void noNews() {
     _lblInfo.setText(Lang.Menu.get(Lang.MenuKeys.NEWS_NONEWS));
   }
   
-  @Override
-  public void showLogin() {
+  @Override public void showLogin() {
+    hideCheckingLogin();
     _wndLogin.show();
     _txtEmail.setFocus(true);
+  }
+  
+  @Override public void loggingIn() {
+    _wndLogin.hide();
+    _loggingIn = showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_LOGGINGIN);
+  }
+  
+  private void hideLoggingIn() {
+    if(_loggingIn != null) {
+      _loggingIn.pop();
+      _loggingIn = null;
+    }
+  }
+  
+  @Override public void loginSuccess() {
+    hideCheckingLogin();
+    hideLoggingIn();
+    
     _txtEmail.setText(null);
     _txtPass.setText(null);
     _chkRemember.setChecked(false);
   }
   
-  @Override
-  public void hideLogin() {
-    _wndLogin.hide();
+  @Override public void loginError(JSONObject errors) {
+    _wndLogin.show();
+    hideLoggingIn();
+    System.err.println(errors);
   }
   
-  @Override
-  public void showRegister() {
+  @Override public void showRegister() {
     _wndRegister.show();
+    _txtRegisterEmail.setFocus(true);
+  }
+  
+  @Override public void registering() {
+    _wndRegister.hide();
+    _registering = showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_REGISTERING);
+    _txtRegisterPass[0].setText(null);
+    _txtRegisterPass[1].setText(null);
+  }
+  
+  private void hideRegistering() {
+    if(_registering != null) {
+      _registering.pop();
+      _registering = null;
+    }
+  }
+  
+  @Override public void registerSuccess() {
+    hideRegistering();
+
     _txtRegisterEmail.setText(null);
     _txtRegisterPass[0].setText(null);
     _txtRegisterPass[1].setText(null);
@@ -563,13 +616,13 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     }
   }
   
-  @Override
-  public void hideRegister() {
-    _wndRegister.hide();
+  @Override public void registerError(JSONObject errors) {
+    _wndRegister.show();
+    hideRegistering();
+    System.err.println(errors);
   }
   
-  @Override
-  public void showSecurity(String[] questions) {
+  @Override public void showSecurity(String[] questions) {
     if(questions != null) {
       for(int i = 0; i < questions.length; i++) {
         _lblSecuritySecurityQuestion[i].setText(questions[i]);
@@ -579,55 +632,62 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndSecurity.show();
   }
   
-  @Override
-  public void hideSecurity() {
+  @Override public void securing() {
     _wndSecurity.hide();
+    _securing = showMessage(MenuKeys.STATUS_LOADING, MenuKeys.STATUS_UNLOCKING);
   }
   
-  @Override public void showMainMenu() {
-    _wndMainMenu.show();
+  private void hideSecuring() {
+    if(_securing != null) {
+      _securing.pop();
+      _securing = null;
+    }
   }
   
-  @Override public void hideMainMenu() {
-    _wndMainMenu.hide();
+  @Override public void securitySuccess() {
+    hideSecuring();
+    
+    for(Textbox t : _txtSecuritySecurityAnswer) {
+      t.setText(null);
+    }
   }
   
-  private class MessageHandler implements Game.MessageInterface {
-    Message m;
-    
-    private MessageHandler(MenuKeys title, MenuKeys text) {
-      m = Message.wait(Lang.Menu.get(title), Lang.Menu.get(text));
-      m.push();
-      _message.add(m);
-    }
-    
-    @Override public void update(MenuKeys title, MenuKeys text) {
-      m.setTitle(Lang.Menu.get(title));
-      m.setText (Lang.Menu.get(text));
-    }
-    
-    @Override public void hide() {
-      m.pop();
-    }
+  @Override public void securityError(JSONObject errors) {
+    _wndSecurity.show();
+    hideSecuring();
+    System.err.println(errors);
   }
   
   @Override public void loadingGame() {
-    Message m = Message.wait(Lang.Menu.get(Lang.MenuKeys.STATUS_LOADING), Lang.Menu.get(Lang.MenuKeys.STATUS_LOADINGGAME));
-    m.push();
-    _message.add(m);
+    _wndMainMenu.hide();
+    _loadingGame = showMessage(Lang.MenuKeys.STATUS_LOADING, Lang.MenuKeys.STATUS_LOADINGGAME);
+  }
+  
+  private void hideLoadingGame() {
+    if(_loadingGame != null) {
+      _loadingGame.pop();
+      _loadingGame = null;
+    }
   }
   
   @Override public void showError(Response r) {
+    hideError();
     System.err.println(Lang.Menu.get(Lang.MenuKeys.ERROR_ERROR) + '\n' + r.toString());
-    Message m = Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_ERROR), r.toString());
-    m.push();
-    _message.add(m);
+    _error = Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_ERROR), r.toString());
+    _error.push();
   }
   
   @Override public void showJSONError(Response r, JSONException e) {
+    hideError();
     System.err.println(Lang.Menu.get(Lang.MenuKeys.ERROR_JSON) + '\n' + r.toString() + '\n' + e);
-    Message m = Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_JSON), r.toString() + '\n' + e);
-    m.push();
-    _message.add(m);
+    _error = Message.wait(Lang.Menu.get(Lang.MenuKeys.ERROR_JSON), r.toString() + '\n' + e);
+    _error.push();
+  }
+  
+  private void hideError() {
+    if(_error != null) {
+      _error.pop();
+      _error = null;
+    }
   }
 }
