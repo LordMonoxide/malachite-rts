@@ -128,7 +128,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   @Override
   protected void resize() {
-    String temp = ""; //$NON-NLS-1$
+    String temp = EMPTY;
     for(int i = 0; i < _text.length; i++) {
       if(!_text[i].isEmpty()) {
         temp += _text[i];
