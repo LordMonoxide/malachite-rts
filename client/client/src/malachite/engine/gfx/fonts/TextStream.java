@@ -6,6 +6,12 @@ import java.util.Iterator;
 public class TextStream implements Iterable<TextStreamable> {
   private ArrayList<TextStreamable> _stream = new ArrayList<>();
   
+  public TextStream() { }
+  
+  public TextStream(String... data) {
+    insert(data);
+  }
+  
   public TextStream(TextStreamable... data) {
     insert(data);
   }
@@ -18,6 +24,12 @@ public class TextStream implements Iterable<TextStreamable> {
   
   public void insert(String data) {
     insert(new Text(data));
+  }
+  
+  public void insert(String... data) {
+    for(String s : data) {
+      insert(s);
+    }
   }
   
   public void insert(TextStreamable data) {
