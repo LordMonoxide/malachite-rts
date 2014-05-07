@@ -124,12 +124,13 @@ public final class API {
       return f;
     }
     
-    public static APIFuture login(String email, String password, LoginResponse cb) {
+    public static APIFuture login(String email, String password, boolean remember, LoginResponse cb) {
       APIFuture f = new APIFuture();
       
       Map<String, String> data = new HashMap<>();
       data.put(User.DB_EMAIL,    email);
       data.put(User.DB_PASSWORD, password);
+      data.put(User.DB_REMEMBER, String.valueOf(remember));
       
       dispatch(Route.Auth.Login, data, resp -> {
         try {

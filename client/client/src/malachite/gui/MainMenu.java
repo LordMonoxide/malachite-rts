@@ -140,7 +140,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnLogin.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
-        _proxy.login(_txtEmail.getText(), _txtPass.getText());
+        _proxy.login(_txtEmail.getText(), _txtPass.getText(), _chkRemember.isChecked());
       }
     });
 
@@ -596,6 +596,8 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _txtEmail.setText(null);
     _txtPass.setText(null);
     _chkRemember.setChecked(false);
+    
+    _wndMainMenu.show();
   }
   
   @Override public void loginError(JSONObject errors) {

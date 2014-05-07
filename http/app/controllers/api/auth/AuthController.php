@@ -84,7 +84,7 @@ class AuthController extends Controller {
     $validator = Validator::make(Input::all(), [
       'email'    => ['required', 'email', 'exists:users,email'],
       'password' => ['required', 'min:8', 'max:256'],
-      'remember' => ['in:yes,no,on,off,1,0']
+      'remember' => ['in:true,false,yes,no,on,off,1,0']
     ]);
     
     if($validator->passes()) {

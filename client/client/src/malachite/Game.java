@@ -168,7 +168,7 @@ public class Game {
       API.Auth.register(email, pass, pass2, nameFirst, nameLast, new R(), security);
     }
     
-    public void login(String email, String pass) {
+    public void login(String email, String pass, boolean remember) {
       class R extends GenericResponse implements API.LoginResponse {
         @Override public void success() {
           _menu.loginSuccess();
@@ -180,7 +180,7 @@ public class Game {
       }
       
       _menu.loggingIn();
-      API.Auth.login(email, pass, new R());
+      API.Auth.login(email, pass, remember, new R());
     }
     
     public void logout() {
