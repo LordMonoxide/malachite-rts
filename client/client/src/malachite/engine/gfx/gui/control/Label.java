@@ -26,7 +26,7 @@ public class Label extends AbstractControl<ControlEvents> {
     super.setGUI(gui);
   }
   
-  public void setTextStream(TextStream ts) {
+  public void setText(TextStream ts) {
     _textStream = ts;
   }
   
