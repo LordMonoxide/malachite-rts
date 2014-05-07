@@ -23,8 +23,9 @@ public class PauseMenu extends AbstractGUI {
   
   @Override protected void load() {
     _wndMenu = new Window();
-    _wndMenu.setText(Lang.Game.get(Lang.GameKeys.MENU_PAUSE_TITLE));
     _wndMenu.setWH(200, 80);
+    _wndMenu.setText(Lang.Game.get(Lang.GameKeys.MENU_PAUSE_TITLE));
+    _wndMenu.setIcon(_textures.getTexture("gui/icons/hourglass.png"));
     _wndMenu.events().addResizeHandler(new ControlEvents.Resize() {
       @Override public void resize() {
         _btnReturnToGame.setW(_wndMenu.getContentW() - _btnReturnToGame.getX() * 2);

@@ -85,6 +85,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndLogin.setWH(400, 300);
     _wndLogin.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
     _wndLogin.setText(Lang.Menu.get(MenuKeys.LOGIN_TITLE));
+    _wndLogin.setIcon(_textures.getTexture("gui/icons/key.png"));
     _wndLogin.hide();
     _wndLogin.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
@@ -154,6 +155,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndRegister.setWH(400, 300);
     _wndRegister.setXY((_context.getW() - _wndRegister.getW()) / 2, (_context.getH() - _wndRegister.getH()) / 2);
     _wndRegister.setText(Lang.Menu.get(MenuKeys.REGISTER_TITLE));
+    _wndRegister.setIcon(_textures.getTexture("gui/icons/hat.png"));
     _wndRegister.hide();
     _wndRegister.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
@@ -295,6 +297,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndSecurity.setWH(400, 300);
     _wndSecurity.setXY((_context.getW() - _wndSecurity.getW()) / 2, (_context.getH() - _wndSecurity.getH()) / 2);
     _wndSecurity.setText(Lang.Menu.get(MenuKeys.SECURITY_TITLE));
+    _wndSecurity.setIcon(_textures.getTexture("gui/icons/woodshield.png"));
     _wndSecurity.hide();
     _wndSecurity.events().addResizeHandler(new ControlEvents.Resize() {
       @Override
@@ -393,6 +396,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndMainMenu.setWH(400, 300);
     _wndMainMenu.setXY((_context.getW() - _wndLogin.getW()) / 2, (_context.getH() - _wndLogin.getH()) / 2);
     _wndMainMenu.setText(Lang.Menu.get(Lang.MenuKeys.MAINMENU_TITLE));
+    _wndMainMenu.setIcon(_textures.getTexture("gui/icons/map.png"));
     _wndMainMenu.hide();
     _wndMainMenu.events().addResizeHandler(new ControlEvents.Resize() {
       @Override

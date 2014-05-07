@@ -6,6 +6,7 @@ import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.ControlList;
+import malachite.engine.gfx.textures.Texture;
 import malachite.engine.gfx.textures.TextureBuilder;
 
 import java.util.Deque;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class Window extends AbstractControl<Window.Events> {
   private Image _title;
   private Label _text;
+  private Image _icon;
   private Button _close;
   private Image _content;
 
@@ -66,7 +68,6 @@ public class Window extends AbstractControl<Window.Events> {
     });
 
     _text = new Label();
-    _text.setX(4);
     _text.setTextColour(1, 1, 1, 1);
     _text.setAutoSize(true);
     _text.events().addResizeHandler(new ControlEvents.Resize() {
@@ -75,7 +76,10 @@ public class Window extends AbstractControl<Window.Events> {
       }
     });
     
+    _icon = new Image();
+    
     _title.controls().add(_text);
+    _title.controls().add(_icon);
 
     _close = new Button();
     _close.setBackground(AbstractContext.newDrawable());
@@ -127,6 +131,14 @@ public class Window extends AbstractControl<Window.Events> {
   @Override
   protected void resize() {
     _title.setW(_w);
+    
+    if(_icon.getTexture() != null) {
+      _text.setX(_icon.getX() + _icon.getW());
+      _icon.setY(_title.getH() - _icon.getH());
+    } else {
+      _text.setX(4);
+    }
+    
     _close.setX(_w - _close.getW() - _close.getY());
     _content.setWH(
       _w - _content.getX() * 2,
@@ -140,6 +152,22 @@ public class Window extends AbstractControl<Window.Events> {
   
   public void setText(String text) {
     _text.setText(text);
+  }
+  
+  public Texture getIcon() {
+    return _icon.getTexture();
+  }
+  
+  public void setIcon(Texture icon) {
+    _icon.setTexture(icon);
+    
+    if(icon != null) {
+      icon.events().addLoadHandler(() -> {
+        resize();
+      });
+    } else {
+      resize();
+    }
   }
   
   public int getContentW() {

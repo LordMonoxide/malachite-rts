@@ -32,6 +32,7 @@ public class Message extends AbstractGUI {
     _wndMessage.setWH(300, 100);
     _wndMessage.setXY((_context.getW() - _wndMessage.getW()) / 2, (_context.getH() - _wndMessage.getH()) / 2);
     _wndMessage.setText(_initTitle);
+    _wndMessage.setIcon(_textures.getTexture("gui/icons/speech.png"));
     _wndMessage.hideCloseButton();
     _wndMessage.controls().add(_lblText);
     _wndMessage.events().addResizeHandler(new ControlEvents.Resize() {
