@@ -73,5 +73,6 @@ public class Tooltip extends AbstractControl<ControlEvents> {
     }
     
     drawEnd();
+    drawNext();
   }
 }
