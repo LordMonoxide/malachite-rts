@@ -1,5 +1,6 @@
 package malachite.gui;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,11 +8,14 @@ import malachite.Game;
 import malachite.api.API;
 import malachite.api.Lang;
 import malachite.api.Lang.MenuKeys;
+import malachite.api.models.User;
 import malachite.engine.gfx.fonts.TextStream;
+import malachite.engine.gfx.gui.AbstractControl;
 import malachite.engine.gfx.gui.AbstractGUI;
 import malachite.engine.gfx.gui.ControlEvents;
 import malachite.engine.gfx.gui.VAlign;
 import malachite.engine.gfx.gui.builtin.Message;
+import malachite.engine.gfx.gui.builtin.Tooltip;
 import malachite.engine.gfx.gui.control.Button;
 import malachite.engine.gfx.gui.control.Check;
 import malachite.engine.gfx.gui.control.Frame;
@@ -517,6 +521,10 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     return m;
   }
   
+  private void showTooltip(AbstractControl<? extends ControlEvents> anchor, TextStream text) {
+    new Tooltip(anchor, text).push();
+  }
+  
   @Override public void reset() {
     _wndLogin.hide();
     _wndRegister.hide();
@@ -581,7 +589,28 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   @Override public void loginError(JSONObject errors) {
     _wndLogin.show();
     hideLoggingIn();
+    
     System.err.println(errors);
+    
+    if(errors.has(User.DB_EMAIL)) {
+      TextStream ts = new TextStream();
+      JSONArray e = errors.getJSONArray(User.DB_EMAIL);
+      for(int i = 0; i < e.length(); i++) {
+        ts.insert(e.getString(i));
+      }
+      
+      showTooltip(_txtEmail, ts);
+    }
+    
+    if(errors.has(User.DB_PASSWORD)) {
+      TextStream ts = new TextStream();
+      JSONArray e = errors.getJSONArray(User.DB_PASSWORD);
+      for(int i = 0; i < e.length(); i++) {
+        ts.insert(e.getString(i));
+      }
+      
+      showTooltip(_txtPass, ts);
+    }
   }
   
   @Override public void showRegister() {
@@ -620,6 +649,78 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndRegister.show();
     hideRegistering();
     System.err.println(errors);
+    
+    if(errors.has(User.DB_EMAIL)) {
+      TextStream ts = new TextStream();
+      JSONArray e = errors.getJSONArray(User.DB_EMAIL);
+      for(int i = 0; i < e.length(); i++) {
+        ts.insert(e.getString(i));
+      }
+      
+      showTooltip(_txtRegisterEmail, ts);
+    }
+    
+    if(errors.has(User.DB_PASSWORD)) {
+      TextStream ts = new TextStream();
+      JSONArray e = errors.getJSONArray(User.DB_PASSWORD);
+      for(int i = 0; i < e.length(); i++) {
+        ts.insert(e.getString(i));
+      }
+      
+      showTooltip(_txtRegisterPass[0], ts);
+    }
+    
+    if(errors.has(User.DB_PASSWORD_CONFIRMATION)) {
+      TextStream ts = new TextStream();
+      JSONArray e = errors.getJSONArray(User.DB_PASSWORD_CONFIRMATION);
+      for(int i = 0; i < e.length(); i++) {
+        ts.insert(e.getString(i));
+      }
+      
+      showTooltip(_txtRegisterPass[1], ts);
+    }
+    
+    if(errors.has(User.DB_NAME_FIRST)) {
+      TextStream ts = new TextStream();
+      JSONArray e = errors.getJSONArray(User.DB_NAME_FIRST);
+      for(int i = 0; i < e.length(); i++) {
+        ts.insert(e.getString(i));
+      }
+      
+      showTooltip(_txtRegisterNameFirst, ts);
+    }
+    
+    if(errors.has(User.DB_NAME_LAST)) {
+      TextStream ts = new TextStream();
+      JSONArray e = errors.getJSONArray(User.DB_NAME_LAST);
+      for(int i = 0; i < e.length(); i++) {
+        ts.insert(e.getString(i));
+      }
+      
+      showTooltip(_txtRegisterNameLast, ts);
+    }
+    
+    for(int n = 0; n < _txtRegisterSecurityQuestion.length; n++) {
+      if(errors.has(User.DB_QUESTION + n)) {
+        TextStream ts = new TextStream();
+        JSONArray e = errors.getJSONArray(User.DB_QUESTION + n);
+        for(int i = 0; i < e.length(); i++) {
+          ts.insert(e.getString(i));
+        }
+        
+        showTooltip(_txtRegisterSecurityQuestion[n], ts);
+      }
+      
+      if(errors.has(User.DB_ANSWER + n)) {
+        TextStream ts = new TextStream();
+        JSONArray e = errors.getJSONArray(User.DB_ANSWER + n);
+        for(int i = 0; i < e.length(); i++) {
+          ts.insert(e.getString(i));
+        }
+        
+        showTooltip(_txtRegisterSecurityAnswer[n], ts);
+      }
+    }
   }
   
   @Override public void showSecurity(String[] questions) {
@@ -656,6 +757,18 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _wndSecurity.show();
     hideSecuring();
     System.err.println(errors);
+    
+    for(int n = 0; n < _txtRegisterSecurityQuestion.length; n++) {
+      if(errors.has(User.DB_ANSWER + n)) {
+        TextStream ts = new TextStream();
+        JSONArray e = errors.getJSONArray(User.DB_ANSWER + n);
+        for(int i = 0; i < e.length(); i++) {
+          ts.insert(e.getString(i));
+        }
+        
+        showTooltip(_txtSecuritySecurityAnswer[n], ts);
+      }
+    }
   }
   
   @Override public void loadingGame() {
