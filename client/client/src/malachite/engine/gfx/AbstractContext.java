@@ -1,6 +1,5 @@
 package malachite.engine.gfx;
 
-import malachite.engine.gfx.fonts.Font;
 import malachite.engine.gfx.fonts.FontBuilder;
 import malachite.engine.gfx.gui.GUIManager;
 import malachite.engine.util.Time;
