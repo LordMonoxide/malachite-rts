@@ -67,6 +67,7 @@ public class TextureBuilder {
       _lock--;
       return null;
     } catch(IOException e) {
+      System.err.println("Error loading texture \"" + file + '\"'); //$NON-NLS-1$
       e.printStackTrace();
       _lock--;
       return null;
