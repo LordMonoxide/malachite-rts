@@ -88,6 +88,19 @@ public class Font {
       }
     }
     
+    public int getW(TextStream text) {
+      if(text == null) { return 0; }
+      
+      int w = 0;
+      for(TextStreamable ts : text) {
+        if(ts instanceof TextStream.Text) {
+          w += getW(((TextStream.Text)ts).getText());
+        }
+      }
+      
+      return w;
+    }
+    
     public int getW(String text) { return getW(text, 0); }
     public int getW(String text, int mask) {
       if(text == null) { return 0; }
