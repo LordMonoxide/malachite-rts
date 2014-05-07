@@ -98,10 +98,10 @@ public class GUIManager {
     }
   }
 
-  public void keyDown(int key) {
+  public void keyDown(int key, boolean repeat) {
     for(AbstractGUI gui : _gui) {
       if(gui._loaded) {
-        if(gui.keyDown(key)) {
+        if(gui.keyDown(key, repeat)) {
           break;
         }
       }

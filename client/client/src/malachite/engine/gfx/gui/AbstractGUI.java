@@ -245,7 +245,7 @@ public abstract class AbstractGUI {
     return handleMouseWheel(delta) || handled;
   }
 
-  protected final boolean keyDown(int key) {
+  protected final boolean keyDown(int key, boolean repeat) {
     if(key == Keyboard.KEY_F12) {
       _forceSelect = !_forceSelect;
 
@@ -258,10 +258,10 @@ public abstract class AbstractGUI {
 
     if(_focus != null) {
       _keyDownControl = _focus;
-      _focus.handleKeyDown(key);
+      _focus.handleKeyDown(key, repeat);
     }
 
-    return handleKeyDown(key);
+    return handleKeyDown(key, repeat);
   }
 
   protected final boolean keyUp(int key) {
@@ -284,7 +284,7 @@ public abstract class AbstractGUI {
   protected boolean handleMouseUp   (int x, int y, int button) { return false; }
   protected boolean handleMouseMove (int x, int y, int button) { return false; }
   protected boolean handleMouseWheel(int delta)                { return false; }
-  protected boolean handleKeyDown   (int key)  { return false; }
+  protected boolean handleKeyDown   (int key, boolean repeat)  { return false; }
   protected boolean handleKeyUp     (int key)  { return false; }
   protected boolean handleCharDown  (char key) { return false; }
 

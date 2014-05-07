@@ -204,7 +204,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   private class KeyHandler extends ControlEvents.Key {
     @Override
-    public void down(int key) {
+    public void down(int key, boolean repeat) {
       switch(key) {
         case Keyboard.KEY_BACK:
           if(_text[1] != null) {

@@ -93,10 +93,10 @@ public class ControlEvents {
     }
   }
 
-  public void raiseKeyDown(int key) {
+  public void raiseKeyDown(int key, boolean repeat) {
     for(Key e : _key) {
       e._control = _control;
-      e.down(key);
+      e.down(key, repeat);
     }
   }
 
@@ -173,7 +173,7 @@ public class ControlEvents {
   }
 
   public static abstract class Key extends Event {
-    public abstract void down(int key);
+    public abstract void down(int key, boolean repeat);
     public abstract void up  (int key);
     public abstract void text(char key);
   }

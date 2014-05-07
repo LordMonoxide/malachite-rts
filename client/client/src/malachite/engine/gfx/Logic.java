@@ -76,10 +76,8 @@ class Logic implements Runnable {
   protected void keyboard() {
     if(Keyboard.next()) {
       if(Keyboard.getEventKeyState()) {
-        if(!_keyDown[Keyboard.getEventKey()]) {
-          _keyDown[Keyboard.getEventKey()] = true;
-          _context._gui.keyDown(Keyboard.getEventKey());
-        }
+        _context._gui.keyDown(Keyboard.getEventKey(), _keyDown[Keyboard.getEventKey()]);
+        _keyDown[Keyboard.getEventKey()] = true;
 
         if(Keyboard.getEventCharacter() != 0) {
           switch(Keyboard.getEventCharacter()) {

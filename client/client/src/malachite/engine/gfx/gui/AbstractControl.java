@@ -293,7 +293,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
     }
   }
 
-  public void handleKeyDown(int key) {
+  public void handleKeyDown(int key, boolean repeat) {
     if(key == Keyboard.KEY_TAB) {
       AbstractControl<? extends ControlEvents> c = _controlNext;
       if(c == null) {
@@ -320,7 +320,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
     }
 
     if(_events == null) { return; }
-    _events.raiseKeyDown(key);
+    _events.raiseKeyDown(key, repeat);
   }
 
   public void handleKeyUp(int key) {
