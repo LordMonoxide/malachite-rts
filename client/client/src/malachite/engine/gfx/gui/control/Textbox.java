@@ -41,6 +41,8 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   private AbstractDrawable _caret;
   private double _caretPulse;
+  
+  private boolean _shift;
 
   public Textbox() {
     super(
@@ -141,6 +143,14 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
     _textH = _font.regular().getH();
     _caret.setX(_textW[0]);
+    
+    if(_textW[1] == 0) {
+      _caret.setW(1);
+    } else {
+      _caret.setW(_textW[1]);
+    }
+    
+    _caret.createQuad();
 
     int totalW = _textW[0] + _textW[1] + _textW[2];
 
@@ -208,6 +218,11 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     @Override
     public void down(int key, boolean repeat) {
       switch(key) {
+        case Keyboard.KEY_LSHIFT:
+        case Keyboard.KEY_RSHIFT:
+          _shift = true;
+          break;
+          
         case Keyboard.KEY_BACK:
           if(!_text[1].isEmpty()) {
             updateText(_text[0], EMPTY, _text[2]);
@@ -239,21 +254,33 @@ public class Textbox extends AbstractControl<Textbox.Events> {
           break;
           
         case Keyboard.KEY_LEFT:
-          String[] s = new String[] {_text[0] + _text[1], _text[2]};
-          if(!s[0].isEmpty()) {
-            s[1] = s[0].substring(s[0].length() - 1) + s[1];
-            s[0] = s[0].substring(0, s[0].length() - 1);
-            updateText(s[0], EMPTY, s[1]);
+          if(!_shift) {
+            String[] s = new String[] {_text[0] + _text[1], _text[2]};
+            if(!s[0].isEmpty()) {
+              s[1] = s[0].substring(s[0].length() - 1) + s[1];
+              s[0] = s[0].substring(0, s[0].length() - 1);
+              updateText(s[0], EMPTY, s[1]);
+            }
+          } else {
+            if(!_text[0].isEmpty()) {
+              updateText(_text[0].substring(0, _text[0].length() - 1), _text[0].substring(_text[0].length() - 1) + _text[1], _text[2]);
+            }
           }
           
           break;
           
         case Keyboard.KEY_RIGHT:
-          s = new String[] {_text[0] + _text[1], _text[2]};
-          if(!s[1].isEmpty()) {
-            s[0] += s[1].substring(0, 1);
-            s[1] = s[1].substring(1);
-            updateText(s[0], EMPTY, s[1]);
+          if(!_shift) {
+            String[] s = new String[] {_text[0] + _text[1], _text[2]};
+            if(!s[1].isEmpty()) {
+              s[0] += s[1].substring(0, 1);
+              s[1] = s[1].substring(1);
+              updateText(s[0], EMPTY, s[1]);
+            }
+          } else {
+            if(!_text[2].isEmpty()) {
+              updateText(_text[0], _text[1] + _text[2].substring(0, 1), _text[2].substring(1));
+            }
           }
           
           break;
@@ -262,7 +289,12 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
     @Override
     public void up(int key) {
-
+      switch(key) {
+        case Keyboard.KEY_LSHIFT:
+        case Keyboard.KEY_RSHIFT:
+          _shift = false;
+          break;
+      }
     }
 
     @Override
