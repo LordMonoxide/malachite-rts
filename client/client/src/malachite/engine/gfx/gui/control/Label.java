@@ -27,7 +27,16 @@ public class Label extends AbstractControl<ControlEvents> {
   }
   
   public void setText(TextStream ts) {
-    _textStream = ts;
+    _font.events().addLoadHandler(() -> {
+      _needsUpdate = true;
+      _textStream = ts;
+      _textW = _font.regular().getW(ts);
+      _textH = _font.regular().getH();
+      
+      if(_autoSize) {
+        setWH(_textW + _padW * 2 + 1, _textH + _padH * 2);
+      }
+    });
   }
   
   public void setText(String text) {
