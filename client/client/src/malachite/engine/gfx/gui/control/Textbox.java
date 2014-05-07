@@ -43,6 +43,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   private double _caretPulse;
   
   private boolean _shift;
+  private int _selectDirection;
 
   public Textbox() {
     super(
@@ -91,9 +92,11 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   public void setText(String text) {
     if(_font.loaded()) {
       updateText(text, EMPTY, EMPTY);
+      _selectDirection = 0;
     } else {
       _font.events().addLoadHandler(() -> {
         updateText(text, EMPTY, EMPTY);
+        _selectDirection = 0;
       });
     }
   }
@@ -232,6 +235,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
             }
           }
 
+          _selectDirection = 0;
           break;
           
         case Keyboard.KEY_DELETE:
@@ -243,27 +247,52 @@ public class Textbox extends AbstractControl<Textbox.Events> {
             }
           }
           
+          _selectDirection = 0;
           break;
           
         case Keyboard.KEY_HOME:
           updateText(EMPTY, EMPTY, _text[0] + _text[1] + _text[2]);
+          _selectDirection = 0;
           break;
           
         case Keyboard.KEY_END:
           updateText(_text[0] + _text[1] + _text[2], EMPTY, EMPTY);
+          _selectDirection = 0;
           break;
           
         case Keyboard.KEY_LEFT:
           if(!_shift) {
-            String[] s = new String[] {_text[0] + _text[1], _text[2]};
-            if(!s[0].isEmpty()) {
-              s[1] = s[0].substring(s[0].length() - 1) + s[1];
-              s[0] = s[0].substring(0, s[0].length() - 1);
-              updateText(s[0], EMPTY, s[1]);
+            if(_selectDirection == 0) {
+              String[] s = new String[] {_text[0] + _text[1], _text[2]};
+              if(!s[0].isEmpty()) {
+                s[1] = s[0].substring(s[0].length() - 1) + s[1];
+                s[0] = s[0].substring(0, s[0].length() - 1);
+                updateText(s[0], EMPTY, s[1]);
+              }
+            } else {
+              updateText(_text[0], EMPTY, _text[1] + _text[2]);
+              _selectDirection = 0;
             }
           } else {
             if(!_text[0].isEmpty()) {
-              updateText(_text[0].substring(0, _text[0].length() - 1), _text[0].substring(_text[0].length() - 1) + _text[1], _text[2]);
+              switch(_selectDirection) {
+                case 0:
+                  _selectDirection = -1;
+                  // Yes, fall-through is intended
+                  
+                case -1:
+                  updateText(_text[0].substring(0, _text[0].length() - 1), _text[0].substring(_text[0].length() - 1) + _text[1], _text[2]);
+                  break;
+                  
+                case 1:
+                  updateText(_text[0], _text[1].substring(0, _text[1].length() - 1), _text[1].substring(_text[1].length() - 1) + _text[2]);
+                  
+                  if(_text[1].isEmpty()) {
+                    _selectDirection = 0;
+                  }
+                  
+                  break;
+              }
             }
           }
           
@@ -271,15 +300,37 @@ public class Textbox extends AbstractControl<Textbox.Events> {
           
         case Keyboard.KEY_RIGHT:
           if(!_shift) {
-            String[] s = new String[] {_text[0] + _text[1], _text[2]};
-            if(!s[1].isEmpty()) {
-              s[0] += s[1].substring(0, 1);
-              s[1] = s[1].substring(1);
-              updateText(s[0], EMPTY, s[1]);
+            if(_selectDirection == 0) {
+              String[] s = new String[] {_text[0] + _text[1], _text[2]};
+              if(!s[1].isEmpty()) {
+                s[0] += s[1].substring(0, 1);
+                s[1] = s[1].substring(1);
+                updateText(s[0], EMPTY, s[1]);
+              }
+            } else {
+              updateText(_text[0] + _text[1], EMPTY, _text[2]);
+              _selectDirection = 0;
             }
           } else {
             if(!_text[2].isEmpty()) {
-              updateText(_text[0], _text[1] + _text[2].substring(0, 1), _text[2].substring(1));
+              switch(_selectDirection) {
+                case 0:
+                  _selectDirection = 1;
+                  // Yes, fall-through is intended
+                  
+                case 1:
+                  updateText(_text[0], _text[1] + _text[2].substring(0, 1), _text[2].substring(1));
+                  break;
+                  
+                case -1:
+                  updateText(_text[0] + _text[1].substring(0, 1), _text[1].substring(1), _text[2]);
+                  
+                  if(_text[1].isEmpty()) {
+                    _selectDirection = 0;
+                  }
+                  
+                  break;
+              }
             }
           }
           
