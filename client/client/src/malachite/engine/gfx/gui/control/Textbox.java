@@ -17,11 +17,13 @@ import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Textbox extends AbstractControl<Textbox.Events> {
+  private static String EMPTY = ""; //$NON-NLS-1$
+  
   private Font _font = FontBuilder.getInstance().getDefault();
   private TextStream _textPlaceholderStream = new TextStream();
   private TextStream.Text _textPlaceholder = new TextStream.Text();
   private TextStream.Colour _textPlaceholderColour = new TextStream.Colour(65f / 255, 52f / 255, 8f / 255, 0.5f);
-  private String[] _text = new String[3];
+  private String[] _text = {EMPTY, EMPTY, EMPTY};
   private TextStream _textStream = new TextStream();
   private TextStream.Text _textFull = new TextStream.Text();
   private TextStream.Colour _textColour = new TextStream.Colour(65f / 255, 52f / 255, 8f / 255, 1);
@@ -86,10 +88,10 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   public void setText(String text) {
     if(_font.loaded()) {
-      updateText(text, null, null);
+      updateText(text, EMPTY, EMPTY);
     } else {
       _font.events().addLoadHandler(() -> {
-        updateText(text, null, null);
+        updateText(text, EMPTY, EMPTY);
       });
     }
   }
@@ -126,7 +128,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   protected void resize() {
     String temp = ""; //$NON-NLS-1$
     for(int i = 0; i < _text.length; i++) {
-      if(_text[i] != null) {
+      if(!_text[i].isEmpty()) {
         temp += _text[i];
       }
     }
@@ -207,14 +209,45 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     public void down(int key, boolean repeat) {
       switch(key) {
         case Keyboard.KEY_BACK:
-          if(_text[1] != null) {
-            updateText(_text[0], null, _text[2]);
+          if(!_text[1].isEmpty()) {
+            updateText(_text[0], EMPTY, _text[2]);
           } else {
-            if(_text[0] != null && !_text[0].isEmpty()) {
-              updateText(_text[0].substring(0, _text[0].length() - 1), _text[1], _text[2]);
+            if(!_text[0].isEmpty()) {
+              updateText(_text[0].substring(0, _text[0].length() - 1), EMPTY, _text[2]);
             }
           }
 
+          break;
+          
+        case Keyboard.KEY_DELETE:
+          if(!_text[1].isEmpty()) {
+            updateText(_text[0], EMPTY, _text[2]);
+          } else {
+            if(!_text[2].isEmpty()) {
+              updateText(_text[0], EMPTY, _text[2].substring(1));
+            }
+          }
+          
+          break;
+          
+        case Keyboard.KEY_LEFT:
+          String[] s = new String[] {_text[0] + _text[1], _text[2]};
+          if(!s[0].isEmpty()) {
+            s[1] = s[0].substring(s[0].length() - 1) + s[1];
+            s[0] = s[0].substring(0, s[0].length() - 1);
+            updateText(s[0], EMPTY, s[1]);
+          }
+          
+          break;
+          
+        case Keyboard.KEY_RIGHT:
+          s = new String[] {_text[0] + _text[1], _text[2]};
+          if(!s[1].isEmpty()) {
+            s[0] += s[1].substring(0, 1);
+            s[1] = s[1].substring(1);
+            updateText(s[0], EMPTY, s[1]);
+          }
+          
           break;
       }
     }
@@ -226,12 +259,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
     @Override
     public void text(char key) {
-      if(_text[0] != null) {
-        updateText(_text[0] + key, null, _text[2]);
-      } else {
-        updateText(Character.toString(key), null, _text[2]);
-      }
-
+      updateText(_text[0] + key, EMPTY, _text[2]);
       events().raiseChange();
     }
   }
