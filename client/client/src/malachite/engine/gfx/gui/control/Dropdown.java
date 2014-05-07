@@ -48,7 +48,7 @@ public class Dropdown<T> extends AbstractControl<ControlEvents> {
       @Override public void click() {
         _drop.push();
         _drop.resize();
-        _drop._frame.setXY(getAllX(), getAllY());
+        _drop._frame.setXY(calculateTotalX(), calculateTotalY());
       }
     });
     

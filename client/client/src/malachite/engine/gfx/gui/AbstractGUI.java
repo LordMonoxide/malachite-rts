@@ -159,7 +159,7 @@ public abstract class AbstractGUI {
           _selectControl.setFocus(true);
         }
 
-        _selectControl.handleMouseDown(x - _selectControl.getAllX(), y - _selectControl.getAllY(), button);
+        _selectControl.handleMouseDown(x - _selectControl.calculateTotalX(), y - _selectControl.calculateTotalY(), button);
         handled = true;
       } else {
         System.err.println("Found no controls of this colour"); //$NON-NLS-1$
@@ -175,7 +175,7 @@ public abstract class AbstractGUI {
     _selectButton = -1;
 
     if(_selectControl != null) {
-      _selectControl.handleMouseUp(x - _selectControl.getAllX(), y - _selectControl.getAllY(), button);
+      _selectControl.handleMouseUp(x - _selectControl.calculateTotalX(), y - _selectControl.calculateTotalY(), button);
       _selectControl = null;
       handled = true;
     }
@@ -190,7 +190,7 @@ public abstract class AbstractGUI {
     _mouseY = y;
 
     if(_selectControl != null) {
-      _selectControl.handleMouseMove(x - _selectControl.getAllX(), y - _selectControl.getAllY(), _selectButton);
+      _selectControl.handleMouseMove(x - _selectControl.calculateTotalX(), y - _selectControl.calculateTotalY(), _selectButton);
       
       handled = true;
     } else {
@@ -208,7 +208,7 @@ public abstract class AbstractGUI {
         }
 
         if(_selectControl != null) {
-          _selectControl.handleMouseMove(x - _selectControl.getAllX(), y - _selectControl.getAllY(), _selectButton);
+          _selectControl.handleMouseMove(x - _selectControl.calculateTotalX(), y - _selectControl.calculateTotalY(), _selectButton);
           _selectControl = null;
           
           handled = true;

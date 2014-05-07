@@ -109,7 +109,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
   public int getW() { return _w; }
   public int getH() { return _h; }
 
-  protected final int getAllX() {
+  public final int calculateTotalX() {
     int x = _x;
     
     AbstractControl<? extends ControlEvents> c = _controlParent;
@@ -121,7 +121,7 @@ public abstract class AbstractControl<T extends ControlEvents> {
     return x;
   }
 
-  protected final int getAllY() {
+  public final int calculateTotalY() {
     int y = _y;
     
     AbstractControl<? extends ControlEvents> c = _controlParent;
