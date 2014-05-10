@@ -3,6 +3,7 @@ package malachite.gui;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lwjgl.input.Keyboard;
 
 import malachite.Game;
 import malachite.api.API;
@@ -117,22 +118,35 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
         _proxy.quit();
       }
     });
-
+    
+    ControlEvents.Key loginSubmit = new ControlEvents.Key() {
+      @Override public void text(char key) { }
+      @Override public void down(int key, boolean repeat) { }
+      @Override public void up(int key) {
+        if(key == Keyboard.KEY_RETURN) {
+          login();
+        }
+      }
+    };
+    
     _txtEmail = new Textbox();
     _txtEmail.setXY(4, 4);
     _txtEmail.setH(20);
     _txtEmail.setTextPlaceholder(Lang.Menu.get(MenuKeys.LOGIN_EMAIL));
-
+    _txtEmail.events().addKeyHandler(loginSubmit);
+    
     _txtPass = new Textbox();
     _txtPass.setXY(_txtEmail.getX(), _txtEmail.getY() + _txtEmail.getH() + 8);
     _txtPass.setH(20);
     _txtPass.setTextPlaceholder(Lang.Menu.get(MenuKeys.LOGIN_PASS));
     _txtPass.setMasked(true);
-
+    _txtPass.events().addKeyHandler(loginSubmit);
+    
     _chkRemember = new Check();
     _chkRemember.setXY(_txtPass.getX(), _txtPass.getY() + _txtPass.getH() + 8);
     _chkRemember.setText(Lang.Menu.get(MenuKeys.LOGIN_REMEMBER));
-
+    _chkRemember.events().addKeyHandler(loginSubmit);
+    
     _btnLogin = new Button();
     _btnLogin.setY(_txtPass.getY() + _txtPass.getH() + 8);
     _btnLogin.setWH(50, 20);
@@ -140,7 +154,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnLogin.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
-        _proxy.login(_txtEmail.getText(), _txtPass.getText(), _chkRemember.isChecked());
+        login();
       }
     });
 
@@ -214,6 +228,16 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
       }
     });
     
+    ControlEvents.Key registerSubmit = new ControlEvents.Key() {
+      @Override public void text(char key) { }
+      @Override public void down(int key, boolean repeat) { }
+      @Override public void up(int key) {
+        if(key == Keyboard.KEY_RETURN) {
+          register();
+        }
+      }
+    };
+    
     ControlEvents.Resize onResize = new ControlEvents.Resize() {
       @Override public void resize() {
         _this.resize();
@@ -229,16 +253,19 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _txtRegisterEmail = new Textbox();
     _txtRegisterEmail.setH(20);
     _txtRegisterEmail.setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_EMAIL));
+    _txtRegisterEmail.events().addKeyHandler(registerSubmit);
 
     _txtRegisterPass[0] = new Textbox();
     _txtRegisterPass[0].setH(20);
     _txtRegisterPass[0].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_PASS));
     _txtRegisterPass[0].setMasked(true);
+    _txtRegisterPass[0].events().addKeyHandler(registerSubmit);
 
     _txtRegisterPass[1] = new Textbox();
     _txtRegisterPass[1].setH(20);
     _txtRegisterPass[1].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_CONFIRM));
     _txtRegisterPass[1].setMasked(true);
+    _txtRegisterPass[1].events().addKeyHandler(registerSubmit);
     
     _lblRegisterPersonal = new Label();
     _lblRegisterPersonal.setAutoSize(true);
@@ -248,10 +275,12 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _txtRegisterNameFirst = new Textbox();
     _txtRegisterNameFirst.setH(20);
     _txtRegisterNameFirst.setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_NAMEFIRST));
+    _txtRegisterNameFirst.events().addKeyHandler(registerSubmit);
     
     _txtRegisterNameLast = new Textbox();
     _txtRegisterNameLast.setH(20);
     _txtRegisterNameLast.setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_NAMELAST));
+    _txtRegisterNameLast.events().addKeyHandler(registerSubmit);
     
     _lblRegisterSecurity = new Label();
     _lblRegisterSecurity.setAutoSize(true);
@@ -261,6 +290,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _scrRegisterSecurity = new Scrollbar();
     _scrRegisterSecurity.setWH(20, 48);
     _scrRegisterSecurity.setMax(_txtRegisterSecurityQuestion.length - 1);
+    _scrRegisterSecurity.events().addKeyHandler(registerSubmit);
     _scrRegisterSecurity.events().addChangeHandler(new Scrollbar.Events.Change() {
       @Override public void change(int val) {
         for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
@@ -284,6 +314,8 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
       _txtRegisterSecurityAnswer  [i].setTextPlaceholder(Lang.Menu.get(MenuKeys.REGISTER_ANSWER  , String.valueOf(i + 1)));
       _txtRegisterSecurityQuestion[i].hide();
       _txtRegisterSecurityAnswer  [i].hide();
+      _txtRegisterSecurityQuestion[i].events().addKeyHandler(registerSubmit);
+      _txtRegisterSecurityAnswer  [i].events().addKeyHandler(registerSubmit);
     }
     
     _txtRegisterSecurityQuestion[0].show();
@@ -295,12 +327,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnRegisterSubmit.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
-        API.SecurityQuestion[] security = new API.SecurityQuestion[_txtRegisterSecurityQuestion.length];
-        for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
-          security[i] = new API.SecurityQuestion(_txtRegisterSecurityQuestion[i].getText(), _txtRegisterSecurityAnswer[i].getText());
-        }
-        
-        _proxy.register(_txtRegisterEmail.getText(), _txtRegisterPass[0].getText(), _txtRegisterPass[1].getText(), _txtRegisterNameFirst.getText(), _txtRegisterNameLast.getText(), security);
+        register();
       }
     });
     
@@ -343,6 +370,16 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
       }
     });
     
+    ControlEvents.Key unlockSubmit = new ControlEvents.Key() {
+      @Override public void text(char key) { }
+      @Override public void down(int key, boolean repeat) { }
+      @Override public void up(int key) {
+        if(key == Keyboard.KEY_RETURN) {
+          unlock();
+        }
+      }
+    };
+    
     _fraSecurityTitle = new Frame();
     _fraSecurityTitle.setXY(4, 4);
     _fraSecurityTitle.setH(60);
@@ -360,6 +397,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _scrSecuritySecurity = new Scrollbar();
     _scrSecuritySecurity.setWH(20, 48);
     _scrSecuritySecurity.setMax(_lblSecuritySecurityQuestion.length - 1);
+    _scrSecuritySecurity.events().addKeyHandler(unlockSubmit);
     _scrSecuritySecurity.events().addChangeHandler(new Scrollbar.Events.Change() {
       @Override public void change(int val) {
         for(int i = 0; i < _lblSecuritySecurityQuestion.length; i++) {
@@ -382,6 +420,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
       _txtSecuritySecurityAnswer  [i].setTextPlaceholder(Lang.Menu.get(MenuKeys.SECURITY_ANSWER  , String.valueOf(i + 1)));
       _lblSecuritySecurityQuestion[i].hide();
       _txtSecuritySecurityAnswer  [i].hide();
+      _txtSecuritySecurityAnswer  [i].events().addKeyHandler(unlockSubmit);
     }
     
     _lblSecuritySecurityQuestion[0].show();
@@ -393,12 +432,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     _btnSecuritySubmit.events().addClickHandler(new ControlEvents.Click() {
       @Override public void clickDbl() { }
       @Override public void click() {
-        String[] security = new String[_lblSecuritySecurityQuestion.length];
-        for(int i = 0; i < _lblSecuritySecurityQuestion.length; i++) {
-          security[i] = _txtSecuritySecurityAnswer[i].getText();
-        }
-        
-        _proxy.unlock(security);
+        unlock();
       }
     });
     
@@ -515,6 +549,28 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     return false;
   }
   
+  private void login() {
+    _proxy.login(_txtEmail.getText(), _txtPass.getText(), _chkRemember.isChecked());
+  }
+  
+  private void register() {
+    API.SecurityQuestion[] security = new API.SecurityQuestion[_txtRegisterSecurityQuestion.length];
+    for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
+      security[i] = new API.SecurityQuestion(_txtRegisterSecurityQuestion[i].getText(), _txtRegisterSecurityAnswer[i].getText());
+    }
+    
+    _proxy.register(_txtRegisterEmail.getText(), _txtRegisterPass[0].getText(), _txtRegisterPass[1].getText(), _txtRegisterNameFirst.getText(), _txtRegisterNameLast.getText(), security);
+  }
+  
+  private void unlock() {
+    String[] security = new String[_lblSecuritySecurityQuestion.length];
+    for(int i = 0; i < _lblSecuritySecurityQuestion.length; i++) {
+      security[i] = _txtSecuritySecurityAnswer[i].getText();
+    }
+    
+    _proxy.unlock(security);
+  }
+  
   private Message showMessage(Lang.MenuKeys title, Lang.MenuKeys text) {
     Message m = Message.wait(Lang.Menu.get(title), Lang.Menu.get(text));
     m.push();
@@ -534,6 +590,7 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
       }
       
       showTooltip(anchor, ts);
+      anchor.setFocus(true);
     }
   }
   
@@ -606,8 +663,8 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     
     System.err.println(errors);
     
-    showValidationError(errors, User.DB_EMAIL,    _txtEmail);
     showValidationError(errors, User.DB_PASSWORD, _txtPass );
+    showValidationError(errors, User.DB_EMAIL,    _txtEmail);
   }
   
   @Override public void showRegister() {
@@ -647,16 +704,16 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
     hideRegistering();
     System.err.println(errors);
     
-    showValidationError(errors, User.DB_EMAIL,                 _txtRegisterEmail    );
-    showValidationError(errors, User.DB_PASSWORD,              _txtRegisterPass[0]  );
-    showValidationError(errors, User.DB_PASSWORD_CONFIRMATION, _txtRegisterPass[1]  );
-    showValidationError(errors, User.DB_NAME_FIRST,            _txtRegisterNameFirst);
-    showValidationError(errors, User.DB_NAME_LAST,             _txtRegisterNameLast );
-    
     for(int i = 0; i < _txtRegisterSecurityQuestion.length; i++) {
       showValidationError(errors, User.DB_QUESTION + i, _txtRegisterSecurityQuestion[i]);
       showValidationError(errors, User.DB_ANSWER   + i, _txtRegisterSecurityAnswer  [i]);
     }
+    
+    showValidationError(errors, User.DB_NAME_LAST,             _txtRegisterNameLast );
+    showValidationError(errors, User.DB_NAME_FIRST,            _txtRegisterNameFirst);
+    showValidationError(errors, User.DB_PASSWORD_CONFIRMATION, _txtRegisterPass[1]  );
+    showValidationError(errors, User.DB_PASSWORD,              _txtRegisterPass[0]  );
+    showValidationError(errors, User.DB_EMAIL,                 _txtRegisterEmail    );
   }
   
   @Override public void showSecurity(String[] questions) {
