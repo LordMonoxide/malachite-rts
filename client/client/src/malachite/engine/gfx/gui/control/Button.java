@@ -44,6 +44,17 @@ public class Button extends AbstractControl<ControlEvents> {
     _events.addHoverHandler(new HoverHandler());
     _events.addMouseHandler(new MouseHandler());
     _events.addFocusHandler(new FocusHandler());
+    _events.addKeyHandler(new ControlEvents.Key() {
+      @Override public void text(char key) { }
+      @Override public void down(int key, boolean repeat) {
+        _events.raiseMouseDown(0, 0, -1);
+      }
+      
+      @Override public void up(int key) {
+        _events.raiseMouseUp(0, 0, -1);
+        _events.raiseClick();
+      }
+    });
 
     _hAlign = HAlign.ALIGN_CENTER;
 
