@@ -14,6 +14,8 @@ import malachite.engine.gfx.textures.TextureBuilder;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import org.lwjgl.input.Keyboard;
+
 public class Check extends AbstractControl<Check.Events> {
   private Font _font = FontBuilder.getInstance().getDefault();
   private TextStream _textStream = new TextStream();
@@ -51,6 +53,22 @@ public class Check extends AbstractControl<Check.Events> {
       }
 
       @Override public void clickDbl() { }
+    });
+    
+    _events.addKeyHandler(new ControlEvents.Key() {
+      @Override public void text(char key) { }
+      @Override public void down(int key, boolean repeat) {
+        if(key == Keyboard.KEY_SPACE) {
+          _events.raiseMouseDown(0, 0, -1);
+        }
+      }
+      
+      @Override public void up(int key) {
+        if(key == Keyboard.KEY_SPACE) {
+          _events.raiseMouseUp(0, 0, -1);
+          _events.raiseClick();
+        }
+      }
     });
 
     _padW = 0;
