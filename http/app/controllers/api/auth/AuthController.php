@@ -30,12 +30,12 @@ class AuthController extends Controller {
       'name_first' => ['required', 'min:2', 'max:30'],
       'name_last'  => ['min:2', 'max:30'],
       'remember'   => ['in:yes,no,on,off,1,0'],
-      'question1'  => ['required', 'alpha_num', 'min:4', 'max:255'],
-      'question2'  => ['required', 'alpha_num', 'min:4', 'max:255'],
-      'question3'  => ['required', 'alpha_num', 'min:4', 'max:255'],
-      'answer1'    => ['required', 'alpha_num', 'min:4', 'max:255'],
-      'answer2'    => ['required', 'alpha_num', 'min:4', 'max:255'],
-      'answer3'    => ['required', 'alpha_num', 'min:4', 'max:255']
+      'question1'  => ['required', 'min:1', 'max:255'],
+      'question2'  => ['required', 'min:1', 'max:255'],
+      'question3'  => ['required', 'min:1', 'max:255'],
+      'answer1'    => ['required', 'min:1', 'max:255'],
+      'answer2'    => ['required', 'min:1', 'max:255'],
+      'answer3'    => ['required', 'min:1', 'max:255']
     ]);
     
     if($validator->passes()) {
