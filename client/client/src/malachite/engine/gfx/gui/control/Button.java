@@ -17,12 +17,15 @@ public class Button extends AbstractControl<ControlEvents> {
   private TextStream _textStream = new TextStream();
   private TextStream.Text  _text = new TextStream.Text();
   private TextStream.Colour _textColour = new TextStream.Colour(1, 1, 1, 1);
-  private int     _textX, _textY;
-  private int     _textW, _textH;
+  private int _textX, _textY;
+  private int _textW, _textH;
   
   private float[] _normalColour  = {0x3F / 255f, 0xCF / 255f, 0, 1};
   private float[] _hoverColour   = {0x46 / 255f, 0xE6 / 255f, 0, 1};
   private float[] _pressedColour = {0x28 / 255f, 0x82 / 255f, 0, 1};
+  
+  private float[] _normalBorder = {39f / 0xFF, 129f / 0xFF, 0f / 0xFF, 1};
+  private float[] _hoverBorder  = { 7f / 0xFF,  85f / 0xFF, 0f / 0xFF, 1};
   
   private boolean _pressed;
   private boolean _hovered;
@@ -31,7 +34,8 @@ public class Button extends AbstractControl<ControlEvents> {
     super(
       InitFlags.WITH_DEFAULT_EVENTS,
       InitFlags.ACCEPTS_FOCUS,
-      InitFlags.REGISTER
+      InitFlags.REGISTER,
+      InitFlags.WITH_BORDER
     );
     
     _textStream.insert(_textColour);
@@ -39,6 +43,7 @@ public class Button extends AbstractControl<ControlEvents> {
     
     _events.addHoverHandler(new HoverHandler());
     _events.addMouseHandler(new MouseHandler());
+    _events.addFocusHandler(new FocusHandler());
 
     _hAlign = HAlign.ALIGN_CENTER;
 
@@ -52,6 +57,7 @@ public class Button extends AbstractControl<ControlEvents> {
     _background = s;
     
     setBackgroundColour(_normalColour);
+    _border.setColour(_normalBorder);
   }
   
   @Override
@@ -126,6 +132,9 @@ public class Button extends AbstractControl<ControlEvents> {
       case ALIGN_MIDDLE: _textY = (_h - _textH) / 2; break;
       case ALIGN_BOTTOM: _textY =  _h - _textH - _padH; break;
     }
+    
+    _border.setXYWH(0, 0, _w, _h);
+    _border.createBorder();
   }
 
   @Override
@@ -178,6 +187,20 @@ public class Button extends AbstractControl<ControlEvents> {
       _pressed = false;
       _background.setColour(_hovered ? _hoverColour : _normalColour);
       _background.createQuad();
+    }
+  }
+  
+  private class FocusHandler extends ControlEvents.Focus {
+    @Override
+    public void got() {
+      _border.setColour(_hoverBorder);
+      _border.createBorder();
+    }
+
+    @Override
+    public void lost() {
+      _border.setColour(_normalBorder);
+      _border.createBorder();
     }
   }
 }
