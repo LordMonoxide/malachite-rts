@@ -1,5 +1,7 @@
 package malachite.engine.gfx.gui.control;
 
+import org.lwjgl.input.Keyboard;
+
 import malachite.engine.gfx.AbstractContext;
 import malachite.engine.gfx.AbstractDrawable;
 import malachite.engine.gfx.AbstractScalable;
@@ -47,12 +49,16 @@ public class Button extends AbstractControl<ControlEvents> {
     _events.addKeyHandler(new ControlEvents.Key() {
       @Override public void text(char key) { }
       @Override public void down(int key, boolean repeat) {
-        _events.raiseMouseDown(0, 0, -1);
+        if(key == Keyboard.KEY_RETURN) {
+          _events.raiseMouseDown(0, 0, -1);
+        }
       }
       
       @Override public void up(int key) {
-        _events.raiseMouseUp(0, 0, -1);
-        _events.raiseClick();
+        if(key == Keyboard.KEY_RETURN) {
+          _events.raiseMouseUp(0, 0, -1);
+          _events.raiseClick();
+        }
       }
     });
 
