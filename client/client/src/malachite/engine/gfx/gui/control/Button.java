@@ -49,15 +49,21 @@ public class Button extends AbstractControl<ControlEvents> {
     _events.addKeyHandler(new ControlEvents.Key() {
       @Override public void text(char key) { }
       @Override public void down(int key, boolean repeat) {
-        if(key == Keyboard.KEY_RETURN) {
-          _events.raiseMouseDown(0, 0, -1);
+        switch(key) {
+          case Keyboard.KEY_RETURN:
+          case Keyboard.KEY_SPACE:
+            _events.raiseMouseDown(0, 0, -1);
+            break;
         }
       }
       
       @Override public void up(int key) {
-        if(key == Keyboard.KEY_RETURN) {
-          _events.raiseMouseUp(0, 0, -1);
-          _events.raiseClick();
+        switch(key) {
+          case Keyboard.KEY_RETURN:
+          case Keyboard.KEY_SPACE:
+            _events.raiseMouseUp(0, 0, -1);
+            _events.raiseClick();
+            break;
         }
       }
     });
