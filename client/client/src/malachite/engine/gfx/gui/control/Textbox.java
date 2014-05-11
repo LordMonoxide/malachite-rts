@@ -144,8 +144,9 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   }
   
   public void setSelLength(int length) {
-    updateText(_text[0], EMPTY, _text[1] + _text[2]);
-    updateText(_text[0], _text[2].substring(0, length), _text[2].substring(length));
+    String s = _text[1] + _text[2];
+    updateText(_text[0], s.substring(0, length), s.substring(length));
+    _selectDirection = (int)Math.signum(length);
   }
 
   @Override
@@ -403,16 +404,24 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   }
   
   private class MouseHandler extends ControlEvents.Mouse {
+    private boolean _down;
+    private int _start;
+    
     @Override public void move(int x, int y, int button) {
-      
+      if(_down) {
+        int index = _font.regular().getCharAtX(_textFull.getText(), _mask, x - _padW);
+        setSelLength(index - _start);
+      }
     }
     
     @Override public void down(int x, int y, int button) {
-      setSelStart(_font.regular().getCharAtX(_textFull.getText(), _mask, x - _padW));
+      _down = true;
+      _start = _font.regular().getCharAtX(_textFull.getText(), _mask, x - _padW);
+      setSelStart(_start);
     }
     
     @Override public void up(int x, int y, int button) {
-      
+      _down = false;
     }
   }
 
