@@ -351,6 +351,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     @Override
     public void text(char key) {
       updateText(_text[0] + key, EMPTY, _text[2]);
+      _selectDirection = 0;
       events().raiseChange();
     }
   }
