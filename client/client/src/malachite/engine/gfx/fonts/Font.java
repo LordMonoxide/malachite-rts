@@ -119,6 +119,25 @@ public class Font {
     public int getH() {
       return _h;
     }
+    
+    public int getCharAtX(String text, int x) { return getCharAtX(text, 0, x); }
+    public int getCharAtX(String text, int mask, int x) {
+      if(text == null) { return 0; }
+      
+      int w = 0;
+      for(int i = 0; i < text.length(); i++) {
+        int n = mask == 0 ? text.codePointAt(i) : mask;
+        if(_glyph[n] != null) {
+          if(x <= w + _glyph[n].w / 2) {
+            return i;
+          }
+          
+          w += _glyph[n].w;
+        }
+      }
+      
+      return text.length();
+    }
   }
 
   protected static class Glyph {
