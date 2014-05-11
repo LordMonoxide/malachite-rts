@@ -61,6 +61,7 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     _events.addKeyHandler(new KeyHandler());
     _events.addFocusHandler(new FocusHandler());
     _events.addHoverHandler(new HoverHandler());
+    _events.addMouseHandler(new MouseHandler());
 
     _caret = AbstractContext.newDrawable();
     _caret.setColour(new float[] {_textColour.getColour()[0], _textColour.getColour()[1], _textColour.getColour()[2], 1});
@@ -127,6 +128,24 @@ public class Textbox extends AbstractControl<Textbox.Events> {
 
   public boolean getMasked() {
     return _mask != 0;
+  }
+  
+  public int getSelStart() {
+    return _text[0].length();
+  }
+  
+  public void setSelStart(int index) {
+    setSelLength(0);
+    updateText(_textFull.getText().substring(0, index), EMPTY, _textFull.getText().substring(index));
+  }
+  
+  public int getSelLength() {
+    return _text[1].length();
+  }
+  
+  public void setSelLength(int length) {
+    updateText(_text[0], EMPTY, _text[1] + _text[2]);
+    updateText(_text[0], _text[2].substring(0, length), _text[2].substring(length));
   }
 
   @Override
@@ -380,6 +399,20 @@ public class Textbox extends AbstractControl<Textbox.Events> {
     @Override
     public void leave() {
       _background.setTexture(_textureNormal);
+    }
+  }
+  
+  private class MouseHandler extends ControlEvents.Mouse {
+    @Override public void move(int x, int y, int button) {
+      
+    }
+    
+    @Override public void down(int x, int y, int button) {
+      setSelStart(_font.regular().getCharAtX(_textFull.getText(), _mask, x - _padW));
+    }
+    
+    @Override public void up(int x, int y, int button) {
+      
     }
   }
 
