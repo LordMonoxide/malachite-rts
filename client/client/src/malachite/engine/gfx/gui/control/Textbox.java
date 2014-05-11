@@ -144,8 +144,20 @@ public class Textbox extends AbstractControl<Textbox.Events> {
   }
   
   public void setSelLength(int length) {
-    String s = _text[1] + _text[2];
-    updateText(_text[0], s.substring(0, length), s.substring(length));
+    if(length == 0) {
+      if(_selectDirection >= 0) {
+        updateText(_text[0], EMPTY, _text[1] + _text[2]);
+      } else {
+        updateText(_text[0] + _text[1], EMPTY, _text[2]);
+      }
+    } else if(length > 0) {
+      String s = _text[1] + _text[2];
+      updateText(_text[0], s.substring(0, length), s.substring(length));
+    } else {
+      String s = _text[0] + _text[1];
+      updateText(s.substring(0, s.length() + length), s.substring(s.length() + length, s.length()), _text[2]);
+    }
+    
     _selectDirection = (int)Math.signum(length);
   }
 
