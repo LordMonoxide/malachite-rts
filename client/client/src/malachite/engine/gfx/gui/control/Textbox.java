@@ -283,13 +283,35 @@ public class Textbox extends AbstractControl<Textbox.Events> {
           break;
           
         case Keyboard.KEY_HOME:
-          updateText(EMPTY, EMPTY, _text[0] + _text[1] + _text[2]);
-          _selectDirection = 0;
+          if(!_shift) {
+            updateText(EMPTY, EMPTY, _text[0] + _text[1] + _text[2]);
+            _selectDirection = 0;
+          } else {
+            if(_selectDirection == 1) {
+              updateText(EMPTY, _text[0], _text[1] + _text[2]);
+            } else {
+              updateText(EMPTY, _text[0] + _text[1], _text[2]);
+            }
+            
+            _selectDirection = -1;
+          }
+          
           break;
           
         case Keyboard.KEY_END:
-          updateText(_text[0] + _text[1] + _text[2], EMPTY, EMPTY);
-          _selectDirection = 0;
+          if(!_shift) {
+            updateText(_text[0] + _text[1] + _text[2], EMPTY, EMPTY);
+            _selectDirection = 0;
+          } else {
+            if(_selectDirection == -1) {
+              updateText(_text[0] + _text[1], _text[2], EMPTY);
+            } else {
+              updateText(_text[0], _text[1] + _text[2], EMPTY);
+            }
+            
+            _selectDirection = 1;
+          }
+          
           break;
           
         case Keyboard.KEY_LEFT:
