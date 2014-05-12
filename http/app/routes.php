@@ -31,6 +31,10 @@ Route::group(['prefix' => 'api'], function() {
       Route::get('/research',  ['as' => 'api.storage.tech.research.all',  'uses' => 'api\storage\TechController@research']);
     });
   });
+  
+  Route::group(['prefix' => 'github'], function() {
+    Route::post('/hooks', ['as' => 'api.github.hooks', 'uses' => 'api\github\HooksController@dispatch']);
+  });
 });
 
 Route::group(['prefix' => 'auth'], function() {
