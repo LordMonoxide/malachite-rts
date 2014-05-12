@@ -8,7 +8,7 @@ class CreateTableUserIps extends Migration {
     Schema::create('user_ips', function($table) {
       $table->increments('id');
       $table->integer('user_id')->unsigned();
-      $table->integer('ip')->unsigned();
+      $table->integer('ip');
       $table->boolean('authorised')->default(false);
       
       $table->timestamps();
