@@ -1,5 +1,6 @@
 <?php namespace auth;
 
+use Auth;
 use Request;
 
 use UserIP;
