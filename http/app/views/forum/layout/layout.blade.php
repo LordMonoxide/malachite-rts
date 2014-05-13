@@ -10,10 +10,9 @@
   </head>
   
   <body>
-    <section class="breadcrumbs pure-menu pure-menu-open pure-menu-horizontal">
-      <ul class="breadcrumbs">
-        <li>{{ HTML::linkAction('forum.index', Lang::get('forum.index')) }}</li>
-        <li>></li>
+    <section class="header pure-menu pure-menu-open pure-menu-horizontal">
+      <ul class="header">
+        <li>@lang('forum.welcome', ['name' => Auth::user()->name_first])</li>
       </ul>
       
       <ul class="settings">
@@ -25,7 +24,7 @@
     <section>
       <div class="pure-g">
         <div class="pure-u-1-5">
-          @include('forum.layout.nav', ['forums' => $forums, 'forum' => $forum])
+          @include('forum.layout.nav', ['forums' => $forums, 'forum' => isset($forum) ? $forum : null])
         </div>
         
         <div class="pure-u-4-5">

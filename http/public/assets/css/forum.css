@@ -19,13 +19,15 @@ div.nav {
 }
 
 div.topics,
-div.posts {
+div.posts,
+div.commits {
   margin-left: 8px;
   margin-right: 8px;
 }
 
 table.topics,
-table.posts {
+table.posts,
+table.commits {
   margin-top: 0px;
 }
 
@@ -41,11 +43,15 @@ table {
   width: 100%;
 }
 
-.breadcrumbs ul.breadcrumbs li:nth-last-of-type(2) {
-  font-weight: bold;
+.header {
+  overflow: auto;
 }
 
-.breadcrumbs ul.settings {
+.header ul.header li {
+  padding: 5px 20px;
+}
+
+.header ul.settings {
   float: right;
 }
 

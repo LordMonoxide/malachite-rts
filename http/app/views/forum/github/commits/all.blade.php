@@ -1,17 +1,11 @@
-@extends('forum.layout')
+@extends('forum.layout.layout')
 
 @section('title')
-@lang('forum.github.commits.title')
-@stop
-
-@section('breadcrumbs')
-<li>{{ HTML::linkAction('forum.github.home', Lang::get('forum.github.title')) }}</li>
-<li>></li>
-<li>{{ HTML::linkAction('forum.github.commits.all', Lang::get('forum.github.commits.title')) }}</li>
-<li>></li>
+  @lang('forum.github.commits.title')
 @stop
 
 @section('body')
+  <div class="commits">
     @foreach($pushes as $push)
       <table class="commits pure-table pure-table-horizontal pure-table-striped">
         <thead>
@@ -36,4 +30,5 @@
         </tbody>
       </table>
     @endforeach
+  </div>
 @stop

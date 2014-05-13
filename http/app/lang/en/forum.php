@@ -3,6 +3,7 @@
 return [
   'name' => 'Forum',
   'title' => 'Forum',
+  'welcome' => 'Welcome, <a href="' . URL::route('forum.settings.personal') . '" style="display:inline;padding:0px;">:name</a>!',
   'index' => 'Index',
   'replies' => 'Replies',
   'reply' => 'Reply',
@@ -38,5 +39,6 @@ return [
   'github.title'                   => 'GitHub',
   'github.commits.title'           => 'Commits',
   'github.commits.commit.message'  => 'Commit Message',
-  'github.commits.commit.username' => 'Username'
+  'github.commits.commit.username' => 'Username',
+  'github.issues.title'            => 'Issues'
 ];
