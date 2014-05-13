@@ -30,4 +30,25 @@
         </tbody>
       </table>
   @endforeach
+      
+      <table class="forums github pure-table pure-table-horizontal pure-table-striped">
+        <thead>
+          <tr>
+            <th>{{ HTML::linkAction('forum.github.home', Lang::get('forum.github')) }}</th>
+          </tr>
+        </thead>
+        
+        <tbody>
+          <tr>
+            <td>
+              {{ HTML::linkAction('forum.github.commits.all', Lang::get('forum.github.commits.all.title')) }}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ HTML::linkAction('forum.github.issues.all', Lang::get('forum.github.issues.all.title')) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
 @stop

@@ -64,6 +64,18 @@ Route::group(['prefix' => 'forum'], function() {
     });
   });
   
+  Route::group(['prefix' => 'github'], function() {
+    Route::group(['prefix' => 'commits'], function() {
+      Route::get('/', ['as' => 'forum.github.commits.all', 'uses' => 'forum\github\CommitsController@all']);
+    });
+    
+    Route::group(['prefix' => 'issues'], function() {
+      Route::get('/', ['as' => 'forum.github.issues.all', 'uses' => 'forum\github\IssuesController@all']);
+    });
+    
+    Route::get('/', ['as' => 'forum.github.home', 'uses' => 'forum\github\GitHubController@home']);
+  });
+  
   Route::get('/',                             ['as' => 'forum.index',              'uses' => 'forum\ForumController@index']);
   Route::get('/f{forum}',                     ['as' => 'forum.forum',              'uses' => 'forum\ForumController@forum']);
   Route::get('/f{forum}/newtopic',            ['as' => 'forum.topic.new',          'uses' => 'forum\ForumController@newtopic']);

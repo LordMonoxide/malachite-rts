@@ -33,5 +33,10 @@ return [
   'settings.admin.forums.new.legend.root' => 'Create new root forum',
   'settings.admin.forums.new.legend.parent' => 'Create new child of :parent',
   'settings.admin.forums.new.name' => 'Name',
-  'settings.admin.forums.new.submit' => 'Create'
+  'settings.admin.forums.new.submit' => 'Create',
+  
+  'github.title'                   => 'GitHub',
+  'github.commits.title'           => 'Commits',
+  'github.commits.commit.message'  => 'Commit Message',
+  'github.commits.commit.username' => 'Username'
 ];

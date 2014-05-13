@@ -102,3 +102,11 @@ table {
 .settings-body {
   padding-left: 8px;
 }
+
+.commit > td:first-of-type {
+  padding-left: 24px;
+}
+
+.commits .commit-hash {
+  font-family: monospace;
+}
