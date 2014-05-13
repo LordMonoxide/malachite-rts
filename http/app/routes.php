@@ -72,8 +72,6 @@ Route::group(['prefix' => 'forum'], function() {
     Route::group(['prefix' => 'issues'], function() {
       Route::get('/', ['as' => 'forum.github.issues.all', 'uses' => 'forum\github\IssuesController@all']);
     });
-    
-    Route::get('/', ['as' => 'forum.github.home', 'uses' => 'forum\github\GitHubController@home']);
   });
   
   Route::get('/',                             ['as' => 'forum.index',              'uses' => 'forum\ForumController@index']);
