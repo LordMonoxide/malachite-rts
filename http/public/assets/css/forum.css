@@ -31,6 +31,12 @@ table.commits {
   margin-top: 0px;
 }
 
+.first-child a {
+  background-position: 0.5em center;
+  background-image: url('/assets/img/forum/tree.png');
+  background-repeat: no-repeat;
+}
+
 /*@media screen and (min-width: 840px) {
 section {
   width: 80%;

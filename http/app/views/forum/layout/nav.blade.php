@@ -3,7 +3,7 @@
   
   foreach($forums as $f) {
     if($current != null) {
-      echo '<li style="padding-left:' . $nest . 'px;' . ($current->id === $f->id ? 'font-weight:bold' : '') . ($first === true ? ' class="first-child"' : '') . '">' . HTML::linkRoute('forum.forum', $f->name, $f->id) . '</li>';
+      echo '<li style="padding-left:' . $nest . 'px;' . ($current->id === $f->id ? 'font-weight:bold' : '') . '"' . ($first === true ? ' class="first-child"' : '') . '>' . HTML::linkRoute('forum.forum', $f->name, $f->id) . '</li>';
     } else {
       echo '<li style="padding-left:' . $nest . 'px;">' . HTML::linkRoute('forum.forum', $f->name, $f->id) . ($first === true ? ' class="first-child"' : '') . '</li>';
     }
