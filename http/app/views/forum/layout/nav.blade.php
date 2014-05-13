@@ -1,4 +1,4 @@
-<?php function renderChildren($forums, $current, $nest = 8) {
+<?php function renderChildren($forums, $current, $nest = 12) {
   if($forums === null) { return; }
   foreach($forums as $f) {
     if($current != null) {
@@ -7,7 +7,7 @@
       echo '<li style="padding-left:' . $nest . 'px;">' . HTML::linkRoute('forum.forum', $f->name, $f->id) . '</li>';
     }
     
-    renderChildren($f->children, $current, $nest + 8);
+    renderChildren($f->children, $current, $nest + 12);
   }
 } ?>
 
