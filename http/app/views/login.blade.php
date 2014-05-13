@@ -24,7 +24,7 @@
             <div class="pure-u-1-2 l-box">
               <fieldset>
                 <legend class="login">@lang('app.login')</legend>
-                <legend class="register">@lang('app.register')</legend>
+                <legend class="register">@lang('app.register.login')</legend>
                 {{ Form::email('email', Input::old('email'), ['placeholder' => Lang::get('auth.email'),            'required' => 'required', 'autofocus' => 'autofocus']) }}
                 {{ Form::password('password',                ['placeholder' => Lang::get('auth.password'),         'required' => 'required']) }}
                 {{ Form::password('password_confirmation',   ['placeholder' => Lang::get('auth.password_confirm'), 'required' => 'required', 'disabled' => 'disabled', 'style' => 'display: none;', 'class' => 'register']) }}
