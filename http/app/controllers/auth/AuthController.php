@@ -37,7 +37,7 @@ class AuthController extends BaseController {
     if($response->getStatusCode() === 204) {
       return Redirect::home();
     } else {
-      return $response->getData();
+      dd($response->getData());
     }
   }
 }

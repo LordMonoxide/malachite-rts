@@ -17,21 +17,21 @@ class ForumController extends BaseController {
   }
   
   public function index() {
-    return View::make('forum.index')->with('forums', Forum::root()->get());
+    return Redirect::route('forum.forum', Forum::root()->first()->children()->first()->id);
   }
   
   public function forum($forum) {
-    return View::make('forum.forum')->with('forum', $forum);
+    return View::make('forum.forum')->with('forums', Forum::root()->get())->with('forum', $forum);
   }
   
   public function viewtopic($forum, $name, $topic = null) {
     if($topic === null) { $topic = $name; }
-    return View::make('forum.topic.view')->with('forum', $forum)->with('topic', $topic);
+    return View::make('forum.topic.view')->with('forums', Forum::root()->get())->with('forum', $forum)->with('topic', $topic);
   }
   
   public function replytopic($forum, $name, $topic = null) {
     if($topic === null) { $topic = $name; }
-    return View::make('forum.topic.reply')->with('forum', $forum)->with('topic', $topic);
+    return View::make('forum.topic.reply')->with('forums', Forum::root()->get())->with('forum', $forum)->with('topic', $topic);
   }
   
   public function submitreply($forum, $topic) {
@@ -60,7 +60,7 @@ class ForumController extends BaseController {
   }
   
   public function newtopic($forum) {
-    return View::make('forum.topic.new')->with('forum', $forum);
+    return View::make('forum.topic.new')->with('forums', Forum::root()->get())->with('forum', $forum);
   }
   
   public function submittopic($forum) {
