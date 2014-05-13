@@ -1,13 +1,15 @@
-<?php function renderChildren($forums, $current, $nest = 12) {
+<?php function renderChildren($forums, $current, $first, $nest = 12) {
   if($forums === null) { return; }
+  
   foreach($forums as $f) {
     if($current != null) {
-      echo '<li style="padding-left:' . $nest . 'px;' . ($current->id === $f->id ? 'font-weight:bold' : '') . '">' . HTML::linkRoute('forum.forum', $f->name, $f->id) . '</li>';
+      echo '<li style="padding-left:' . $nest . 'px;' . ($current->id === $f->id ? 'font-weight:bold' : '') . ($first === true ? ' class="first-child"' : '') . '">' . HTML::linkRoute('forum.forum', $f->name, $f->id) . '</li>';
     } else {
-      echo '<li style="padding-left:' . $nest . 'px;">' . HTML::linkRoute('forum.forum', $f->name, $f->id) . '</li>';
+      echo '<li style="padding-left:' . $nest . 'px;">' . HTML::linkRoute('forum.forum', $f->name, $f->id) . ($first === true ? ' class="first-child"' : '') . '</li>';
     }
     
-    renderChildren($f->children, $current, $nest + 12);
+    renderChildren($f->children, $current, true, $nest + 12);
+    $first = false;
   }
 } ?>
 
@@ -15,7 +17,7 @@
   <ul>
     @foreach($forums as $f)
       <li class="pure-menu-heading">{{ $f->name }}</li>
-      <?php renderChildren($f->children, $forum); ?>
+      <?php renderChildren($f->children, $forum, false); ?>
     @endforeach
     
     <li class="pure-menu-heading">@lang('forum.github.title')</li>
