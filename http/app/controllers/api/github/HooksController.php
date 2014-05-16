@@ -12,9 +12,10 @@ use github\CommitFile as File;
 class HooksController extends Controller {
   public function dispatch() {
     switch(Request::header('x-github-event')) {
-      case 'ping': return $this->ping();
-      case 'push': return $this->push();
-      default:     return $this->other();
+      case 'ping':   return $this->ping();
+      case 'push':   return $this->push();
+      case 'issues': return $this->issues();
+      default:       return $this->other();
     }
   }
   
@@ -78,6 +79,10 @@ class HooksController extends Controller {
         $file->save();
       }
     }
+  }
+  
+  public function issues() {
+    
   }
   
   public function other() {
