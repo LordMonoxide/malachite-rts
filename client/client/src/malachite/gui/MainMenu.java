@@ -717,6 +717,8 @@ public class MainMenu extends AbstractGUI implements Game.MenuInterface {
   }
   
   @Override public void showSecurity(String[] questions) {
+    reset();
+    
     if(questions != null) {
       for(int i = 0; i < questions.length; i++) {
         _lblSecuritySecurityQuestion[i].setText(questions[i]);
